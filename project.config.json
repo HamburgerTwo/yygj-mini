@@ -1,8 +1,8 @@
 {
   "miniprogramRoot": "./dist",
-  "projectname": "yygj-dbqb-wechatapp",
-  "description": "夺宝奇兵小程序",
-  "appid": "touristappid",
+  "projectname": "yygj-mini-program",
+  "description": "营养管家小程序",
+  "appid": "wx786e81735ab2da22",
   "setting": {
     "urlCheck": true,
     "es6": false,

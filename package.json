@@ -1,8 +1,8 @@
 {
-  "name": "yygj-dbqb-wechatapp",
+  "name": "yygj-mini-program",
   "version": "1.0.0",
   "private": true,
-  "description": "夺宝奇兵小程序",
+  "description": "营养管家小程序",
   "scripts": {
     "build:weapp": "taro build --type weapp",
     "build:swan": "taro build --type swan",
