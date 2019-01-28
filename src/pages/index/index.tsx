@@ -3,8 +3,7 @@ import Taro, { Component, Config } from '@tarojs/taro'
 import { View, Button, Text } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 
-import { add, minus, asyncAdd } from '../../actions/counter'
-
+import { add, minus, asyncAdd } from '../../actions/counter';
 import './index.scss'
 
 // #region 书写注意
@@ -67,9 +66,13 @@ class Index extends Component {
 
   componentWillReceiveProps (nextProps) {
     console.log(this.props, nextProps)
+    
   }
-
-  componentWillUnmount () { }
+  componentDidMount() {
+  }
+  componentWillUnmount () { 
+    
+  }
 
   componentDidShow () { }
 

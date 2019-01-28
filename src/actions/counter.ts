@@ -1,9 +1,10 @@
 import {
   ADD,
   MINUS
-} from '../constants/counter'
-
+} from '../constants/counter';
 export const add = () => {
+  debugger;
+  
   return {
     type: ADD
   }
