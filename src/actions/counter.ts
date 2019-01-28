@@ -3,8 +3,6 @@ import {
   MINUS
 } from '../constants/counter';
 export const add = () => {
-  debugger;
-  
   return {
     type: ADD
   }
