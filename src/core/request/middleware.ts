@@ -41,7 +41,7 @@ export function contentType(ctx, next) {
   return next();
 }
 
-export async function http(ctx, next) {
+export async function http(_, next) {
   const res = await next();
   if (res.statusCode >= 200 && res.statusCode <= 299) {
     return res.data;
@@ -55,7 +55,7 @@ export function timeout(ctx, next) {
     if (ctx.timeout > 0 && ctx.timeout !== Infinity) {
       return Promise.race([
         next(),
-        new Promise((resolve, reject) => {
+        new Promise((_, reject) => {
           setTimeout(() => {
             if (
               ctx.cancelToken &&

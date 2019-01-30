@@ -27,8 +27,35 @@ class App extends Component {
    */
   config: Config = {
     pages: [
-      'pages/index/index'
+      'pages/index/index',
+      "pages/init/init",
+      "pages/study/index",
+      "pages/my/index"
     ],
+    tabBar: {
+      list: [
+        {
+          pagePath: "pages/index/index",
+          text: "首页",
+          iconPath: "assets/icon-default-home.png",
+          selectedIconPath: "assets/icon-home.png",
+          
+        },
+        {
+          pagePath: "pages/study/index",
+          text: "学习圈",
+          iconPath: "assets/icon-default-study.png",
+          selectedIconPath: "assets/icon-study.png",
+        },
+        {
+          pagePath: "pages/my/index",
+          text: "我的",
+          iconPath: "assets/icon-default-my.png",
+          selectedIconPath: "assets/icon-my.png",
+        }
+      ],
+      selectedColor: "#ff783d",
+    },
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',

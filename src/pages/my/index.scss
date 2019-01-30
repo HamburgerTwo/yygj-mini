@@ -1,0 +1,62 @@
+.container {
+  position: relative;
+
+  .avator {
+    width: 128rpx;
+    height: 128rpx;
+    margin: 58rpx 0 158rpx 50rpx;
+    vertical-align: top;
+  }
+
+  .info {
+    display: inline-block;
+    padding: 70rpx 0 0 0;
+    width: 500rpx;
+    vertical-align: top;
+
+    .login {
+      padding: 0 0 0 42rpx;
+      font-size: 40rpx;
+      color: #1a1a1a;
+    }
+
+    .tip {
+      padding: 0 0 0 42rpx;
+      font-size: 26rpx;
+      color: #959499;
+      line-height: 60rpx;
+    }
+    .job {
+      padding: 0 0 0 42rpx;
+      font-size: 26rpx;
+      color: #1a1a1a;
+      line-height: 60rpx;
+    }
+    .detail {
+      font-size: 24rpx;
+      color: #4c4c4c;
+      line-height: 36rpx;
+    }
+    .address {
+      width: 19rpx;
+      height: 25rpx;
+      padding: 0 22rpx 0 0;
+    }
+
+    .list {
+      width: 20rpx;
+      height: 20rpx;
+      padding: 0 21rpx 0 0;
+    }
+
+  }
+
+  .register {
+    position: absolute;
+    width: 128rpx;
+    left: 50rpx;
+    height: 128rpx;
+    top: 50rpx;
+    opacity: 0;
+  }
+}

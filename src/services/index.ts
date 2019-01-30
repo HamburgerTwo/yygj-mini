@@ -1,11 +1,9 @@
 import request, { Request, middlewares } from '../core/request';
 
-export function getTest(id: string): Promise<{
-  code: string,
-  id: number
+export function sign(phone: string): Promise<{
+  userName: string,
 }> {
   return request.post<{
-    code: string,
-    id: number
-  }>('http://www.baidu.com/test', { id });
+    userName: string,
+  }>('http://www.baidu.com/test', { phone });
 }
