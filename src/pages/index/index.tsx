@@ -42,7 +42,10 @@ interface Index {
   counter
 }), (dispatch) => ({
   add () {
-    dispatch(add())
+    dispatch(add());
+    Taro.navigateTo({
+      url: '/pages/memberactivities/index'
+    })
   },
   dec () {
     dispatch(minus())

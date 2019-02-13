@@ -1,9 +1,9 @@
 import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
-import { View, Button, Text, WebView } from '@tarojs/components'
+import { View } from '@tarojs/components'
+import Item from '../../components/member-activity-item/item';
 import { connect } from '@tarojs/redux'
 
-import { add, minus, asyncAdd } from '../../actions/counter';
 import './index.scss'
 
 // #region 书写注意
@@ -17,15 +17,9 @@ import './index.scss'
 // #endregion
 
 type PageStateProps = {
-  activity: {
-    current: string
-  }
 }
 
 type PageDispatchProps = {
-  add: () => void
-  dec: () => void
-  asyncAdd: () => any
 }
 
 type PageOwnProps = {}
@@ -38,19 +32,11 @@ interface Index {
   props: IProps;
 }
 
-@connect(({ counter }) => ({
-  counter
-}), (dispatch) => ({
-  add () {
-    dispatch(add())
-  },
-  dec () {
-    dispatch(minus())
-  },
-  asyncAdd () {
-    dispatch(asyncAdd())
-  }
-}))
+// @connect(({ counter }) => ({
+//   counter
+// }), (dispatch) => ({
+ 
+// }))
 class Index extends Component {
 
     /**
@@ -61,8 +47,8 @@ class Index extends Component {
    * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
    */
     config: Config = {
-    navigationBarTitleText: '首页',
-    navigationStyle: "custom"
+    navigationBarTitleText: '会员活动',
+    navigationStyle: "default"
   }
 
   componentWillReceiveProps (nextProps) {
@@ -81,9 +67,10 @@ class Index extends Component {
 
   render () {
     return (
-      <WebView src="http://www.baidu.com">
-        
-      </WebView>
+      <View className='index'>
+        <Item name="开宝箱" url="http://www.baidu.com" />
+        <Item name="开宝箱1" url="http://www.sina.com" />
+      </View>
     )
   }
 }

@@ -3,7 +3,6 @@ import Taro, { Component, Config } from '@tarojs/taro'
 import { View, Button, Text, WebView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 
-import { add, minus, asyncAdd } from '../../actions/counter';
 import './index.scss'
 
 // #region 书写注意
@@ -17,9 +16,13 @@ import './index.scss'
 // #endregion
 
 type PageStateProps = {
+  counter: {
+    num: number
+  },
   activity: {
     current: string
   }
+  
 }
 
 type PageDispatchProps = {
@@ -30,7 +33,10 @@ type PageDispatchProps = {
 
 type PageOwnProps = {}
 
-type PageState = {}
+type PageState = {
+  visible: Boolean,
+  url: string,
+}
 
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
 
@@ -38,20 +44,21 @@ interface Index {
   props: IProps;
 }
 
-@connect(({ counter }) => ({
-  counter
+@connect(({ counter, activity }) => ({
+  counter,
+  activity
 }), (dispatch) => ({
   add () {
-    dispatch(add())
+    Taro.navigateTo({
+      url: '/pages/memberactivities/index'
+    })
   },
   dec () {
-    dispatch(minus())
   },
   asyncAdd () {
-    dispatch(asyncAdd())
   }
 }))
-class Index extends Component {
+class Index extends Component<IProps, PageState> {
 
     /**
    * 指定config的类型声明为: Taro.Config
@@ -61,29 +68,51 @@ class Index extends Component {
    * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
    */
     config: Config = {
-    navigationBarTitleText: '首页',
-    navigationStyle: "custom"
+    navigationBarTitleText: '活动',
   }
-
-  componentWillReceiveProps (nextProps) {
-    console.log(this.props, nextProps)
-    
+  constructor(props) {
+    super(props);
+    this.state = {
+      visible: false,
+      url: 'http://www.baidu.com',
+    }
   }
+ 
   componentDidMount() {
+    console.log(this.props)
   }
   componentWillUnmount () { 
     
   }
-
+  public onShowWebView = () => {
+    console.log(11)
+    this.setState({
+      visible: true
+    })
+    setTimeout(() => {
+      this.setState({
+        visible: false,
+        url: 'http://www.baidu.com/s?wd='+ new Date()
+      })
+    },5000)
+  }
   componentDidShow () { }
 
   componentDidHide () { }
 
   render () {
+    const { visible, url } = this.state;
     return (
-      <WebView src="http://www.baidu.com">
+      <View className='index'>
         
-      </WebView>
+        {visible}
+        <Button className='dec_btn' onClick={this.props.dec}>-</Button>
+        <Button className='dec_btn' onClick={this.props.asyncAdd}>async</Button>
+        <View><Text>{this.props.counter.num}</Text></View>
+        <View><Text>{this.props.activity.current}</Text></View>
+        {visible ? <WebView src={url} /> : null}
+        <Button className='add_btn' onClick={this.onShowWebView}>+</Button>
+      </View>
     )
   }
 }
