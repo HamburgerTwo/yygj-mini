@@ -1,0 +1,28 @@
+.item {
+  display: flex;
+  margin: 0 25rpx;
+  height: 123rpx;
+  border-bottom: 1px solid #ededed;
+  flex-direction: row;
+  font-size: 30rpx;
+  line-height: 30rpx;
+  color:#000;
+  padding: 46rpx 0;
+  box-sizing: border-box;
+}
+
+.label {
+  
+}
+
+.selector {
+  text-align: right;
+  flex-grow: 1;
+}
+
+.arrow {
+  margin: 0 0 0 25rpx;
+  width: 16rpx;
+  height: 30rpx;
+  
+}

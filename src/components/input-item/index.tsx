@@ -1,25 +1,28 @@
 import { ComponentClass } from 'react'
 import Taro, { Component } from '@tarojs/taro'
-import { View, Image } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
-import { goToAction } from '../../actions/activity'
+import { View, Text, Picker, Image } from '@tarojs/components'
 import classnames from 'classnames';
-import s from './item.module.scss';
-import itembg from '../../assets/item-bg.png';
+import s from './index.module.scss';
+import arrow from '../../assets/icon-arrow.png';
 
 
 type ComponentsStateProps = {
-  activity: {
-    current: string
-  }
+
+}
+
+type selectItem = {
+  id: number,
+  value: string,
 }
 
 type ComponentsOwnProps = {
   name: string,
-  url: string,
+  selectorChecked: string,
+  list: Array<selectItem>,
 }
 
-type ComponentsState = {}
+type ComponentsState = {
+}
 
 type ComponentsDispatchProps = {
   goTo: (url: string) => any
@@ -32,18 +35,6 @@ interface Index {
   props: IProps,
 }
 
-@connect(({ activity }) => ({
-  activity
-}), (dispatch) => ({
-  goTo: (url: string) => {
-    console.log(url)
-    dispatch(goToAction(url));
-    Taro.navigateTo({
-      url: '/pages/activity/index'
-    })
-  },
-}))
-
 class Index extends Component {
   static externalClasses = ['item-class']
   /**
@@ -53,17 +44,20 @@ class Index extends Component {
  * 对于像 navigationBarTextStyle: 'black' 这样的推导出的类型是 string
  * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
  */
-  public goCurrent = () => {
+  public onDataChange = (e) => {
 
-    this.props.goTo(this.props.url);
-    console.log(this.props.url)
+    console.log(e)
   }
   render() {
     return (
-      <View className={classnames(s.item, 'item-class')} onClick={this.goCurrent}>
-        <Image src={itembg} />
-        {this.props.name}
-      </View>
+      <Picker className={classnames('item-class')} mode='selector' range={this.props.list} rangeKey="value" value={0} onChange={this.onDataChange}>
+        <View className={s.item}><Text className={s.label}>{this.props.name}</Text>
+          <View className={s.selector}>
+            {this.props.selectorChecked}
+          </View>
+          <Image src={arrow} className={s.arrow} />
+        </View>
+      </Picker>
     )
   }
 }

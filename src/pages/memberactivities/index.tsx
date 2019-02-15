@@ -4,7 +4,7 @@ import { View } from '@tarojs/components'
 import Item from '../../components/member-activity-item/item';
 import { connect } from '@tarojs/redux'
 
-import './index.scss'
+import s from './index.module.scss'
 
 // #region 书写注意
 // 
@@ -67,9 +67,9 @@ class Index extends Component {
 
   render () {
     return (
-      <View className='index'>
-        <Item name="开宝箱" url="http://www.baidu.com" />
-        <Item name="开宝箱1" url="http://www.sina.com" />
+      <View className={s.index}>
+        <Item item-class={s.item} name="开宝箱" url="http://www.baidu.com" />
+        <Item item-class={s.item} name="开宝箱1" url="http://www.sina.com" />
       </View>
     )
   }
