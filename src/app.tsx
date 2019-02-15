@@ -27,12 +27,14 @@ class App extends Component {
    */
   config: Config = {
     pages: [
-      'pages/index/index',
+      "pages/index/index",
       "pages/init/init",
       "pages/study/index",
       "pages/my/index",
       "pages/memberactivities/index",
       "pages/activity/index",
+      "pages/roleselection/index",
+      "pages/bindingstore/index",
       "pages/register/index"
     ],
     tabBar: {
@@ -42,7 +44,7 @@ class App extends Component {
           text: "首页",
           iconPath: "assets/icon-default-home.png",
           selectedIconPath: "assets/icon-home.png",
-          
+
         },
         {
           pagePath: "pages/study/index",
