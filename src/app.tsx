@@ -32,7 +32,8 @@ class App extends Component {
       "pages/study/index",
       "pages/my/index",
       "pages/memberactivities/index",
-      "pages/activity/index"
+      "pages/activity/index",
+      "pages/register/index"
     ],
     tabBar: {
       list: [

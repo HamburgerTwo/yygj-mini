@@ -44,7 +44,7 @@ interface Index {
   add () {
     dispatch(add());
     Taro.navigateTo({
-      url: '/pages/memberactivities/index'
+      url: '/pages/register/index'
     })
   },
   dec () {

@@ -1,0 +1,17 @@
+.item {
+  position: relative;
+  width: 650rpx;
+  height: 175rpx;
+  color: #fff;
+  line-height: 175rpx;
+  padding: 0 0 0 55rpx;
+  image {
+    position: absolute;
+    width: 650rpx;
+    height: 175rpx;
+    left: 0;
+    top: 0;
+    z-index: -1;
+
+  }
+}
