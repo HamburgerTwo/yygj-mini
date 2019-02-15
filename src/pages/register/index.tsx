@@ -1,10 +1,11 @@
 import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
-import { View, Button, Image } from '@tarojs/components'
+import { View, Button, Text, OpenData } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import Select from '../../components/input-item/select';
+import InputItem from '../../components/input-item/input';
 import { getArea } from '../../services/index';
-import './index.scss'
+import s from './index.module.scss'
 
 // #region 书写注意
 // 
@@ -39,6 +40,7 @@ type PageState = {
   areaSelected: selectItem,
   storeList: Array<selectItem>,
   storeSelected: selectItem,
+  name: string
 }
 
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
@@ -80,7 +82,8 @@ class Index extends Component<PageOwnProps, PageState> {
       {
         id: 0,
         value: '大区1'
-      }
+      },
+      name: ''
     }
 
   }
@@ -125,15 +128,29 @@ class Index extends Component<PageOwnProps, PageState> {
         : e,
     })
   }
+  public onChangeName = (e) => {
+    this.setState({
+      name
+        : e,
+    })
+    console.log(e)
+  }
   componentDidShow() { }
 
   componentDidHide() { }
 
   render() {
-    const { areaList, areaSelected } = this.state;
+    const { areaList, areaSelected, name } = this.state;
     return (
-      <View className='container'>
+      <View className={s.container}>
+        <View className={s.item}>
+          <Text className={s.label}>头像</Text>
+          <View className={s.img}>
+            <OpenData className={s.avator} type="userAvatarUrl" />
+          </View>
+        </View>
         <Select name='大区' onChange={this.onChangeArea} selectedItem={areaSelected} list={areaList} />
+        <InputItem name='姓名' onChange={this.onChangeName} value={name} />
       </View>
     )
   }

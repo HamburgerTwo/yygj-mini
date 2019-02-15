@@ -2,7 +2,7 @@ import { ComponentClass } from 'react'
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Input, Image } from '@tarojs/components'
 import classnames from 'classnames';
-import s from './select.module.scss';
+import s from './input.module.scss';
 import arrow from '../../assets/icon-arrow.png';
 
 type ComponentsStateProps = {
@@ -13,14 +13,14 @@ type ComponentsStateProps = {
 type ComponentsOwnProps = {
   name: string,
   value: string,
-  onChange: (e: object, index: string) => any,
+  onChange: (e: object) => any,
 }
 
 type ComponentsState = {
 }
 
 type ComponentsDispatchProps = {
-  goTo: (url: string) => any
+
 }
 
 type IProps = ComponentsStateProps & ComponentsDispatchProps & ComponentsOwnProps
@@ -40,15 +40,14 @@ class Index extends Component {
  * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
  */
   public onDataChange = (e) => {
+    this.props.onChange(e.detail.value);
   }
   render() {
     return (
-      <View className={classnames('item-class')} >
-        <View className={s.item}><Text className={s.label}>{this.props.name}</Text>
-          <Input type='text' className={s.selector}/> >
-            
-          <Image src={arrow} className={s.arrow} />
-        </View>
+      <View className={classnames('item-class', s.item)}>
+        <Text className={s.label}>{this.props.name}</Text>
+        <Input type='text' value={this.props.value} onInput={this.onDataChange} className={s.input} />
+        <Image src={arrow} className={s.arrow} />
       </View>
     )
   }

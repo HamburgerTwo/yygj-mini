@@ -18,7 +18,7 @@ type ComponentsOwnProps = {
   name: string,
   selectedItem: selectItem,
   list: Array<selectItem>,
-  onChange: (e: object, index: string) => any,
+  onChange: (e: object) => any,
 }
 
 type ComponentsState = {
@@ -45,7 +45,7 @@ class Index extends Component {
  * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
  */
   public onDataChange = (e) => {
-    this.props.onChange(this.props.list[e.detail.value], e.detail.value);
+    this.props.onChange(this.props.list[e.detail.value]);
   }
   static defaultProps = {
     list: []
