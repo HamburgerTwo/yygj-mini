@@ -2,9 +2,8 @@ import { ComponentClass } from 'react'
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Picker, Image } from '@tarojs/components'
 import classnames from 'classnames';
-import s from './index.module.scss';
+import s from './select.module.scss';
 import arrow from '../../assets/icon-arrow.png';
-
 
 type ComponentsStateProps = {
 
@@ -17,8 +16,9 @@ type selectItem = {
 
 type ComponentsOwnProps = {
   name: string,
-  selectorChecked: string,
+  selectedItem: selectItem,
   list: Array<selectItem>,
+  onChange: (e: object, index: string) => any,
 }
 
 type ComponentsState = {
@@ -45,15 +45,18 @@ class Index extends Component {
  * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
  */
   public onDataChange = (e) => {
-
-    console.log(e)
+    this.props.onChange(this.props.list[e.detail.value], e.detail.value);
+  }
+  static defaultProps = {
+    list: []
   }
   render() {
+    const index = this.props.list.findIndex(x => x.id === this.props.selectedItem.id) || 0
     return (
-      <Picker className={classnames('item-class')} mode='selector' range={this.props.list} rangeKey="value" value={0} onChange={this.onDataChange}>
+      <Picker className={classnames('item-class')} mode='selector' range={this.props.list} rangeKey="value" value={index} onChange={this.onDataChange}>
         <View className={s.item}><Text className={s.label}>{this.props.name}</Text>
           <View className={s.selector}>
-            {this.props.selectorChecked}
+            {this.props.selectedItem.value}
           </View>
           <Image src={arrow} className={s.arrow} />
         </View>

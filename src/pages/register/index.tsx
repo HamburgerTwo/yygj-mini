@@ -2,7 +2,8 @@ import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
 import { View, Button, Image } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
-import Selector from '../../components/input-item/index';
+import Select from '../../components/input-item/select';
+import { getArea } from '../../services/index';
 import './index.scss'
 
 // #region 书写注意
@@ -22,6 +23,11 @@ type PageStateProps = {
   }
 }
 
+type selectItem = {
+  id: number,
+  value: string,
+}
+
 type PageDispatchProps = {
   sign: (phone: string) => void
 }
@@ -29,6 +35,10 @@ type PageDispatchProps = {
 type PageOwnProps = {}
 
 type PageState = {
+  areaList: Array<selectItem>,
+  areaSelected: selectItem,
+  storeList: Array<selectItem>,
+  storeSelected: selectItem,
 }
 
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
@@ -41,10 +51,10 @@ interface Index {
   user
 }), (dispatch) => ({
   sign: (phone) => {
-    
+
   },
 }))
-class Index extends Component {
+class Index extends Component<PageOwnProps, PageState> {
 
   /**
  * 指定config的类型声明为: Taro.Config
@@ -56,12 +66,43 @@ class Index extends Component {
   config: Config = {
     navigationBarTitleText: '注册',
   }
+  constructor(props) {
+    super(props);
+    this.state = {
+      areaList: [],
+      areaSelected:
+      {
+        id: 2,
+        value: '大区2'
+      },
+      storeList: [],
+      storeSelected:
+      {
+        id: 0,
+        value: '大区1'
+      }
+    }
 
+  }
   componentWillReceiveProps(nextProps) {
     console.log(this.props, nextProps)
 
   }
   componentDidMount() {
+  }
+  componentWillMount() {
+    getArea().then((res) => {
+      this.setState({
+        areaList: [{
+          id: 1,
+          value: '大区1'
+        },
+        {
+          id: 2,
+          value: '大区2'
+        }],
+      })
+    })
   }
   componentWillUnmount() {
 
@@ -78,20 +119,21 @@ class Index extends Component {
         });
       });
   }
+  public onChangeArea = (e) => {
+    this.setState({
+      areaSelected
+        : e,
+    })
+  }
   componentDidShow() { }
 
   componentDidHide() { }
 
   render() {
-    const list = [
-      {id: 0,
-      value: '大区1'},
-      {id: 1,
-        value: '大区2'}
-    ]
+    const { areaList, areaSelected } = this.state;
     return (
       <View className='container'>
-        <Selector name='大区' selectorChecked='大兴区' list={list} />
+        <Select name='大区' onChange={this.onChangeArea} selectedItem={areaSelected} list={areaList} />
       </View>
     )
   }

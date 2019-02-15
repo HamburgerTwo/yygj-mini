@@ -1,9 +1,9 @@
 import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
-import { View, Button, Text } from '@tarojs/components'
+import { View, Button } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 
-import { add, minus, asyncAdd } from '../../actions/counter';
+import { add } from '../../actions/counter';
 import './index.scss'
 
 // #region 书写注意
@@ -24,13 +24,14 @@ type PageStateProps = {
 
 type PageDispatchProps = {
   add: () => void
-  dec: () => void
-  asyncAdd: () => any
 }
 
 type PageOwnProps = {}
 
-type PageState = {}
+type PageState = {
+  code: string,
+  errorMsg: string,
+}
 
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
 
@@ -47,14 +48,8 @@ interface Index {
       url: '/pages/register/index'
     })
   },
-  dec () {
-    dispatch(minus())
-  },
-  asyncAdd () {
-    dispatch(asyncAdd())
-  }
 }))
-class Index extends Component {
+class Index extends Component<PageOwnProps, PageState> {
 
     /**
    * 指定config的类型声明为: Taro.Config
@@ -73,6 +68,14 @@ class Index extends Component {
   }
   componentDidMount() {
   }
+  componentWillMount () {
+    Taro.login().then((res) => {
+      this.setState({
+        code: res.code,
+        errorMsg: res.errMsg,
+      })
+    });
+  }
   componentWillUnmount () { 
     
   }
@@ -82,13 +85,12 @@ class Index extends Component {
   componentDidHide () { }
 
   render () {
+    const { code, errorMsg } = this.state;
     return (
       <View className='index'>
-        <Button className='add_btn' onClick={this.props.add}>+</Button>
-        <Button className='dec_btn' onClick={this.props.dec}>-</Button>
-        <Button className='dec_btn' onClick={this.props.asyncAdd}>async</Button>
-        <View><Text>{this.props.counter.num}</Text></View>
-        <View><Text>Hello, World</Text></View>
+        <Button className='add_btn' onClick={this.props.add}>导航</Button>
+        <View>code:{code}</View>
+        <View>errorMsg:{errorMsg}</View>
       </View>
     )
   }

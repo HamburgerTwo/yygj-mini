@@ -1,10 +1,10 @@
 import {
-  SIGN
+  SIGN, USERINFO
 } from '../constants/user';
 import { sign } from '../services';
 
 export const signAction = (phone: string) => dispatch => {
-  console.log(dispatch)
+  
   return sign(phone).then(res =>(dispatch({
     type: SIGN,
     payload: {
@@ -12,4 +12,12 @@ export const signAction = (phone: string) => dispatch => {
       isSign: true
     }
   })))
+}
+
+export const userinfoAction = (userinfo: Object) => dispatch => {
+  
+  return dispatch({
+    type: USERINFO,
+    payload: userinfo
+  })
 }
