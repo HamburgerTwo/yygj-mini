@@ -4,7 +4,7 @@ import { View, Button } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 
 import { add } from '../../actions/counter';
-import './index.scss'
+import s from './index.module.scss'
 
 // #region 书写注意
 // 
@@ -76,6 +76,12 @@ class Index extends Component<PageOwnProps, PageState> {
       })
     });
   }
+  public onCopy = () => {
+    Taro.setClipboardData({data: this.state.code,})
+    .then(() => {
+      
+    })
+  }
   componentWillUnmount () { 
     
   }
@@ -89,7 +95,8 @@ class Index extends Component<PageOwnProps, PageState> {
     return (
       <View className='index'>
         <Button className='add_btn' onClick={this.props.add}>导航</Button>
-        <View>code:{code}</View>
+        <Button className='add_btn' onClick={this.onCopy}>复制</Button>
+        <View className={s.code}>code:{code}</View>
         <View>errorMsg:{errorMsg}</View>
       </View>
     )

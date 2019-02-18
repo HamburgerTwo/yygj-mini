@@ -4,7 +4,8 @@ import { View, Button, Text, OpenData } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import Select from '../../components/input-item/select';
 import InputItem from '../../components/input-item/input';
-import { getArea } from '../../services/index';
+import { saveUserInfoAction } from '../../actions/user';
+import { getArea, getDirstict, getChain } from '../../services/index';
 import s from './index.module.scss'
 
 // #region 书写注意
@@ -30,7 +31,7 @@ type selectItem = {
 }
 
 type PageDispatchProps = {
-  sign: (phone: string) => void
+  saveUserInfo: (user) => void
 }
 
 type PageOwnProps = {}
@@ -38,9 +39,14 @@ type PageOwnProps = {}
 type PageState = {
   areaList: Array<selectItem>,
   areaSelected: selectItem,
-  storeList: Array<selectItem>,
-  storeSelected: selectItem,
-  name: string
+  districtList: Array<selectItem>,
+  districtSelected: selectItem,
+  chainList: Array<selectItem>,
+  chainSelected: selectItem,
+  name: string,
+  storeName: string,
+  phone: string,
+  id: number,
 }
 
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
@@ -52,8 +58,8 @@ interface Index {
 @connect(({ user }) => ({
   user
 }), (dispatch) => ({
-  sign: (phone) => {
-
+  saveUserInfo: (user) => {
+    dispatch(saveUserInfoAction(user));
   },
 }))
 class Index extends Component<PageOwnProps, PageState> {
@@ -77,13 +83,22 @@ class Index extends Component<PageOwnProps, PageState> {
         id: 2,
         value: '大区2'
       },
-      storeList: [],
-      storeSelected:
+      districtList: [],
+      districtSelected:
       {
         id: 0,
-        value: '大区1'
+        value: '请选择'
       },
-      name: ''
+      chainList: [],
+      chainSelected:
+      {
+        id: 0,
+        value: '请选择'
+      },
+      name: '',
+      storeName: '',
+      phone: '',
+      id: 0
     }
 
   }
@@ -94,6 +109,34 @@ class Index extends Component<PageOwnProps, PageState> {
   componentDidMount() {
   }
   componentWillMount() {
+    if (this.state.areaSelected.id) {
+      getDirstict(this.state.areaSelected.id).then(() => {
+        this.setState({
+          districtList: [{
+            id: 1,
+            value: '片区1'
+          },
+          {
+            id: 2,
+            value: '片区2'
+          }],
+        })
+      })
+    }
+    if(this.state.districtSelected.id){
+      getChain(this.state.districtSelected.id).then(() => {
+        this.setState({
+          districtList: [{
+            id: 1,
+            value: '连锁1'
+          },
+          {
+            id: 2,
+            value: '连锁2'
+          }],
+        })
+      })
+    }
     getArea().then((res) => {
       this.setState({
         areaList: [{
@@ -110,21 +153,59 @@ class Index extends Component<PageOwnProps, PageState> {
   componentWillUnmount() {
 
   }
-  public onGetPhoneNumber = (e) => {
-    new Promise((reslove) => {
-      this.props.sign('111');
-      reslove();
+
+  public onChangeDistrict = (e) => {
+    getChain(e.id).then(() => {
+      this.setState({
+        districtSelected
+        : e,
+        chainList: [{
+          id: 1,
+          value: '连锁1'
+        },
+        {
+          id: 2,
+          value: '连锁2'
+        }],
+        chainSelected: {
+          id: 0,
+          value: '请选择'
+        },
+      })
     })
-      .catch(err => {
-        Taro.showModal({
-          title: '出错了',
-          content: ''
-        });
-      });
-  }
-  public onChangeArea = (e) => {
     this.setState({
-      areaSelected
+      
+    })
+  }
+  public onChangeArea = (e: selectItem) => {
+    getDirstict(e.id).then(() => {
+      this.setState({
+        areaSelected
+          : e,
+        districtList: [{
+          id: 1,
+          value: '片区1'
+        },
+        {
+          id: 2,
+          value: '片区2'
+        }],
+        districtSelected: {
+          id: 0,
+          value: '请选择'
+        },
+        chainList: [],
+        chainSelected: {
+          id: 0,
+          value: '请选择'
+        },
+      })
+    })
+  }
+
+  public onChangeChain = (e) => {
+    this.setState({
+      chainSelected
         : e,
     })
   }
@@ -133,14 +214,55 @@ class Index extends Component<PageOwnProps, PageState> {
       name
         : e,
     })
-    console.log(e)
+  }
+
+  public onChangeStoreName = (e) => {
+    this.setState({
+      storeName
+        : e,
+    })
+  }
+
+  public onChangePhone = (e) => {
+    this.setState({
+      phone
+        : e,
+    })
+  }
+  public onSubmit = () => {
+    const {
+      areaSelected,
+      districtSelected,
+      name,
+      chainSelected,
+      storeName,
+      id,
+      phone } = this.state;
+    this.props.saveUserInfo({
+      id,
+      name,
+      phone,
+      area: areaSelected.id,
+      district: districtSelected.id,
+      chain: chainSelected.id,
+      store: storeName,
+    })
   }
   componentDidShow() { }
 
   componentDidHide() { }
 
   render() {
-    const { areaList, areaSelected, name } = this.state;
+    const {
+      areaList,
+      areaSelected,
+      districtSelected,
+      name,
+      districtList,
+      chainSelected,
+      chainList,
+      storeName,
+      phone } = this.state;
     return (
       <View className={s.container}>
         <View className={s.item}>
@@ -150,7 +272,12 @@ class Index extends Component<PageOwnProps, PageState> {
           </View>
         </View>
         <Select name='大区' onChange={this.onChangeArea} selectedItem={areaSelected} list={areaList} />
+        <Select name='片区' onChange={this.onChangeDistrict} selectedItem={districtSelected} list={districtList} />
+        <Select name='连锁' onChange={this.onChangeChain} selectedItem={chainSelected} list={chainList} />
+        <InputItem name='门店' onChange={this.onChangeStoreName} value={storeName} />
         <InputItem name='姓名' onChange={this.onChangeName} value={name} />
+        <InputItem name='电话' type='number' onChange={this.onChangePhone} value={phone} />
+        <Button className={s.btn} onClick={this.onSubmit}>确定</Button>
       </View>
     )
   }

@@ -8,12 +8,13 @@ import arrow from '../../assets/icon-arrow.png';
 type ComponentsStateProps = {
 
 }
-
+type inputType = 'text' | 'number' | 'idcard' | 'digit'
 
 type ComponentsOwnProps = {
   name: string,
   value: string,
   onChange: (e: object) => any,
+  type?: inputType
 }
 
 type ComponentsState = {
@@ -32,6 +33,10 @@ interface Index {
 
 class Index extends Component {
   static externalClasses = ['item-class']
+
+  static defaultProps = {
+    type: 'text'
+  }
   /**
  * 指定config的类型声明为: Taro.Config
  *
@@ -46,7 +51,7 @@ class Index extends Component {
     return (
       <View className={classnames('item-class', s.item)}>
         <Text className={s.label}>{this.props.name}</Text>
-        <Input type='text' value={this.props.value} onInput={this.onDataChange} className={s.input} />
+        <Input value={this.props.value} onInput={this.onDataChange} type={this.props.type} className={s.input} />
         <Image src={arrow} className={s.arrow} />
       </View>
     )
