@@ -1,4 +1,4 @@
-import { SIGN, USERINFO } from '../constants/user'
+import { SIGN, USERINFO, BINGDING } from '../constants/user'
 
 const INITIAL_STATE = {
   userName: '',
@@ -17,8 +17,13 @@ export default function user(state = INITIAL_STATE, action) {
     case USERINFO:
       return {
         ...state,
-       userinfo: { ...state.userinfo, ...action.payload } 
-  }
+       userinfo: { ...state.userinfo, ...action.payload }
+      }
+    case BINGDING:
+      return {
+        ...state,
+        ...action.payload
+      }
      default:
   return state
 }

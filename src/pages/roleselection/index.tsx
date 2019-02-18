@@ -62,12 +62,19 @@ class Index extends Component {
     })
   }
 
+  onStepClerk = () => {
+    Taro.showToast({
+      title: "跳转到对应页面",
+      icon: 'none',
+    });
+  }
+
   render () {
     return (
       <View className="container">
         <View className="content">
           <Image src={shopowner} className="role" onClick={this.onNextStep.bind(this, "store")} />
-          <Image src={clerk} className="role" onClick={this.onNextStep.bind(this, "clerk")} />
+          <Image src={clerk} className="role" onClick={this.onStepClerk.bind(this, "clerk")} />
         </View>
       </View>
     )
