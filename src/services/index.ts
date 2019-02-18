@@ -1,10 +1,9 @@
 import request, { Request, middlewares } from '../core/request';
 
 export function sign(phone: string): Promise<{
-  userName: string,
+
 }> {
   return request.post<{
-    userName: string,
   }>('http://www.baidu.com/test', { phone });
 }
 
@@ -17,3 +16,18 @@ export function getArea(): Promise<Array<{
     value: string,
   }>>('http://www.baidu.com/test', { });
   }
+
+// 查询门店
+export function queryStore(): Promise<Array<{
+  code: number,
+}>> {
+  return request.post<Array<{
+    code: number,
+  }>>('http://www.baidu.com/test', { });
+}
+
+// 绑定门店
+export function bingdingStore(data: Object): Promise<Array<{
+}>> {
+  return request.post<Array<{}>>('http://www.baidu.com/test', { data });
+}

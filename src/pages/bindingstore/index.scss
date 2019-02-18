@@ -78,4 +78,10 @@
     margin-top: 40px;
     border-radius:25Px;
   }
+
+  .disable {
+    pointer-events: none;
+    cursor: default;
+    background: #ffd6c4;
+  }
 }

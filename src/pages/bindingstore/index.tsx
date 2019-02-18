@@ -1,29 +1,26 @@
 import { ComponentClass } from 'react'
+import { connect } from '@tarojs/redux'
 import Taro, { Component, Config } from '@tarojs/taro'
 import { View, Button, Text, Input } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
-
+import ClassNames from 'classnames';
+import { queryStore } from '../../services/index';
+import { bingdingAction } from '../../actions/user';
 import './index.scss'
-
-// #region 书写注意
-//
-// 目前 typescript 版本还无法在装饰器模式下将 Props 注入到 Taro.Component 中的 props 属性
-// 需要显示声明 connect 的参数类型并通过 interface 的方式指定 Taro.Component 子类的 props
-// 这样才能完成类型检查和 IDE 的自动提示
-// 使用函数模式则无此限制
-// ref: https://github.com/DefinitelyTyped/DefinitelyTyped/issues/20796
-//
-// #endregion
 
 type PageStateProps = {
 }
 
 type PageDispatchProps = {
+  bingdingStore: (data: object) => any
 }
 
 type PageOwnProps = {}
 
-type PageState = {}
+type PageState = {
+  name: string,
+  storeNo: string,
+  storeName: string,
+}
 
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
 
@@ -35,12 +32,23 @@ interface Index {
 
  }) => ({
 }), (dispatch) => ({
+  bingdingStore: (data) => {
+    return dispatch(bingdingAction(data))
+  },
 }))
 
-class Index extends Component {
+class Index extends Component<IProps, PageState> {
 
   config: Config = {
     navigationBarTitleText: '绑定门店',
+  }
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: '',
+      storeNo: '',
+      storeName: '',
+    }
   }
 
   componentWillMount () {
@@ -59,46 +67,61 @@ class Index extends Component {
 
   componentDidHide () { }
 
-  getName = () => {
-
+  // tips
+  showToast(text) {
+    Taro.showToast({
+      title: text,
+      icon: 'none',
+    });
   }
 
-  getStoreCode = () => {
-
+  public getInputChange = (item, event) => {
+    const value = event.target.value;
+    const stateObj = {};
+    stateObj[item] = value;
+    this.setState(stateObj);
   }
 
-  confirm = () => {
+  public query = () => {
+    queryStore().then((res) => {
+      console.log(res, 'res');
+      this.setState({
+        storeName: '广州科学城店'
+      })
+    }).catch((error) => {
 
+    })
   }
 
-  query = () => {
+  public confirm = () => {
+    const postData = {
 
+    }
+    this.props.bingdingStore(postData).then((res) => {
+      console.log(res, 'ressse')
+      this.showToast("绑定成功，跳转到对应页面");
+    })
   }
 
   render () {
+    const { name, storeNo, storeName } = this.state;
+
     return (
       <View className="container">
         <View className="inpuWrapName">
-          <Input name="name" maxLength={11} placeholder="请输入名字" onInput={this.getName} />
+          <Input name="name" maxLength={11} placeholder="请输入名字" value={name} onInput={this.getInputChange.bind(this, 'name')} />
         </View>
         <View className="inpuWrapCode">
-          <Input type="number" name="code"  placeholder="请输入门店编号" onInput={this.getStoreCode} />
+          <Input type="number" name="code"  placeholder="请输入门店编号" value={storeNo} onInput={this.getInputChange.bind(this, 'storeNo')} />
           <View className="queryWrap" >
             <Button className="query" plain={true} onClick={this.query}>查询</Button>
           </View>
         </View>
-        <View className="storeName" >门店名称：<Text>xxxx</Text></View>
-        <Button className="confirm" onClick={this.confirm}>确定</Button>
+        {storeName ? <View className="storeName" >门店名称：<Text>{storeName}</Text></View> : null}
+        <Button className={ClassNames("confirm", {"disable": storeName === "" || name === "" || storeNo === ""})} onClick={this.confirm}>确定</Button>
       </View>
     )
   }
 }
 
-// #region 导出注意
-//
-// 经过上面的声明后需要将导出的 Taro.Component 子类修改为子类本身的 props 属性
-// 这样在使用这个子类时 Ts 才不会提示缺少 JSX 类型参数错误
-//
-// #endregion
-
-export default Index as ComponentClass<PageOwnProps, PageState>
+export default Index as unknown as ComponentClass<PageOwnProps, PageState>
