@@ -54,4 +54,4 @@ export function queryStore(): Promise<Array<{
 export function bingdingStore(data: Object): Promise<Array<{
 }>> {
   return request.post<Array<{}>>('http://www.baidu.com/test', { data });
-} e
+}
