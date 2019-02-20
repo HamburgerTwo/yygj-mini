@@ -1,10 +1,14 @@
 import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
-import { View, Button, Text, WebView } from '@tarojs/components'
+import { View, Image, Swiper, SwiperItem, Block } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 
-import { add, minus, asyncAdd } from '../../actions/counter';
+import { add, minus, asyncAdd } from '../../actions/counter'
 import './index.scss'
+import s from './index.module.scss'
+import NewsItem from '../../components/news-item'
+import newsbanner from '../../assets/news-item.png';
+import classnames from 'classnames';
 
 // #region 书写注意
 // 
@@ -30,7 +34,9 @@ type PageDispatchProps = {
 
 type PageOwnProps = {}
 
-type PageState = {}
+type PageState = {
+  current: number,
+}
 
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
 
@@ -41,49 +47,105 @@ interface Index {
 @connect(({ counter }) => ({
   counter
 }), (dispatch) => ({
-  add () {
+  add() {
     dispatch(add())
   },
-  dec () {
+  dec() {
     dispatch(minus())
   },
-  asyncAdd () {
+  asyncAdd() {
     dispatch(asyncAdd())
   }
 }))
-class Index extends Component {
-
-    /**
-   * 指定config的类型声明为: Taro.Config
-   *
-   * 由于 typescript 对于 object 类型推导只能推出 Key 的基本类型
-   * 对于像 navigationBarTextStyle: 'black' 这样的推导出的类型是 string
-   * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
-   */
-    config: Config = {
-    navigationBarTitleText: '首页',
-    navigationStyle: "custom"
+class Index extends Component<PageOwnProps, PageState> {
+  /**
+ * 指定config的类型声明为: Taro.Config
+ *
+ * 由于 typescript 对于 object 类型推导只能推出 Key 的基本类型
+ * 对于像 navigationBarTextStyle: 'black' 这样的推导出的类型是 string
+ * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
+ */
+  config: Config = {
+    navigationBarTitleText: '学习',
+    navigationStyle: 'default',
   }
 
-  componentWillReceiveProps (nextProps) {
+  constructor(props) {
+    super(props);
+    this.state = {
+      current: 0
+    }
+  }
+  componentWillReceiveProps(nextProps) {
     console.log(this.props, nextProps)
-    
+
+  }
+  public onGetPhoneNumber = (e) => {
+    new Promise((reslove) => {
+      console.log(e)
+      reslove();
+    })
+      .catch(err => {
+        Taro.showModal({
+          title: '出错了',
+          content: ''
+        });
+      });
+  }
+
+  public onChange = (e) => {
+    console.log(e);
+    this.setState({
+      current: e.detail.current
+    })
   }
   componentDidMount() {
   }
-  componentWillUnmount () { 
-    
+  componentWillUnmount() {
+
   }
 
-  componentDidShow () { }
+  componentDidShow() { }
 
-  componentDidHide () { }
+  componentDidHide() { }
 
-  render () {
+  render() {
+    const { current } = this.state;
     return (
-      <WebView src="http://www.baidu.com">
-        
-      </WebView>
+      <View>
+        {/* <Button className={s.login} open-type="getPhoneNumber" onGetPhoneNumber={this.onGetPhoneNumber} type="primary">微信登录</Button> */}
+        <Block>
+          <Swiper
+            className={s.swiper}
+            circular
+            autoplay
+            onChange={this.onChange}>
+            <SwiperItem>
+              <Image src={newsbanner} />
+            </SwiperItem>
+            <SwiperItem>
+              <Image src={newsbanner} />
+            </SwiperItem>
+            <SwiperItem>
+              <Image src={newsbanner} />
+            </SwiperItem>
+          </Swiper>
+          <View className={s.nav}>
+            <View className={classnames({
+              [s.current]: current === 0
+            })}></View>
+            <View className={classnames({
+              [s.current]: current === 1
+            })}></View>
+            <View className={classnames({
+              [s.current]: current === 2
+            })}></View>
+          </View>
+          <NewsItem border={true} title="新闻1" url="http://www.baidu.com" content="新闻内容新闻内容新闻内容新闻" date="2018-01-11" />
+          <NewsItem border={true} title="新闻1" url="http://www.baidu.com" content="新闻内容新闻内容新闻内容新闻" date="2018-01-11" />
+          <NewsItem border={false} title="新闻1" url="http://www.baidu.com" content="新闻内容新闻内容新闻内容新闻" date="2018-01-11" />
+        </Block>
+      </View>
     )
   }
 }
