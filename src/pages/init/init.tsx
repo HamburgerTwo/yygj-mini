@@ -42,7 +42,9 @@ interface Index {
   counter
 }), (dispatch) => ({
   add () {
-    dispatch(add())
+    Taro.switchTab({
+      url:'/pages/index/index',
+    })
   },
   dec () {
     dispatch(minus())

@@ -1,7 +1,7 @@
 import { GOACTIVITY } from '../constants/activity'
 
 const INITIAL_STATE = {
-  current: '',
+  current: 'http://localhost',
 }
 
 export default function user (state = INITIAL_STATE, action) {

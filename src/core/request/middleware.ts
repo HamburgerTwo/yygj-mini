@@ -5,20 +5,8 @@
  */
 
 import { stringify } from 'qs';
-import { signature as stamp } from '../hash';
-import { methodWithBody, methodWithoutBody } from './utils';
-
-export function signature(ctx, next) {
-  if (ctx.signature && ctx.signature.serverKey) {
-    const type = methodWithoutBody(ctx.method) ? 'params' : 'body';
-    ctx[type] = ctx[type] || {};
-    ctx[type].serverKey = ctx.signature.serverKey;
-    ctx[type].timestamp = Date.now();
-    ctx[type].sign = stamp(ctx[type], ctx.signature.serverSecert);
-  }
-
-  return next();
-}
+import { methodWithBody } from './utils';
+import Taro from '@tarojs/taro'
 
 export function contentType(ctx, next) {
   if (methodWithBody(ctx.method)) {
@@ -70,5 +58,13 @@ export function timeout(ctx, next) {
     }
   }
 
+  return next();
+}
+
+export function authcode(ctx, next) {
+  const jwt = Taro.getStorageSync('jwt');
+  if(ctx.auth && jwt){
+    ctx.headers['Authorization'] = `Bearer ${jwt}`;
+  }
   return next();
 }

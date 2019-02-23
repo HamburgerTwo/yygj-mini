@@ -36,7 +36,6 @@ interface Index {
   activity
 }), (dispatch) => ({
   goTo: (url: string) => {
-    console.log(url)
     dispatch(goToAction(url));
     Taro.navigateTo({
       url: '/pages/activity/index'
@@ -56,7 +55,6 @@ class Index extends Component {
   public goCurrent = () => {
 
     this.props.goTo(this.props.url);
-    console.log(this.props.url)
   }
   render() {
     return (

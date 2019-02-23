@@ -39,7 +39,6 @@ interface Index {
   activity
 }), (dispatch) => ({
   goTo: (url: string) => {
-    console.log(url)
     dispatch(goToAction(url));
     Taro.navigateTo({
       url: '/pages/activity/index'

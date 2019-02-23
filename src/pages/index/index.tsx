@@ -2,8 +2,10 @@ import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
 import { View, Button, WebView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
+import { accountType } from '../../config';
 
 import { add } from '../../actions/counter';
+import { loginByWechatOauthAction, findEmployeeByJwtAction } from '../../actions/user';
 import s from './index.module.scss'
 
 // #region 书写注意
@@ -17,13 +19,16 @@ import s from './index.module.scss'
 // #endregion
 
 type PageStateProps = {
-  counter: {
-    num: number
+ 
+  activity: {
+    current: string,
   }
 }
 
 type PageDispatchProps = {
-  add: () => void
+  add: () => void,
+  loginByWechatOauth: (code: string, accountType: string) => Promise<any>,
+  findEmployeeByJwt: () => Promise<any>
 }
 
 type PageOwnProps = {}
@@ -39,8 +44,8 @@ interface Index {
   props: IProps;
 }
 
-@connect(({ counter }) => ({
-  counter
+@connect(({ activity }) => ({
+  activity
 }), (dispatch) => ({
   add () {
     dispatch(add());
@@ -48,6 +53,12 @@ interface Index {
       url: '/pages/register/index'
     })
   },
+  loginByWechatOauth(code, accountType) {
+    return Promise.resolve().then(() => dispatch(loginByWechatOauthAction(code, accountType)))
+  },
+  findEmployeeByJwt() {
+    return Promise.resolve().then(() => dispatch(findEmployeeByJwtAction))
+  }
 }))
 class Index extends Component<PageOwnProps, PageState> {
 
@@ -69,12 +80,22 @@ class Index extends Component<PageOwnProps, PageState> {
   componentDidMount() {
   }
   componentWillMount () {
-    Taro.login().then((res) => {
-      this.setState({
-        code: res.code,
-        errorMsg: res.errMsg,
-      })
-    });
+    Taro.checkSession().then(() => {
+      return this.props.findEmployeeByJwt()
+    }).catch(() => {
+      return Taro.login().then((res) => {
+        return res;
+      }).then((res) => {
+        return this.props.loginByWechatOauth(res.code, accountType);
+      }).then((res) => {
+        console.log(res)
+        Taro.setStorageSync('jwt',res.payload.authToken);
+        return res;
+      });
+    }).then(res => {
+      console.log(res);
+    })
+    
   }
   public onCopy = () => {
     Taro.setClipboardData({data: this.state.code,})
@@ -82,10 +103,19 @@ class Index extends Component<PageOwnProps, PageState> {
       
     })
   }
+  public onPostMessage = (e) => {
+    console.log(e)
+  }
   componentWillUnmount () { 
     
   }
-
+  onShareAppMessage(res) {
+    
+    return {
+      title: '自定义转发标题',
+      path: '/pages/index/index?id=123'
+    }
+  }
   componentDidShow () { }
 
   componentDidHide () { }
@@ -98,6 +128,7 @@ class Index extends Component<PageOwnProps, PageState> {
         <Button className='add_btn' onClick={this.onCopy}>复制</Button>
         <View className={s.code}>code:{code}</View>
         <View>errorMsg:{errorMsg}</View>
+        <WebView src={this.props.activity.current} onMessage={this.onPostMessage} />
       </View>
     )
   }

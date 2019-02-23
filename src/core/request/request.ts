@@ -51,7 +51,6 @@ class Request {
         method,
         header: headers,
         data: body,
-
         success: resolve,
         fail: reject,
       });

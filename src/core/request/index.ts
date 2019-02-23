@@ -6,11 +6,14 @@
 
 import Request from './request';
 import * as middlewares from './middleware';
+import { baseUrl } from '../../config';
 
 const inst = new Request({
+  baseUrl,
   type: 'json',
+  auth: true,
 }, [
-  middlewares.signature,
+  middlewares.authcode,
   middlewares.contentType,
   middlewares.http,
   middlewares.timeout,

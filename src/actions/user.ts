@@ -1,7 +1,8 @@
 import {
-  SIGN, USERINFO, BINGDING
+  SIGN, USERINFO, BINGDING, GETSESSION
 } from '../constants/user';
-import { sign, saveUserInfo, bingdingStore } from '../services';
+import { sign, bingdingStore } from '../services';
+import { saveUserInfo, loginByWechatOauth, findEmployeeByJwt, bindingPhone} from '../services/user'
 import { User } from '../types/user';
 
 export const signAction = (phone: string) => dispatch => {
@@ -15,20 +16,27 @@ export const signAction = (phone: string) => dispatch => {
   })))
 }
 
-export const userinfoAction = (userinfo: Object) => dispatch => {
+export const loginByWechatOauthAction = (code: string, accountType: string) => dispatch => {
+  return loginByWechatOauth(code, accountType).then(res =>(dispatch({
+    type: GETSESSION,
+    payload: {
+      ...res,
+    }
+  })))
+}
 
+export const saveUserInfoAction = (userinfo: User) => (dispatch, getState) => {
+  // const state =getState();
+  // const { user } = state;
+  // saveUserInfo({ memberId: user.memberId, ...userinfo }).then(res => {
+  //   return dispatch({
+  //     type: USERINFO,
+  //     payload: res
+  //   })
+  // })
   return dispatch({
     type: USERINFO,
     payload: userinfo
-  })
-}
-
-export const saveUserInfoAction = (userinfo: User) => dispatch => {
-  saveUserInfo(userinfo).then(res => {
-    return dispatch({
-      type: USERINFO,
-      payload: res
-    })
   })
 }
 export const bingdingAction = (data: Object) => dispatch => {
@@ -39,4 +47,24 @@ export const bingdingAction = (data: Object) => dispatch => {
       message: "绑定成功"
     }
   })))
+}
+
+export const findEmployeeByJwtAction = dispatch => {
+  return findEmployeeByJwt().then(res =>(dispatch({
+    type: GETSESSION,
+    payload: {
+      ...res,
+    }
+  })))
+}
+
+export const bindingPhoneAction = (phone) => (dispatch, getState) => {
+  const state =getState();
+  const { user } = state;
+  return bindingPhone(user.identity, phone).then(() => {
+    return dispatch({
+      type: USERINFO,
+      payload: { telephone: phone }
+    })
+  })
 }

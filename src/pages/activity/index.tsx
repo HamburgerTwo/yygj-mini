@@ -16,9 +16,6 @@ import './index.scss'
 // #endregion
 
 type PageStateProps = {
-  counter: {
-    num: number
-  },
   activity: {
     current: string
   }
@@ -26,15 +23,11 @@ type PageStateProps = {
 }
 
 type PageDispatchProps = {
-  add: () => void
-  dec: () => void
-  asyncAdd: () => any
 }
 
 type PageOwnProps = {}
 
 type PageState = {
-  visible: Boolean,
   url: string,
 }
 
@@ -44,19 +37,10 @@ interface Index {
   props: IProps;
 }
 
-@connect(({ counter, activity }) => ({
-  counter,
+@connect(({ activity }) => ({
   activity
 }), (dispatch) => ({
-  add () {
-    Taro.navigateTo({
-      url: '/pages/memberactivities/index'
-    })
-  },
-  dec () {
-  },
-  asyncAdd () {
-  }
+  
 }))
 class Index extends Component<IProps, PageState> {
 
@@ -72,46 +56,40 @@ class Index extends Component<IProps, PageState> {
   }
   constructor(props) {
     super(props);
+    const { activity } = props;
+    const { current } = activity;
     this.state = {
-      visible: false,
-      url: 'http://www.baidu.com',
+      url: current,
     }
   }
  
   componentDidMount() {
-    console.log(this.props)
   }
   componentWillUnmount () { 
     
   }
+  componentWillMount () {
+   const { url, bgcolor } = this.$router.params;
+   this.setState({
+     url: decodeURIComponent(url),
+   })
+   Taro.setNavigationBarColor({
+     backgroundColor: decodeURIComponent(bgcolor) || '#ffffff',
+     frontColor: '#000000'
+   })
+  }
   public onShowWebView = () => {
-    console.log(11)
-    this.setState({
-      visible: true
-    })
-    setTimeout(() => {
-      this.setState({
-        visible: false,
-        url: 'http://www.baidu.com/s?wd='+ new Date()
-      })
-    },5000)
+    
   }
   componentDidShow () { }
 
   componentDidHide () { }
 
   render () {
-    const { visible, url } = this.state;
+    const { url } = this.state;
     return (
       <View className='index'>
-        
-        {visible}
-        <Button className='dec_btn' onClick={this.props.dec}>-</Button>
-        <Button className='dec_btn' onClick={this.props.asyncAdd}>async</Button>
-        <View><Text>{this.props.counter.num}</Text></View>
-        <View><Text>{this.props.activity.current}</Text></View>
-        {visible ? <WebView src={url} /> : null}
-        <Button className='add_btn' onClick={this.onShowWebView}>+</Button>
+        <WebView src={url} />
       </View>
     )
   }

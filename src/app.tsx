@@ -27,6 +27,7 @@ class App extends Component {
    */
   config: Config = {
     pages: [
+      
       "pages/index/index",
       "pages/init/init",
       "pages/study/index",
@@ -35,7 +36,8 @@ class App extends Component {
       "pages/activity/index",
       "pages/roleselection/index",
       "pages/bindingstore/index",
-      "pages/register/index"
+      "pages/register/index",
+      "pages/authorize/index"
     ],
     tabBar: {
       list: [
@@ -68,7 +70,7 @@ class App extends Component {
       navigationBarTextStyle: 'black'
     }
   }
-
+  
   componentDidMount () {}
 
   componentDidShow () {}

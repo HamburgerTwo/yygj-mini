@@ -7,6 +7,8 @@ export function sign(phone: string): Promise<{
   }>('http://www.baidu.com/test', { phone });
 }
 
+
+}
 export function getArea(): Promise<Array<{
   id: number,
   value: string,
@@ -38,9 +40,7 @@ export function getChain(districtId: number): Promise<Array<{
   }>>('http://www.baidu.com/test', { districtId });
 }
 
-export function saveUserInfo(user: User): Promise<User> {
-  return request.post<User>('http://www.baidu.com/test', user);
-}
+
 // 查询门店
 export function queryStore(): Promise<Array<{
   code: number,
@@ -54,4 +54,8 @@ export function queryStore(): Promise<Array<{
 export function bingdingStore(data: Object): Promise<Array<{
 }>> {
   return request.post<Array<{}>>('http://www.baidu.com/test', { data });
+}
+
+export function decodeData(sessionId: string, encryptedData: string, iv: string):Promise<any> {
+  return request.get<any>('/wechatMiniApplet/decodeMiniAppletEncryptedData', { params: { sessionId, encryptedData, iv } });
 }
