@@ -3,15 +3,16 @@ import { connect } from '@tarojs/redux'
 import Taro, { Component, Config } from '@tarojs/taro'
 import { View, Button, Text, Input } from '@tarojs/components'
 import ClassNames from 'classnames';
-import { queryStore } from '../../services/index';
-import { bingdingAction } from '../../actions/user';
+import { findOrganizationByIdOrNo } from '../../services/store';
+import { saveUserInfoAction } from '../../actions/user';
+import { User } from '../../types/user'
 import './index.scss'
 
 type PageStateProps = {
 }
 
 type PageDispatchProps = {
-  bingdingStore: (data: object) => any
+  saveUserInfo: (user: User) => any
 }
 
 type PageOwnProps = {}
@@ -30,10 +31,10 @@ interface Index {
 
 @connect(({
 
- }) => ({
+}) => ({
 }), (dispatch) => ({
-  bingdingStore: (data) => {
-    return dispatch(bingdingAction(data))
+  saveUserInfo: (user) => {
+    return Promise.resolve().then(() =>dispatch(saveUserInfoAction(user)));
   },
 }))
 
@@ -51,21 +52,19 @@ class Index extends Component<IProps, PageState> {
     }
   }
 
-  componentWillMount () {
-    console.log('params', this.$router.params);
+  componentWillMount() {
   }
-  componentWillReceiveProps (nextProps) {
-    // console.log(this.props, nextProps);
+  componentWillReceiveProps(nextProps) {
   }
   componentDidMount() {
   }
-  componentWillUnmount () {
+  componentWillUnmount() {
 
   }
 
-  componentDidShow () { }
+  componentDidShow() { }
 
-  componentDidHide () { }
+  componentDidHide() { }
 
   // tips
   showToast(text) {
@@ -83,10 +82,18 @@ class Index extends Component<IProps, PageState> {
   }
 
   public query = () => {
-    queryStore().then((res) => {
+    const {  storeNo } = this.state;
+    if(!storeNo){
+      Taro.showToast({
+        title:'请输入门店编号',
+        icon: 'none'
+      })
+      return
+    }
+    findOrganizationByIdOrNo(this.state.storeNo).then((res) => {
       console.log(res, 'res');
       this.setState({
-        storeName: '广州科学城店'
+        storeName: res.orgName
       })
     }).catch((error) => {
 
@@ -94,16 +101,33 @@ class Index extends Component<IProps, PageState> {
   }
 
   public confirm = () => {
-    const postData = {
-
+    const { name, storeNo, storeName } = this.state;
+    const { role, page } = this.$router.params;
+    if (!name) {
+      Taro.showToast({
+        title:'请输入姓名',
+        icon: 'none'
+      })
+      return
+    } else if(!storeName) {
+      Taro.showToast({
+        title:'请输入门店',
+        icon: 'none'
+      })
     }
-    this.props.bingdingStore(postData).then((res) => {
-      console.log(res, 'ressse')
-      this.showToast("绑定成功，跳转到对应页面");
+    this.props.saveUserInfo({
+      memberName: name,
+      orgNo: storeNo,
+      roles: [role],
+      orgName: storeName
+    }).then((res) => {
+      Taro.navigateBack({
+        delta: 2,
+      })
     })
   }
 
-  render () {
+  render() {
     const { name, storeNo, storeName } = this.state;
 
     return (
@@ -112,13 +136,13 @@ class Index extends Component<IProps, PageState> {
           <Input name="name" maxLength={11} placeholder="请输入名字" value={name} onInput={this.getInputChange.bind(this, 'name')} />
         </View>
         <View className="inpuWrapCode">
-          <Input type="number" name="code"  placeholder="请输入门店编号" value={storeNo} onInput={this.getInputChange.bind(this, 'storeNo')} />
+          <Input type="number" name="code" placeholder="请输入门店编号" value={storeNo} onInput={this.getInputChange.bind(this, 'storeNo')} />
           <View className="queryWrap" >
             <Button className="query" plain={true} onClick={this.query}>查询</Button>
           </View>
         </View>
         {storeName ? <View className="storeName" >门店名称：<Text>{storeName}</Text></View> : null}
-        <Button className={ClassNames("confirm", {"disable": storeName === "" || name === "" || storeNo === ""})} onClick={this.confirm}>确定</Button>
+        <Button className={ClassNames("confirm", { "disable": storeName === "" || name === "" || storeNo === "" })} onClick={this.confirm}>确定</Button>
       </View>
     )
   }

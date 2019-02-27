@@ -8,4 +8,8 @@ export type User = {
   store?: string,
   gender?: number,
   headimg? :string,
+  orgNo? : string,
+  roles? : Array<number>,
+  memberName? : string,
+  orgName?:string,
 }

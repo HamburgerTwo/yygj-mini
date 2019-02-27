@@ -4,8 +4,8 @@ import { View, Button, WebView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { accountType } from '../../config';
 
-import { add } from '../../actions/counter';
 import { loginByWechatOauthAction, findEmployeeByJwtAction } from '../../actions/user';
+import { goToAction } from '../../actions/activity'
 import s from './index.module.scss'
 
 // #region 书写注意
@@ -26,9 +26,9 @@ type PageStateProps = {
 }
 
 type PageDispatchProps = {
-  add: () => void,
   loginByWechatOauth: (code: string, accountType: string) => Promise<any>,
-  findEmployeeByJwt: () => Promise<any>
+  findEmployeeByJwt: () => Promise<any>,
+  goTo:(url: string) => Promise<any>,
 }
 
 type PageOwnProps = {}
@@ -47,11 +47,10 @@ interface Index {
 @connect(({ activity }) => ({
   activity
 }), (dispatch) => ({
-  add () {
-    dispatch(add());
-    Taro.navigateTo({
-      url: '/pages/register/index'
-    })
+  goTo(url) {
+    return Promise.resolve().then(() =>
+      dispatch(goToAction(url))
+    )
   },
   loginByWechatOauth(code, accountType) {
     return Promise.resolve().then(() => dispatch(loginByWechatOauthAction(code, accountType)))
@@ -81,27 +80,26 @@ class Index extends Component<PageOwnProps, PageState> {
   }
   componentWillMount () {
     Taro.checkSession().then(() => {
-      return this.props.findEmployeeByJwt()
+      return this.props.findEmployeeByJwt().then((res) => {
+        return res.payload.userinfo;
+      })
     }).catch(() => {
       return Taro.login().then((res) => {
         return res;
       }).then((res) => {
         return this.props.loginByWechatOauth(res.code, accountType);
       }).then((res) => {
-        console.log(res)
         Taro.setStorageSync('jwt',res.payload.authToken);
-        return res;
+        return res.payload.userinfo;
       });
     }).then(res => {
-      console.log(res);
+      if(res.telephone) {
+        this.props.goTo(`http://192.168.114.95?jwt=${Taro.getStorageSync('jwt')}`)
+      } else {
+        this.props.goTo(`http://192.168.114.95?jwt=}`)
+      }
     })
     
-  }
-  public onCopy = () => {
-    Taro.setClipboardData({data: this.state.code,})
-    .then(() => {
-      
-    })
   }
   public onPostMessage = (e) => {
     console.log(e)
@@ -110,7 +108,6 @@ class Index extends Component<PageOwnProps, PageState> {
     
   }
   onShareAppMessage(res) {
-    
     return {
       title: '自定义转发标题',
       path: '/pages/index/index?id=123'
@@ -121,14 +118,11 @@ class Index extends Component<PageOwnProps, PageState> {
   componentDidHide () { }
 
   render () {
-    const { code, errorMsg } = this.state;
+    const { current = '' } = this.props.activity;
+    console.log(current)
     return (
       <View className='index'>
-        <Button className='add_btn' onClick={this.props.add}>导航</Button>
-        <Button className='add_btn' onClick={this.onCopy}>复制</Button>
-        <View className={s.code}>code:{code}</View>
-        <View>errorMsg:{errorMsg}</View>
-        <WebView src={this.props.activity.current} onMessage={this.onPostMessage} />
+        {current ? <WebView src={current} onMessage={this.onPostMessage} /> : null}
       </View>
     )
   }

@@ -1,9 +1,7 @@
 import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
-import { View, Image, Swiper, SwiperItem, Block } from '@tarojs/components'
+import { View, Image, Swiper, SwiperItem, Block, Button } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
-
-import { add, minus, asyncAdd } from '../../actions/counter'
 import './index.scss'
 import s from './index.module.scss'
 import NewsItem from '../../components/news-item'
@@ -21,15 +19,11 @@ import classnames from 'classnames';
 // #endregion
 
 type PageStateProps = {
-  activity: {
-    current: string
-  }
+  user: any,
 }
 
 type PageDispatchProps = {
-  add: () => void
-  dec: () => void
-  asyncAdd: () => any
+  goTo: (url: string) => Promise<any>
 }
 
 type PageOwnProps = {}
@@ -44,19 +38,14 @@ interface Index {
   props: IProps;
 }
 
-@connect(({ counter }) => ({
-  counter
+@connect(({ user }) => ({
+  user
 }), (dispatch) => ({
-  add() {
-    dispatch(add())
-  },
-  dec() {
-    dispatch(minus())
-  },
-  asyncAdd() {
-    dispatch(asyncAdd())
+  goTo: (url) => {
+    
   }
 }))
+
 class Index extends Component<PageOwnProps, PageState> {
   /**
  * 指定config的类型声明为: Taro.Config
@@ -80,24 +69,26 @@ class Index extends Component<PageOwnProps, PageState> {
     console.log(this.props, nextProps)
 
   }
-  public onGetPhoneNumber = (e) => {
-    new Promise((reslove) => {
-      console.log(e)
-      reslove();
-    })
-      .catch(err => {
-        Taro.showModal({
-          title: '出错了',
-          content: ''
-        });
+  componentWillMount() {
+    const { user } = this.props;
+    const { isSign = false } = user || {};
+    if(!isSign) {
+      Taro.navigateTo({
+        url:'/pages/authorize/index?page=study'
       });
+    }
   }
 
   public onChange = (e) => {
-    console.log(e);
     this.setState({
       current: e.detail.current
     })
+  }
+
+  public onAuthorize = () => {
+    Taro.navigateTo({
+      url:'/pages/authorize/index?page=study'
+    });
   }
   componentDidMount() {
   }
@@ -111,10 +102,11 @@ class Index extends Component<PageOwnProps, PageState> {
 
   render() {
     const { current } = this.state;
+    const { user } = this.props;
+    const { isSign = false } = user || {};
     return (
       <View>
-        {/* <Button className={s.login} open-type="getPhoneNumber" onGetPhoneNumber={this.onGetPhoneNumber} type="primary">微信登录</Button> */}
-        <Block>
+        {isSign ? <Block>
           <Swiper
             className={s.swiper}
             circular
@@ -144,7 +136,7 @@ class Index extends Component<PageOwnProps, PageState> {
           <NewsItem border={true} title="新闻1" url="http://www.baidu.com" content="新闻内容新闻内容新闻内容新闻" date="2018-01-11" />
           <NewsItem border={true} title="新闻1" url="http://www.baidu.com" content="新闻内容新闻内容新闻内容新闻" date="2018-01-11" />
           <NewsItem border={false} title="新闻1" url="http://www.baidu.com" content="新闻内容新闻内容新闻内容新闻" date="2018-01-11" />
-        </Block>
+        </Block> : <Button onClick={this.onAuthorize} className={s.login} type='primary'>去登录</Button>}
       </View>
     )
   }

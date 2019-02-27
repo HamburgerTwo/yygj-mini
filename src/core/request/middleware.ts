@@ -32,6 +32,7 @@ export function contentType(ctx, next) {
 export async function http(_, next) {
   const res = await next();
   if (res.statusCode >= 200 && res.statusCode <= 299) {
+    console.log(res)
     return res.data;
   }
 

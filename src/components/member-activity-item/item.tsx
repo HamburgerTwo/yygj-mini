@@ -1,8 +1,6 @@
 import { ComponentClass } from 'react'
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
-import { goToAction } from '../../actions/activity'
 import classnames from 'classnames';
 import s from './item.module.scss';
 import itembg from '../../assets/item-bg.png';
@@ -22,7 +20,7 @@ type ComponentsOwnProps = {
 type ComponentsState = {}
 
 type ComponentsDispatchProps = {
-  goTo: (url: string) => any
+ 
 }
 
 type IProps = ComponentsStateProps & ComponentsDispatchProps & ComponentsOwnProps
@@ -32,16 +30,7 @@ interface Index {
   props: IProps,
 }
 
-@connect(({ activity }) => ({
-  activity
-}), (dispatch) => ({
-  goTo: (url: string) => {
-    dispatch(goToAction(url));
-    Taro.navigateTo({
-      url: '/pages/activity/index'
-    })
-  },
-}))
+
 
 class Index extends Component {
   static externalClasses = ['item-class']
@@ -53,8 +42,9 @@ class Index extends Component {
  * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
  */
   public goCurrent = () => {
-
-    this.props.goTo(this.props.url);
+      Taro.navigateTo({
+          url: `/pages/activity/index?url=${encodeURIComponent(this.props.url)}`
+      })
   }
   render() {
     return (

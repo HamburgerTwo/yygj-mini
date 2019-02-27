@@ -1,9 +1,11 @@
 import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
-import { View } from '@tarojs/components'
+import { View, Block, Button } from '@tarojs/components'
 import Item from '../../components/member-activity-item/item';
 import { connect } from '@tarojs/redux'
-
+import { activity } from '../../types/activity';
+import { getActivityAction } from '../../actions/activity';
+import { User } from '../../types/user';
 import s from './index.module.scss'
 
 // #region 书写注意
@@ -17,9 +19,17 @@ import s from './index.module.scss'
 // #endregion
 
 type PageStateProps = {
+  activity: {
+    list: Array<activity>
+  }
+  user: {
+    isSign: boolean,
+    userinfo:User,
+  }
 }
 
 type PageDispatchProps = {
+  getActivity: () => Promise<any>
 }
 
 type PageOwnProps = {}
@@ -32,11 +42,14 @@ interface Index {
   props: IProps;
 }
 
-// @connect(({ counter }) => ({
-//   counter
-// }), (dispatch) => ({
- 
-// }))
+@connect(({ activity, user }) => ({
+  activity,
+  user,
+}), (dispatch) => ({
+ getActivity() {
+  return Promise.resolve().then(() => dispatch(getActivityAction));
+ }
+}))
 class Index extends Component {
 
     /**
@@ -55,23 +68,54 @@ class Index extends Component {
     console.log(this.props, nextProps)
     
   }
+  componentWillMount() {
+    const { user } = this.props;
+    const { isSign } = user;
+    console.log(isSign)
+    if(!isSign) {
+      Taro.navigateTo({
+        url:'/pages/authorize/index?page=activity'
+      })
+    }
+  }
+
+  public onAuthorize() {
+    Taro.navigateTo({
+      url:'/pages/authorize/index?page=activity'
+    })
+  }
   componentDidMount() {
   }
   componentWillUnmount () { 
     
   }
 
-  componentDidShow () { }
+  componentDidShow () {
+    const { user, getActivity } = this.props;
+    const { isSign } = user;
+    if(isSign) {
+      getActivity();
+    }
+   }
 
   componentDidHide () { }
 
   render () {
+    const { user, activity } = this.props;
+    const { isSign = false, userinfo = {
+      orgNo: '',
+      telephone:''
+    } } = user || {};
+    const { orgNo, telephone } = userinfo;
+    const { list } = activity;
     return (
       <View className={s.index}>
-        <Item item-class={s.item} name="开宝箱" url="http://www.baidu.com" />
-        <Item item-class={s.item} name="开宝箱1" url="http://www.sina.com" />
+        {isSign ? <Block>
+          {list.map(item => (<Item item-class={s.item} name={item.actMenuName} url={`${item.actMenuPath}&storeNo=${orgNo}&userName=${telephone}`} />))}
+        </Block> : <Button onClick={this.onAuthorize} className={s.login} type='primary'>去登录</Button>}
       </View>
     )
+    
   }
 }
 

@@ -1,15 +1,15 @@
 import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
-import { View, Button, Text, Image } from '@tarojs/components'
+import { View, Image } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import avator from '../../assets/avator.png';
 
 import list from '../../assets/icon-list.png';
 
 import address from '../../assets/icon-address.png';
-import { signAction } from '../../actions/user';
+import { User } from '../../types/user';
+import { ROLE } from '../../constants/user'
 import './index.scss'
-import { string } from 'prop-types';
 
 // #region 书写注意
 //
@@ -23,8 +23,8 @@ import { string } from 'prop-types';
 
 type PageStateProps = {
   user: {
-    userName: string,
     isSign: boolean,
+    userinfo: User,
   }
 }
 
@@ -46,9 +46,6 @@ interface Index {
 @connect(({ user }) => ({
   user
 }), (dispatch) => ({
-  sign: (phone) => {
-    dispatch(signAction(phone))
-  },
 }))
 class Index extends Component {
 
@@ -72,20 +69,14 @@ class Index extends Component {
   componentWillUnmount() {
 
   }
-  public onGetPhoneNumber = (e) => {
-    new Promise((reslove) => {
+  public goAuthorize = (e) => {
+    const { user } = this.props;
+    const { isSign = false } = user || {};
+    if (!isSign) {
       Taro.navigateTo({
-        url: '/pages/roleselection/index'
+        url: '/pages/authorize/index?page=my'
       })
-      this.props.sign('111');
-      reslove();
-    })
-      .catch(err => {
-        Taro.showModal({
-          title: '出错了',
-          content: ''
-        });
-      });
+    }
   }
   componentDidShow() { }
 
@@ -93,20 +84,26 @@ class Index extends Component {
 
   render() {
     const { user } = this.props;
-    const { isSign = false, userName = '' } = user || {};
+    const { isSign = false, userinfo = {
+      headimg: '', memberName: '', orgNo: '', orgName: '', roles: []
+    } } = user || {};
+    const { headimg, memberName,orgName, orgNo, roles } = userinfo;
+    let job = '店员';
+    if(roles && roles.length > 0) {
+      job = roles[0] === ROLE.CLERK ? '店员' : '店长'
+    }
     return (
       <View className='container'>
-        <Image src={avator} className="avator" />
+        <Image src={isSign ? headimg : avator} onClick={this.goAuthorize} className="avator" />
         {isSign ? <View className='info' >
-          <View className='login'>{userName}</View>
-          <View className='job'>职位:店员</View>
-          <View className="detail"><Image src={list} className="list" />门店编号：001</View>
-          <View className="detail"><Image src={address} className="address" />门店名称：XXX大药房</View>
+          <View className='login'>{memberName}</View>
+          <View className='job'>职位:{job}</View>
+          <View className="detail"><Image src={list} className="list" />门店编号：{orgNo}</View>
+          <View className="detail"><Image src={address} className="address" />门店名称：{orgName}</View>
         </View> : <View className='info' >
             <View className='login'>未登录/注册</View>
             <View className='tip'>点击头像可登录注册</View>
           </View>}
-        {!isSign ? <Button className="register" open-type="getPhoneNumber" onGetPhoneNumber={this.onGetPhoneNumber}>&nbsp;</Button> : null}
       </View>
     )
   }

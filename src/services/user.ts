@@ -1,13 +1,15 @@
 import request from '../core/request';
 import { User } from '../types/user';
-export function bindingPhone(phone: string,openid: string): Promise<{
-
+export function bindingPhone(phone: string, openId: string): Promise<{
+  memberId: number,
+  authToken: string,
 }> {
-  return request.post<{
-  }>('/yygj/service/applet/bingdingPhone', { phone, openid }, {
-    auth: false
-  });
+  return request.get<{
+    memberId: number,
+    authToken: string,
+  }>('/yygj/service/applet/bingdingPhone', { params: { phone, openId }, auth: false });
 }
+
 
 export function saveUserInfo(user: User): Promise<User> {
   return request.post<User>('/employee/updateEmployee', user);
@@ -20,7 +22,7 @@ export function loginByWechatOauth(code: string, accountType: string): Promise<
 }
 
 export function findEmployeeByJwt(): Promise<
-any
+  any
 > {
-return request.get<any>('/employee/findEmployeeByJwt');
+  return request.get<any>('/employee/findEmployeeByJwt');
 }

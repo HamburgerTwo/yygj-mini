@@ -1,7 +1,7 @@
 import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
-import { View, Button, Text, WebView } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { View, WebView } from '@tarojs/components'
+
 
 import './index.scss'
 
@@ -16,10 +16,8 @@ import './index.scss'
 // #endregion
 
 type PageStateProps = {
-  activity: {
-    current: string
-  }
   
+
 }
 
 type PageDispatchProps = {
@@ -37,56 +35,52 @@ interface Index {
   props: IProps;
 }
 
-@connect(({ activity }) => ({
-  activity
-}), (dispatch) => ({
-  
-}))
+
 class Index extends Component<IProps, PageState> {
 
-    /**
-   * 指定config的类型声明为: Taro.Config
-   *
-   * 由于 typescript 对于 object 类型推导只能推出 Key 的基本类型
-   * 对于像 navigationBarTextStyle: 'black' 这样的推导出的类型是 string
-   * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
-   */
-    config: Config = {
+  /**
+ * 指定config的类型声明为: Taro.Config
+ *
+ * 由于 typescript 对于 object 类型推导只能推出 Key 的基本类型
+ * 对于像 navigationBarTextStyle: 'black' 这样的推导出的类型是 string
+ * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
+ */
+  config: Config = {
     navigationBarTitleText: '活动',
   }
   constructor(props) {
     super(props);
-    const { activity } = props;
-    const { current } = activity;
     this.state = {
-      url: current,
+      url: '',
     }
   }
- 
+
   componentDidMount() {
   }
-  componentWillUnmount () { 
-    
-  }
-  componentWillMount () {
-   const { url, bgcolor } = this.$router.params;
-   this.setState({
-     url: decodeURIComponent(url),
-   })
-   Taro.setNavigationBarColor({
-     backgroundColor: decodeURIComponent(bgcolor) || '#ffffff',
-     frontColor: '#000000'
-   })
-  }
-  public onShowWebView = () => {
-    
-  }
-  componentDidShow () { }
+  componentWillUnmount() {
 
-  componentDidHide () { }
+  }
+  componentWillMount() {
+    const { url, bgcolor } = this.$router.params;
+    if (url) {
+      this.setState({
+        url: decodeURIComponent(url),
+      })
+    }
+    if (bgcolor) {
+      Taro.setNavigationBarColor({
+        backgroundColor: decodeURIComponent(bgcolor) || '#ffffff',
+        frontColor: '#000000'
+      })
+    }
+  }
+  componentDidShow() { }
 
-  render () {
+  componentDidHide() { }
+
+  render() {
     const { url } = this.state;
+    console.log(url)
     return (
       <View className='index'>
         <WebView src={url} />

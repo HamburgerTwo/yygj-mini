@@ -1,10 +1,10 @@
 import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
-import { View, Button, Text, Image } from '@tarojs/components'
+import { View, Image } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import shopowner from '../../assets/shopowner.png';
 import clerk from '../../assets/clerk.png';
-
+import { ROLE } from '../../constants/user';
 import './index.scss'
 
 // #region 书写注意
@@ -57,24 +57,17 @@ class Index extends Component {
   componentDidHide () { }
 
   onNextStep = (role) => {
+    const { page } = this.$router.params;
     Taro.navigateTo({
-      url: `/pages/bindingstore/index?role=${role}`
+      url: `/pages/bindingstore/index?role=${role}&page=${page}`
     })
   }
-
-  onStepClerk = () => {
-    Taro.showToast({
-      title: "跳转到对应页面",
-      icon: 'none',
-    });
-  }
-
   render () {
     return (
       <View className="container">
         <View className="content">
-          <Image src={shopowner} className="role" onClick={this.onNextStep.bind(this, "store")} />
-          <Image src={clerk} className="role" onClick={this.onStepClerk.bind(this, "clerk")} />
+          <Image src={shopowner} className="role" onClick={this.onNextStep.bind(this, ROLE.SHOPOWNER)} />
+          <Image src={clerk} className="role" onClick={this.onNextStep.bind(this, ROLE.CLERK)} />
         </View>
       </View>
     )

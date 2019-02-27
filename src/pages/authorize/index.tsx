@@ -28,39 +28,38 @@ type PageStateProps = {
     identity: string,
     userinfo: User,
     authToken: string,
+    isSign: boolean,
   }
 }
 
 type PageDispatchProps = {
   goTo: (url: string) => Promise<any>,
   saveUserInfo: (userinfo: User) => void,
-  bindingPhone: (phone: string) => Promise<any>
+  bindingPhone: (phone: string) => Promise<any>,
 }
 
-type PageOwnProps = {}
+type PageOwnProps = {
+}
 
 type PageState = {
-  current: number,
+  nickName: string
 }
 
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
 
 interface Index {
   props: IProps;
+  userinfo: any,
 }
 
 @connect(({ activity, user }) => ({
   activity,
   user,
 }), (dispatch) => ({
-  goTo(url) {
-    return Promise.resolve().then(() => 
+  goTo: (url) => {
+    return Promise.resolve().then(() =>
       dispatch(goToAction(url))
-    ).then(() => {
-      Taro.navigateBack({
-        delta: 1
-      })
-    })
+    )
   },
   saveUserInfo(user) {
     dispatch(saveUserInfoAction(user));
@@ -85,10 +84,35 @@ class Index extends Component<PageOwnProps, PageState> {
   constructor(props) {
     super(props);
     this.state = {
-      current: 0
+      nickName: '',
     }
   }
   componentWillMount() {
+    const { user } = this.props;
+    const { userinfo = {
+      nickName: '',
+      telephone: '',
+    } } = user || {};
+    const { nickName = '', telephone = '' } = userinfo || {};
+    this.userinfo = {};
+    if (!nickName) {
+      Taro.getUserInfo().then((res) => {
+        console.log(res)
+        this.userinfo = res.userInfo;
+        this.setState({
+          nickName: res.userInfo.nickName,
+        })
+      })
+    } else {
+      if (telephone) {
+        this.redirectToPage();
+      } else {
+        this.userinfo = userinfo;
+        this.setState({
+          nickName,
+        })
+      }
+    }
   }
   componentWillReceiveProps(nextProps) {
 
@@ -101,37 +125,68 @@ class Index extends Component<PageOwnProps, PageState> {
     } = e.detail;
     const { user,
       bindingPhone,
-      goTo } = this.props;
+       } = this.props;
     if (errMsg === GETPHONENUMBER) {
-      decodeData(user.identity,encryptedData,iv).then((res) =>(        
+      decodeData(user.identity, encryptedData, iv).then((res) => (
         bindingPhone(res.purePhoneNumber))
-      ).then(() => 
-        goTo(`http://localhost?jwt=${user.authToken}`)
-      )
-      .catch(err => {
-        console.log()
-        Taro.showToast({
-          title: '出错了',
-          icon: 'none'
+      ).then((res) => {
+        Taro.setStorageSync('jwt', res.payload.authToken);
+        const {
+          avatarUrl,
+          nickName,
+          gender
+        } = this.userinfo;
+        this.props.saveUserInfo({
+          nickName,
+          gender,
+          headimg: avatarUrl,
+        })
+      }
+      ).then(() => {
+        this.redirectToPage();
+      })
+        .catch(err => {
+          console.log()
+          Taro.showToast({
+            title: '出错了',
+            icon: 'none'
+          });
         });
+    }
+  }
+  public redirectToPage = () => {
+    const { user,
+      goTo } = this.props;
+    const { page } = this.$router.params;
+    if (page) {
+      if(user.isSign){
+        Taro.navigateBack({
+          delta: 1,
+        })
+      } else {
+        Taro.redirectTo({
+          url: `/pages/roleselection/index?page=${page}`
+        })
+      }
+    } else {
+      return goTo(`http://localhost?jwt=${user.authToken}&date=${new Date()}`).then(() => {
+        Taro.navigateBack({
+          delta: 1,
+        })
       });
     }
   }
-
   public onGetUserInfo = (e) => {
     if (e.detail.errMsg === GETUSERINFO) {
-      const { avatarUrl,
-        gender,
-        nickName, } = e.detail.userInfo;
-      this.props.saveUserInfo({
+      const { nickName, } = e.detail.userInfo;
+      this.userinfo = e.detail.userInfo
+      this.setState({
         nickName,
-        gender,
-        headimg: avatarUrl,
       })
     }
   }
 
-  
+
   componentDidMount() {
   }
   componentWillUnmount() {
@@ -143,16 +198,11 @@ class Index extends Component<PageOwnProps, PageState> {
   componentDidHide() { }
 
   render() {
-    const { user } = this.props;
-    const { userinfo = {
-      nickName: ''
-    } } = user || {};
-    const { nickName } = userinfo;
+    const { nickName } = this.state;
     return (
       <View>
-        {nickName}
-        { nickName ? null :<Button className={s.login} open-type="getUserInfo" onGetUserInfo={this.onGetUserInfo} type="primary">微信登录</Button>}
-        { nickName ? <Button className={s.login} open-type="getPhoneNumber" onGetPhoneNumber={this.onGetPhoneNumber} type="primary">绑定手机</Button> : null }
+        {nickName ? null : <Button className={s.login} open-type="getUserInfo" onGetUserInfo={this.onGetUserInfo} type="primary">微信登录</Button>}
+        {nickName ? <Button className={s.login} open-type="getPhoneNumber" onGetPhoneNumber={this.onGetPhoneNumber} type="primary">绑定手机</Button> : null}
       </View>
     )
   }
