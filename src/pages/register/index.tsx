@@ -209,25 +209,12 @@ class Index extends Component<PageOwnProps, PageState> {
         : e,
     })
   }
-  public onChangeName = (e) => {
-    this.setState({
-      name
-        : e,
-    })
-  }
+  
 
-  public onChangeStoreName = (e) => {
-    this.setState({
-      storeName
-        : e,
-    })
-  }
-
-  public onChangePhone = (e) => {
-    this.setState({
-      phone
-        : e,
-    })
+  public onChange = (name: 'name' | 'storeName' | 'phone', e) => {
+    const stateObj = {};
+    stateObj[name] = e;
+    this.setState(stateObj);
   }
   public onSubmit = () => {
     const {
@@ -274,9 +261,9 @@ class Index extends Component<PageOwnProps, PageState> {
         <Select name='大区' onChange={this.onChangeArea} selectedItem={areaSelected} list={areaList} />
         <Select name='片区' onChange={this.onChangeDistrict} selectedItem={districtSelected} list={districtList} />
         <Select name='连锁' onChange={this.onChangeChain} selectedItem={chainSelected} list={chainList} />
-        <InputItem name='门店' onChange={this.onChangeStoreName} value={storeName} />
-        <InputItem name='姓名' onChange={this.onChangeName} value={name} />
-        <InputItem name='电话' type='number' onChange={this.onChangePhone} value={phone} />
+        <InputItem name='门店' onChange={this.onChange.bind(this,'storeName')} value={storeName} />
+        <InputItem name='姓名' onChange={this.onChange.bind(this,'name')} value={name} />
+        <InputItem name='电话' type='number' onChange={this.onChange.bind(this,'phone')} value={phone} />
         <Button className={s.btn} onClick={this.onSubmit}>确定</Button>
       </View>
     )
