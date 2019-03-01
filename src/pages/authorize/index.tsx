@@ -159,7 +159,7 @@ class Index extends Component<PageOwnProps, PageState> {
       goTo } = this.props;
     const { page } = this.$router.params;
     if (page) {
-      if(user.isSign){
+      if(user.isSign || page === 'news'){
         Taro.navigateBack({
           delta: 1,
         })

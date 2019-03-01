@@ -19,7 +19,6 @@ import s from './index.module.scss'
 // #endregion
 
 type PageStateProps = {
- 
   activity: {
     current: string,
   }
@@ -99,7 +98,6 @@ class Index extends Component<PageOwnProps, PageState> {
         this.props.goTo(`http://192.168.114.95?jwt=}`)
       }
     })
-    
   }
   public onPostMessage = (e) => {
     console.log(e)

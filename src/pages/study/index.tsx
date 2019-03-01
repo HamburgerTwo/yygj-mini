@@ -1,6 +1,6 @@
 import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
-import { View, Image, Swiper, SwiperItem, Block, Button } from '@tarojs/components'
+import { View, Image, Swiper, SwiperItem, Block, Button, WebView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import './index.scss'
 import s from './index.module.scss'
@@ -71,10 +71,13 @@ class Index extends Component<PageOwnProps, PageState> {
   }
   componentWillMount() {
     const { user } = this.props;
-    const { isSign = false } = user || {};
-    if(!isSign) {
+    const { userinfo = {
+      telephone : ''
+    } } = user || {};
+    const { telephone } = user;
+    if(!telephone) {
       Taro.navigateTo({
-        url:'/pages/authorize/index?page=study'
+        url:'/pages/authorize/index?page=news'
       });
     }
   }
@@ -87,7 +90,7 @@ class Index extends Component<PageOwnProps, PageState> {
 
   public onAuthorize = () => {
     Taro.navigateTo({
-      url:'/pages/authorize/index?page=study'
+      url:'/pages/authorize/index?page=news'
     });
   }
   componentDidMount() {
@@ -101,42 +104,15 @@ class Index extends Component<PageOwnProps, PageState> {
   componentDidHide() { }
 
   render() {
-    const { current } = this.state;
     const { user } = this.props;
-    const { isSign = false } = user || {};
+    console.log(user)
+    const { userinfo = {
+      telephone : ''
+    } } = user || {};
+    const { telephone } = userinfo;
     return (
       <View>
-        {isSign ? <Block>
-          <Swiper
-            className={s.swiper}
-            circular
-            autoplay
-            onChange={this.onChange}>
-            <SwiperItem>
-              <Image src={newsbanner} />
-            </SwiperItem>
-            <SwiperItem>
-              <Image src={newsbanner} />
-            </SwiperItem>
-            <SwiperItem>
-              <Image src={newsbanner} />
-            </SwiperItem>
-          </Swiper>
-          <View className={s.nav}>
-            <View className={classnames({
-              [s.current]: current === 0
-            })}></View>
-            <View className={classnames({
-              [s.current]: current === 1
-            })}></View>
-            <View className={classnames({
-              [s.current]: current === 2
-            })}></View>
-          </View>
-          <NewsItem border={true} title="新闻1" url="http://www.baidu.com" content="新闻内容新闻内容新闻内容新闻" date="2018-01-11" />
-          <NewsItem border={true} title="新闻1" url="http://www.baidu.com" content="新闻内容新闻内容新闻内容新闻" date="2018-01-11" />
-          <NewsItem border={false} title="新闻1" url="http://www.baidu.com" content="新闻内容新闻内容新闻内容新闻" date="2018-01-11" />
-        </Block> : <Button onClick={this.onAuthorize} className={s.login} type='primary'>去登录</Button>}
+        {telephone ? <WebView src={`http://192.168.114.163:8080?jwt=${Taro.getStorageSync('jwt')}/#/News`} /> : <Button onClick={this.onAuthorize} className={s.login} type='primary'>去登录</Button>}
       </View>
     )
   }
