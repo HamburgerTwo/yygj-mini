@@ -4,10 +4,10 @@ import { View, Image, Swiper, SwiperItem, Block, Button, WebView } from '@tarojs
 import { connect } from '@tarojs/redux'
 import './index.scss'
 import s from './index.module.scss'
-import NewsItem from '../../components/news-item'
-import newsbanner from '../../assets/news-item.png';
-import classnames from 'classnames';
-
+// import NewsItem from '../../components/news-item'
+// import newsbanner from '../../assets/news-item.png';
+// import classnames from 'classnames';
+import { DbqbUrl } from '../../config';
 // #region 书写注意
 // 
 // 目前 typescript 版本还无法在装饰器模式下将 Props 注入到 Taro.Component 中的 props 属性
@@ -112,7 +112,7 @@ class Index extends Component<PageOwnProps, PageState> {
     const { telephone } = userinfo;
     return (
       <View>
-        {telephone ? <WebView src={`http://192.168.114.163:8080?jwt=${Taro.getStorageSync('jwt')}/#/News`} /> : <Button onClick={this.onAuthorize} className={s.login} type='primary'>去登录</Button>}
+        {telephone ? <WebView src={`${DbqbUrl}?jwt=${Taro.getStorageSync('jwt')}/#/News`} /> : <Button onClick={this.onAuthorize} className={s.login} type='primary'>去登录</Button>}
       </View>
     )
   }

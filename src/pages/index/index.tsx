@@ -2,7 +2,7 @@ import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
 import { View, Button, WebView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
-import { accountType } from '../../config';
+import { accountType, DbqbUrl } from '../../config';
 
 import { loginByWechatOauthAction, findEmployeeByJwtAction } from '../../actions/user';
 import { goToAction } from '../../actions/activity'
@@ -93,9 +93,9 @@ class Index extends Component<PageOwnProps, PageState> {
       });
     }).then(res => {
       if(res.telephone) {
-        this.props.goTo(`http://192.168.114.95?jwt=${Taro.getStorageSync('jwt')}`)
+        this.props.goTo(`${DbqbUrl}?jwt=${Taro.getStorageSync('jwt')}`)
       } else {
-        this.props.goTo(`http://192.168.114.95?jwt=}`)
+        this.props.goTo(`${DbqbUrl}?jwt=`)
       }
     })
   }

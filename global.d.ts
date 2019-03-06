@@ -9,3 +9,4 @@ declare module "*.scss";
 declare module "*.sass";
 declare module "*.styl";
 declare const wx: any;
+declare const __DEV__:boolean;

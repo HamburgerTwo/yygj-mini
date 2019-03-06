@@ -62,17 +62,13 @@ class Index extends Component {
     const { user } = this.props;
     const { isSign } = user;
     if(!isSign) {
-      Taro.navigateTo({
+      Taro.redirectTo({
         url:'/pages/authorize/index?page=accquire'
       })
     }
   }
 
-  public onAuthorize() {
-    Taro.navigateTo({
-      url:'/pages/authorize/index?page=accquire'
-    })
-  }
+ 
   componentDidMount() {
   }
   componentWillUnmount () { 
@@ -90,7 +86,7 @@ class Index extends Component {
     const { isSign = false } = user || {};
     return (
       <View className={s.index}>
-        {isSign ? <WebView src="http://10.1.4.135:3001/" />: <Button onClick={this.onAuthorize} className={s.login} type='primary'>去登录</Button>}
+        {isSign ? <WebView src="https://wx-test1.by-health.com/201903/sweepcode/#/" />: null}
       </View>
     )
     

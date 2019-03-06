@@ -73,17 +73,13 @@ class Index extends Component {
     const { isSign } = user;
     console.log(isSign)
     if(!isSign) {
-      Taro.navigateTo({
-        url:'/pages/authorize/index?page=activity'
+      Taro.redirectTo({
+        url:'/pages/authorize/index?page=memberactivities'
       })
     }
   }
 
-  public onAuthorize() {
-    Taro.navigateTo({
-      url:'/pages/authorize/index?page=activity'
-    })
-  }
+  
   componentDidMount() {
   }
   componentWillUnmount () { 
@@ -111,8 +107,9 @@ class Index extends Component {
     return (
       <View className={s.index}>
         {isSign ? <Block>
-          {list.map(item => (<Item item-class={s.item} name={item.actMenuName} url={`${item.actMenuPath}&storeNo=${orgNo}&userName=${telephone}`} />))}
-        </Block> : <Button onClick={this.onAuthorize} className={s.login} type='primary'>去登录</Button>}
+          {list.length > 0 ? list.map(item => (<Item item-class={s.item} name={item.actMenuName} url={`${item.actMenuPath}&storeNo=${orgNo}&userName=${telephone}`} />)): <View className={s.empty}>暂时没有活动</View>}
+    
+        </Block> : null}
       </View>
     )
     

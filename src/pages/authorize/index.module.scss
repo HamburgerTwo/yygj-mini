@@ -1,5 +1,15 @@
 
 
+.tip {
+  font-size: 40rpx;
+  margin: 100rpx 0;
+  text-align: center;
+
+}
 .login {
-  margin: 300rpx 85rpx 0;
+  margin: 50rpx 85rpx 0;
+}
+
+button[type=primary].disabled {
+  background: #e0e0e0;
 }

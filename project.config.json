@@ -4,7 +4,7 @@
 	"description": "营养管家小程序",
 	"appid": "wx786e81735ab2da22",
 	"setting": {
-		"urlCheck": false,
+		"urlCheck": true,
 		"es6": false,
 		"postcss": false,
 		"minified": false,

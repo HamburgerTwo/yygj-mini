@@ -9,6 +9,7 @@ import s from './index.module.scss'
 import { User } from '../../types/user';
 import classnames from 'classnames';
 import { saveUserInfoAction, bindingPhoneAction } from '../../actions/user';
+import { DbqbUrl } from '../../config';
 
 // #region 书写注意
 // 
@@ -125,7 +126,7 @@ class Index extends Component<PageOwnProps, PageState> {
     } = e.detail;
     const { user,
       bindingPhone,
-       } = this.props;
+    } = this.props;
     if (errMsg === GETPHONENUMBER) {
       decodeData(user.identity, encryptedData, iv).then((res) => (
         bindingPhone(res.purePhoneNumber))
@@ -158,23 +159,30 @@ class Index extends Component<PageOwnProps, PageState> {
     const { user,
       goTo } = this.props;
     const { page } = this.$router.params;
-    if (page) {
-      if(user.isSign || page === 'news'){
+    return goTo(`${DbqbUrl}?jwt=${user.authToken}&t=${new Date().getTime()}`).then(() => {
+      if (page) {
+        if (user.isSign) {
+          if (page === 'news') {
+            Taro.navigateBack({
+              delta: 1,
+            })
+          } else {
+            Taro.redirectTo({
+              url: `/pages/${page}/index`
+            })
+          }
+        } else {
+          Taro.redirectTo({
+            url: `/pages/roleselection/index?page=${page}`
+          })
+        }
+      } else {
         Taro.navigateBack({
           delta: 1,
-        })
-      } else {
-        Taro.redirectTo({
-          url: `/pages/roleselection/index?page=${page}`
         })
       }
-    } else {
-      return goTo(`http://localhost?jwt=${user.authToken}&date=${new Date()}`).then(() => {
-        Taro.navigateBack({
-          delta: 1,
-        })
-      });
-    }
+    })
+
   }
   public onGetUserInfo = (e) => {
     if (e.detail.errMsg === GETUSERINFO) {
@@ -201,8 +209,17 @@ class Index extends Component<PageOwnProps, PageState> {
     const { nickName } = this.state;
     return (
       <View>
-        {nickName ? null : <Button className={s.login} open-type="getUserInfo" onGetUserInfo={this.onGetUserInfo} type="primary">微信登录</Button>}
-        {nickName ? <Button className={s.login} open-type="getPhoneNumber" onGetPhoneNumber={this.onGetPhoneNumber} type="primary">绑定手机</Button> : null}
+        <View className={s.tip}>第一步</View>
+        <Button className={classnames(s.login,
+          {
+            [s.disabled]: nickName,
+          })} open-type="getUserInfo" disabled={!!nickName} onGetUserInfo={this.onGetUserInfo} type="primary">绑定个人信息</Button>
+
+        <View className={s.tip}>第二步</View>
+        <Button className={classnames(s.login,
+          {
+            [s.disabled]: !nickName,
+          })} open-type="getPhoneNumber" disabled={!nickName} onGetPhoneNumber={this.onGetPhoneNumber} type="primary">绑定手机</Button>
       </View>
     )
   }

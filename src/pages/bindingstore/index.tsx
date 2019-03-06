@@ -121,8 +121,8 @@ class Index extends Component<IProps, PageState> {
       roles: [role],
       orgName: storeName
     }).then((res) => {
-      Taro.navigateBack({
-        delta: 2,
+      Taro.redirectTo({
+        url: `/pages/${page}/index`
       })
     })
   }

@@ -58,7 +58,7 @@ class Index extends Component {
 
   onNextStep = (role) => {
     const { page } = this.$router.params;
-    Taro.navigateTo({
+    Taro.redirectTo({
       url: `/pages/bindingstore/index?role=${role}&page=${page}`
     })
   }
