@@ -83,6 +83,7 @@ class Index extends Component<PageOwnProps, PageState> {
         return res.payload.userinfo;
       })
     }).catch(() => {
+      
       return Taro.login().then((res) => {
         return res;
       }).then((res) => {
@@ -111,7 +112,8 @@ class Index extends Component<PageOwnProps, PageState> {
       path: '/pages/index/index?id=123'
     }
   }
-  componentDidShow () { }
+  componentDidShow () {
+   }
 
   componentDidHide () { }
 

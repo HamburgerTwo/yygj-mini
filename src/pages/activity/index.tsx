@@ -61,7 +61,7 @@ class Index extends Component<IProps, PageState> {
 
   }
   componentWillMount() {
-    const { url, bgcolor } = this.$router.params;
+    const { url, bgcolor, color } = this.$router.params;
     if (url) {
       this.setState({
         url: decodeURIComponent(url),
@@ -70,7 +70,7 @@ class Index extends Component<IProps, PageState> {
     if (bgcolor) {
       Taro.setNavigationBarColor({
         backgroundColor: decodeURIComponent(bgcolor) || '#ffffff',
-        frontColor: '#000000'
+        frontColor: decodeURIComponent(color) || '#000000'
       })
     }
   }

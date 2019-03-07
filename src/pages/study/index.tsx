@@ -30,6 +30,7 @@ type PageOwnProps = {}
 
 type PageState = {
   current: number,
+  show: boolean,
 }
 
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
@@ -62,11 +63,11 @@ class Index extends Component<PageOwnProps, PageState> {
   constructor(props) {
     super(props);
     this.state = {
-      current: 0
+      current: 0,
+      show: true,
     }
   }
   componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps)
 
   }
   componentWillMount() {
@@ -74,7 +75,7 @@ class Index extends Component<PageOwnProps, PageState> {
     const { userinfo = {
       telephone : ''
     } } = user || {};
-    const { telephone } = user;
+    const { telephone } = userinfo;
     if(!telephone) {
       Taro.navigateTo({
         url:'/pages/authorize/index?page=news'
@@ -99,21 +100,31 @@ class Index extends Component<PageOwnProps, PageState> {
 
   }
 
-  componentDidShow() { }
+  componentDidShow() {
+    this.setState({
+      show: true,
+    })
+  }
 
-  componentDidHide() { }
+  componentDidHide() { 
+    this.setState({
+      show: false,
+    })
+  }
 
   render() {
     const { user } = this.props;
-    console.log(user)
     const { userinfo = {
       telephone : ''
     } } = user || {};
     const { telephone } = userinfo;
+    const { show } = this.state;
     return (
+      show ?
       <View>
-        {telephone ? <WebView src={`${DbqbUrl}?jwt=${Taro.getStorageSync('jwt')}/#/News`} /> : <Button onClick={this.onAuthorize} className={s.login} type='primary'>去登录</Button>}
-      </View>
+        {telephone ? <WebView src={`${DbqbUrl}?jwt=${Taro.getStorageSync('jwt')}#/News`} /> : <Button onClick={this.onAuthorize} className={s.login} type='primary'>去登录</Button>}
+      </View> 
+      : null
     )
   }
 }
