@@ -7,6 +7,17 @@
     margin: 58rpx 0 158rpx 50rpx;
     vertical-align: top;
     border-radius: 64rpx;
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+
+    image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 128rpx;
+      height: 128rpx;
+    }
   }
 
   .info {
@@ -27,17 +38,20 @@
       color: #959499;
       line-height: 60rpx;
     }
+
     .job {
       padding: 0 0 0 42rpx;
       font-size: 26rpx;
       color: #1a1a1a;
       line-height: 60rpx;
     }
+
     .detail {
       font-size: 24rpx;
       color: #4c4c4c;
       line-height: 36rpx;
     }
+
     .address {
       width: 19rpx;
       height: 25rpx;

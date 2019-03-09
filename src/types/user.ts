@@ -1,7 +1,7 @@
 export type User = {
   memberId?: number,
   nickName?: string,
-  telephone?: string,
+  mobilePhone?: string,
   area?: number,
   district?: number,
   chain?: number,

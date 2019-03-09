@@ -80,7 +80,6 @@ class Index extends Component<IProps, PageState> {
 
   render() {
     const { url } = this.state;
-    console.log(url)
     return (
       <View className='index'>
         <WebView src={url} />

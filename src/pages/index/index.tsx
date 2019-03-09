@@ -74,7 +74,6 @@ class Index extends Component<PageOwnProps, PageState> {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log(this.props, nextProps)
     
   }
   componentDidMount() {
@@ -95,15 +94,19 @@ class Index extends Component<PageOwnProps, PageState> {
         return res.payload.userinfo;
       });
     }).then(res => {
-      if(res.telephone) {
+      if(res.mobilePhone) {
         this.props.goTo(`${DbqbUrl}?jwt=${Taro.getStorageSync('jwt')}`)
       } else {
         this.props.goTo(`${DbqbUrl}?jwt=`)
       }
+    }).catch((err) => {
+      Taro.showToast({
+        title:err.errMsg || '出错了',
+        icon:'none',
+      })
     })
   }
   public onPostMessage = (e) => {
-    console.log(e)
   }
   componentWillUnmount () { 
     
@@ -121,7 +124,6 @@ class Index extends Component<PageOwnProps, PageState> {
 
   render () {
     const { current = '' } = this.props.activity;
-    console.log(current)
     return (
       <View className='index'>
         {current ? <WebView src={current} onMessage={this.onPostMessage} /> : null}

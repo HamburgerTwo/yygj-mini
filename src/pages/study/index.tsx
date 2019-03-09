@@ -73,10 +73,10 @@ class Index extends Component<PageOwnProps, PageState> {
   componentWillMount() {
     const { user } = this.props;
     const { userinfo = {
-      telephone : ''
+      mobilePhone : ''
     } } = user || {};
-    const { telephone } = userinfo;
-    if(!telephone) {
+    const { mobilePhone } = userinfo;
+    if(!mobilePhone) {
       Taro.navigateTo({
         url:'/pages/authorize/index?page=news'
       });
@@ -115,14 +115,14 @@ class Index extends Component<PageOwnProps, PageState> {
   render() {
     const { user } = this.props;
     const { userinfo = {
-      telephone : ''
+      mobilePhone : ''
     } } = user || {};
-    const { telephone } = userinfo;
+    const { mobilePhone } = userinfo;
     const { show } = this.state;
     return (
       show ?
       <View>
-        {telephone ? <WebView src={`${DbqbUrl}?jwt=${Taro.getStorageSync('jwt')}#/News`} /> : <Button onClick={this.onAuthorize} className={s.login} type='primary'>去登录</Button>}
+        {mobilePhone ? <WebView src={`${DbqbUrl}?jwt=${Taro.getStorageSync('jwt')}#/News`} /> : <Button onClick={this.onAuthorize} className={s.login} type='primary'>去登录</Button>}
       </View> 
       : null
     )

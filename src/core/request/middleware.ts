@@ -66,6 +66,7 @@ export function timeout(ctx, next) {
 export function authcode(ctx, next) {
   const jwt = Taro.getStorageSync('jwt');
   if(ctx.auth && jwt){
+    console.log('jwt',`Bearer ${jwt}`)
     ctx.headers['Authorization'] = `Bearer ${jwt}`;
   }
   return next();

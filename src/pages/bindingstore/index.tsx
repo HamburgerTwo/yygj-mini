@@ -91,7 +91,6 @@ class Index extends Component<IProps, PageState> {
       return
     }
     findOrganizationByIdOrNo(this.state.storeNo).then((res) => {
-      console.log(res, 'res');
       this.setState({
         storeName: res.orgName
       })

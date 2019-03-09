@@ -65,13 +65,11 @@ class Index extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log(this.props, nextProps)
     
   }
   componentWillMount() {
     const { user } = this.props;
     const { isSign } = user;
-    console.log(isSign)
     if(!isSign) {
       Taro.redirectTo({
         url:'/pages/authorize/index?page=memberactivities'
@@ -100,14 +98,14 @@ class Index extends Component {
     const { user, activity } = this.props;
     const { isSign = false, userinfo = {
       orgNo: '',
-      telephone:''
+      mobilePhone:''
     } } = user || {};
-    const { orgNo, telephone } = userinfo;
+    const { orgNo, mobilePhone } = userinfo;
     const { list } = activity;
     return (
       <View className={s.index}>
         {isSign ? <Block>
-          {list.length > 0 ? list.map(item => (<Item item-class={s.item} name={item.actMenuName} url={`${item.actMenuPath}&storeNo=${orgNo}&userName=${telephone}`} />)): <View className={s.empty}>暂时没有活动</View>}
+          {list.length > 0 ? list.map(item => (<Item item-class={s.item} name={item.actMenuName} url={`${item.actMenuPath}&storeNo=${orgNo}&userName=${mobilePhone}`} />)): <View className={s.empty}>暂时没有活动</View>}
     
         </Block> : null}
       </View>

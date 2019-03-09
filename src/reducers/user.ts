@@ -7,7 +7,6 @@ const INITIAL_STATE = {
 }
 
 export default function user(state = INITIAL_STATE, action) {
-  console.log(action)
   switch (action.type) {
     case SIGN:
       return {
@@ -37,7 +36,7 @@ export default function user(state = INITIAL_STATE, action) {
         memberId: action.payload.memberId,
         userinfo: {
           ...state.userinfo,
-          telephone: action.payload.telephone,
+          mobilePhone: action.payload.mobilePhone,
         }
       }
     default:

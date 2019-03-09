@@ -92,9 +92,9 @@ class Index extends Component<PageOwnProps, PageState> {
     const { user } = this.props;
     const { userinfo = {
       nickName: '',
-      telephone: '',
+      mobilePhone: '',
     } } = user || {};
-    const { nickName = '', telephone = '' } = userinfo || {};
+    const { nickName = '', mobilePhone = '' } = userinfo || {};
     this.userinfo = {};
     if (!nickName) {
       Taro.getUserInfo().then((res) => {
@@ -105,7 +105,7 @@ class Index extends Component<PageOwnProps, PageState> {
         })
       })
     } else {
-      if (telephone) {
+      if (mobilePhone) {
         this.redirectToPage();
       } else {
         this.userinfo = userinfo;
@@ -204,10 +204,10 @@ class Index extends Component<PageOwnProps, PageState> {
     const { nickName } = this.state;
     const { user } = this.props;
     const { userinfo = {
-      telephone: '',
+      mobilePhone: '',
     } } = user || {};
-    const { telephone = '' } = userinfo || {};
-    return ( telephone ? null :
+    const { mobilePhone = '' } = userinfo || {};
+    return ( mobilePhone ? null :
       <View>
         <View className={s.tip}>第一步</View>
         <Button className={classnames(s.login,

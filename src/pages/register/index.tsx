@@ -103,7 +103,6 @@ class Index extends Component<PageOwnProps, PageState> {
 
   }
   componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps)
 
   }
   componentDidMount() {

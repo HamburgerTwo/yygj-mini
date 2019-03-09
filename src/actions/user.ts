@@ -41,7 +41,7 @@ export const loginByWechatOauthAction = (code: string, accountType: string) => d
           headimg: res.headimg,
           gender: res.gender,
           memberId: res.memberId,
-          telephone: res.telephone,
+          mobilePhone: res.mobilePhone,
           roles: res.roles,
           orgNo: res.orgNo,
           memberName: res.memberName,
@@ -99,7 +99,6 @@ export const findEmployeeByJwtAction = dispatch => {
         identity = auth[0].identity;
       }
     }
-    console.log(res)
     return dispatch({
       type: GETSESSION,
       payload: {
@@ -111,7 +110,7 @@ export const findEmployeeByJwtAction = dispatch => {
           headimg: res.headimg,
           gender: res.gender,
           memberId: res.memberId,
-          telephone: res.telephone,
+          mobilePhone: res.mobilePhone,
           roles: res.roles,
           orgNo: res.orgNo,
           memberName: res.memberName,
@@ -128,7 +127,7 @@ export const bindingPhoneAction = (phone) => (dispatch, getState) => {
   return bindingPhone(phone, user.identity).then((res) => {
     return dispatch({
       type: BINDINGPHONE,
-      payload: { isSign: !!phone, telephone: phone, memberId: res.memberId, authToken: res.authToken }
+      payload: { isSign: !!phone, mobilePhone: phone, memberId: res.memberId, authToken: res.authToken }
     })
   })
 }

@@ -61,7 +61,6 @@ class Index extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps)
 
   }
   componentDidMount() {
@@ -87,14 +86,18 @@ class Index extends Component {
     const { isSign = false, userinfo = {
       headimg: '', memberName: '', orgNo: '', orgName: '', roles: []
     } } = user || {};
-    const { headimg, memberName,orgName, orgNo, roles } = userinfo;
+    const { headimg = '', memberName,orgName, orgNo, roles } = userinfo;
     let job = '店员';
     if(roles && roles.length > 0) {
       job = roles[0] === ROLE.CLERK ? '店员' : '店长'
     }
     return (
       <View className='container'>
-        <Image src={isSign ? headimg : avator} onClick={this.goAuthorize} className="avator" />
+        <View className="avator" onClick={this.goAuthorize}>
+            <Image src={avator} />
+        { isSign ? <Image src={headimg} /> : null}
+        </View>
+        
         {isSign ? <View className='info' >
           <View className='login'>{memberName}</View>
           <View className='job'>职位:{job}</View>

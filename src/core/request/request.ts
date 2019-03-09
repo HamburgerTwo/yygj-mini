@@ -43,7 +43,8 @@ class Request {
     const _baseUrl = isAbsoluteUrl(url) ? '' : baseUrl; // eslint-disable-line
     const concatSymbol = url.indexOf('?') > -1 ? '&' : '?';
     const queryString = stringify(params);
-
+    console.log('url',`${_baseUrl || ''}${url}${queryString && concatSymbol + queryString}`)
+    console.log('body',body)
     return new Promise((resolve, reject) => {
       ctx.cancelToken = wx.request({
         // eslint-disable-line

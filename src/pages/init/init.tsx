@@ -68,7 +68,6 @@ class Index extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log(this.props, nextProps)
     
   }
   componentDidMount() {
