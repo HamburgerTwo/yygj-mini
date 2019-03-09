@@ -13,6 +13,7 @@ const inst = new Request({
   type: 'json',
   auth: true,
 }, [
+  middlewares.loading,
   middlewares.authcode,
   middlewares.contentType,
   middlewares.http,

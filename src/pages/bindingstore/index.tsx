@@ -34,7 +34,7 @@ interface Index {
 }) => ({
 }), (dispatch) => ({
   saveUserInfo: (user) => {
-    return Promise.resolve().then(() =>dispatch(saveUserInfoAction(user)));
+    return Promise.resolve().then(() => dispatch(saveUserInfoAction(user)));
   },
 }))
 
@@ -82,10 +82,10 @@ class Index extends Component<IProps, PageState> {
   }
 
   public query = () => {
-    const {  storeNo } = this.state;
-    if(!storeNo){
+    const { storeNo } = this.state;
+    if (!storeNo) {
       Taro.showToast({
-        title:'请输入门店编号',
+        title: '请输入门店编号',
         icon: 'none'
       })
       return
@@ -105,13 +105,13 @@ class Index extends Component<IProps, PageState> {
     const { role, page } = this.$router.params;
     if (!name) {
       Taro.showToast({
-        title:'请输入姓名',
+        title: '请输入姓名',
         icon: 'none'
       })
       return
-    } else if(!storeName) {
+    } else if (!storeName) {
       Taro.showToast({
-        title:'请输入门店',
+        title: '请输入门店',
         icon: 'none'
       })
     }
@@ -121,9 +121,15 @@ class Index extends Component<IProps, PageState> {
       roles: [role],
       orgName: storeName
     }).then((res) => {
-      Taro.redirectTo({
-        url: `/pages/${page}/index`
-      })
+      if (page === 'my') {
+        Taro.navigateBack({
+          delta: 1
+        });
+      } else {
+        Taro.redirectTo({
+          url: `/pages/${page}/index`
+        })
+      }
     })
   }
 

@@ -70,3 +70,14 @@ export function authcode(ctx, next) {
   }
   return next();
 }
+
+export function loading(_, next) {
+  Taro.showLoading();
+  return next().then((res) => {
+    Taro.hideLoading();
+    return res;
+  }).catch((err) => {
+    Taro.hideLoading();
+    throw err;
+  })
+}
