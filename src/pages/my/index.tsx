@@ -59,7 +59,6 @@ class Index extends Component {
   config: Config = {
     navigationBarTitleText: '我的',
     disableScroll:true,
-    enablePullDownRefresh:false,
   }
 
   componentWillReceiveProps(nextProps) {
