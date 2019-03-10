@@ -127,6 +127,7 @@ class Index extends Component<PageOwnProps, PageState> {
     return (
       <View className='index'>
         {current ? <WebView src={current} onMessage={this.onPostMessage} /> : null}
+       
       </View>
     )
   }

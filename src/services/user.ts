@@ -24,5 +24,5 @@ export function loginByWechatOauth(code: string, accountType: string): Promise<
 export function findEmployeeByJwt(): Promise<
   any
 > {
-  return request.get<any>('/employee/findEmployeeByJwt');
+  return request.post<any>('/employee/findEmployeeByJwt',{});
 }

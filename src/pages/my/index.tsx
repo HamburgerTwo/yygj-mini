@@ -92,8 +92,8 @@ class Index extends Component {
       job = roles[0] === ROLE.CLERK ? '店员' : '店长'
     }
     return (
-      <View className='container'>
-        <View className="avator" onClick={this.goAuthorize}>
+      <View className='container'  onClick={this.goAuthorize}>
+        <View className="avator">
             <Image src={avator} />
         { isSign ? <Image src={headimg} /> : null}
         </View>

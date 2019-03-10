@@ -98,7 +98,6 @@ class Index extends Component<PageOwnProps, PageState> {
     this.userinfo = {};
     if (!nickName) {
       Taro.getUserInfo().then((res) => {
-        console.log(res)
         this.userinfo = res.userInfo;
         this.setState({
           nickName: res.userInfo.nickName,
@@ -147,7 +146,6 @@ class Index extends Component<PageOwnProps, PageState> {
         this.redirectToPage();
       })
         .catch(err => {
-          console.log()
           Taro.showToast({
             title: '出错了',
             icon: 'none'
@@ -159,7 +157,6 @@ class Index extends Component<PageOwnProps, PageState> {
     const { user,
       goTo } = this.props;
     const { page } = this.$router.params;
-    console.log(user)
     return goTo(`${DbqbUrl}?jwt=${Taro.getStorageSync('jwt')}&t=${new Date().getTime()}`).then(() => {
       if (page && page !== 'news') {
         if (user.isSign) {
