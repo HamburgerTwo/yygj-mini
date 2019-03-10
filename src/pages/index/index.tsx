@@ -70,7 +70,8 @@ class Index extends Component<PageOwnProps, PageState> {
     config: Config = {
     navigationBarTitleText: '首页',
     navigationBarBackgroundColor:'#592f21',
-    navigationBarTextStyle:'white'
+    navigationBarTextStyle:'white',
+    disableScroll:true,
   }
 
   componentWillReceiveProps (nextProps) {
