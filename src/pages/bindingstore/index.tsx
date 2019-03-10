@@ -95,7 +95,10 @@ class Index extends Component<IProps, PageState> {
         storeName: res.orgName
       })
     }).catch((error) => {
-
+      Taro.showToast({
+        title: error.data.message || '出错了',
+        icon: 'none'
+      })
     })
   }
 
