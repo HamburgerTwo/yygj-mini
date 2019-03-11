@@ -4,8 +4,9 @@ import Taro, { Component, Config } from '@tarojs/taro'
 import { View, Button, Text, Input } from '@tarojs/components'
 import ClassNames from 'classnames';
 import { findOrganizationByIdOrNo } from '../../services/store';
-import { saveUserInfoAction } from '../../actions/user';
+import { saveUserInfoAction, bindEmployeeRoleAction } from '../../actions/user';
 import { User } from '../../types/user'
+import { ROLE } from '../../constants/user';
 import './index.scss'
 
 type PageStateProps = {
@@ -13,6 +14,7 @@ type PageStateProps = {
 
 type PageDispatchProps = {
   saveUserInfo: (user: User) => any
+  bindEmployeeRole: (user: any) => any
 }
 
 type PageOwnProps = {}
@@ -35,6 +37,9 @@ interface Index {
 }), (dispatch) => ({
   saveUserInfo: (user) => {
     return Promise.resolve().then(() => dispatch(saveUserInfoAction(user)));
+  },
+  bindEmployeeRole: (user) => {
+    return Promise.resolve().then(() => dispatch(bindEmployeeRoleAction(user)));
   },
 }))
 
@@ -117,21 +122,39 @@ class Index extends Component<IProps, PageState> {
         icon: 'none'
       })
     }
-    this.props.saveUserInfo({
+    Promise.resolve().then(() => (role === ROLE.CLERK ? this.props.saveUserInfo({
       memberName: name,
       orgNo: storeNo,
       roles: [role],
       orgName: storeName
-    }).then((res) => {
-      if (page === 'my') {
-        Taro.navigateBack({
-          delta: 1
-        });
-      } else {
-        Taro.redirectTo({
-          url: `/pages/${page}/index`
-        })
-      }
+    }) : this.props.bindEmployeeRole({
+      memberName: name,
+      orgNo: storeNo,
+      roleType: ROLE.SHOPOWNER,
+      orgName: storeName
+    }).then(() => {
+      return Taro.showModal({
+        title: '消息',
+        content: '你的账号已提交审核，请耐心等待审核',
+        confirmText: '知道了',
+        showCancel: false,
+      })
+    })))
+    .then((res) => {
+        if (page === 'my') {
+          Taro.navigateBack({
+            delta: 1
+          });
+        } else {
+          Taro.redirectTo({
+            url: `/pages/${page}/index`
+          })
+        }
+    }).catch((err) => {
+      Taro.showToast({
+        title: err.data.message || '出错了',
+        icon: 'none'
+      })
     })
   }
 

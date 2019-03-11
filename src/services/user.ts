@@ -26,3 +26,7 @@ export function findEmployeeByJwt(): Promise<
 > {
   return request.post<any>('/employee/findEmployeeByJwt',{});
 }
+
+export function bindEmployeeRole(user: any): Promise<User> {
+  return request.post<User>('/employee/bindEmployeeRole', user);
+}

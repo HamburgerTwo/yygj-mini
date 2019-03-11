@@ -1,8 +1,8 @@
 import {
-  SIGN, USERINFO, BINGDING, GETSESSION, BINDINGPHONE
+  SIGN, BINGDING, GETSESSION, BINDINGPHONE, ROLE
 } from '../constants/user';
 import { sign, bingdingStore } from '../services';
-import { saveUserInfo, loginByWechatOauth, findEmployeeByJwt, bindingPhone } from '../services/user'
+import { saveUserInfo, loginByWechatOauth, findEmployeeByJwt, bindingPhone, bindEmployeeRole } from '../services/user'
 import { findOrganizationByIdOrNo } from '../services/store';
 import { User } from '../types/user';
 
@@ -128,6 +128,20 @@ export const bindingPhoneAction = (phone) => (dispatch, getState) => {
     return dispatch({
       type: BINDINGPHONE,
       payload: { isSign: !!phone, mobilePhone: phone, memberId: res.memberId, authToken: res.authToken }
+    })
+  })
+}
+
+export const bindEmployeeRoleAction = (userinfo: any) => (dispatch, getState) => {
+  const state = getState();
+  const { user } = state;
+  return bindEmployeeRole({ memberId: user.memberId, ...userinfo }).then(() => {
+    return dispatch({
+      type: GETSESSION,
+      payload: {
+        isSign: userinfo.orgNo && userinfo.roleType,
+        userinfo: { ...userinfo, roles: [ROLE.CLERK]}
+      }
     })
   })
 }
