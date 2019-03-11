@@ -162,7 +162,7 @@ class Index extends Component<IProps, PageState> {
     const { name, storeNo, storeName } = this.state;
 
     return (
-      <View className="container">
+      <View hover-class='none' className="container">
         <View className="inpuWrapName">
           <Input name="name" maxLength={11} placeholder="请输入名字" value={name} onInput={this.getInputChange.bind(this, 'name')} />
         </View>
