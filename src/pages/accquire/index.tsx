@@ -20,6 +20,7 @@ type PageStateProps = {
     isSign: boolean,
     userinfo:User,
   }
+  activity: any,
 }
 
 type PageDispatchProps = {
@@ -35,8 +36,9 @@ interface Index {
   props: IProps;
 }
 
-@connect(({  user }) => ({
+@connect(({  user, activity }) => ({
   user,
+  activity,
 }), (dispatch) => ({
  
 }))
@@ -81,11 +83,14 @@ class Index extends Component {
   componentDidHide () { }
 
   render () {
-    const { user,} = this.props;
+    const { user, activity} = this.props;
     const { isSign = false } = user || {};
+    const { config = {}} = activity || {};
+    const currentUrl = config.antifakeUrl;
+
     return (
       <View className={s.index}>
-        {isSign ? <WebView src="https://wx-test1.by-health.com/201903/sweepcode/#/" />: null}
+        {isSign ? <WebView src={currentUrl} />: null}
       </View>
     )
     

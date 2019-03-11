@@ -20,17 +20,19 @@ import { DbqbUrl } from '../../config';
 
 type PageStateProps = {
   user: any,
+  activity: any,
 }
 
 type PageDispatchProps = {
-  goTo: (url: string) => Promise<any>
+  goTo: (url: string) => Promise<any>,
+  
 }
 
 type PageOwnProps = {}
 
 type PageState = {
-  current: number,
   show: boolean,
+  currentUrl: string,
 }
 
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
@@ -39,8 +41,9 @@ interface Index {
   props: IProps;
 }
 
-@connect(({ user }) => ({
-  user
+@connect(({ user, activity }) => ({
+  user,
+  activity,
 }), (dispatch) => ({
   goTo: (url) => {
     
@@ -63,8 +66,8 @@ class Index extends Component<PageOwnProps, PageState> {
   constructor(props) {
     super(props);
     this.state = {
-      current: 0,
       show: true,
+      currentUrl: '',
     }
   }
   componentWillReceiveProps(nextProps) {
@@ -83,11 +86,6 @@ class Index extends Component<PageOwnProps, PageState> {
     }
   }
 
-  public onChange = (e) => {
-    this.setState({
-      current: e.detail.current
-    })
-  }
 
   public onAuthorize = () => {
     Taro.navigateTo({
@@ -101,8 +99,11 @@ class Index extends Component<PageOwnProps, PageState> {
   }
 
   componentDidShow() {
+    const { activity } = this.props;
+    const currentUrl = activity.config.dbqbStudyUrl.replace('{{jwt}}',Taro.getStorageSync('jwt'));
     this.setState({
       show: true,
+      currentUrl,
     })
   }
 
@@ -118,11 +119,11 @@ class Index extends Component<PageOwnProps, PageState> {
       mobilePhone : ''
     } } = user || {};
     const { mobilePhone } = userinfo;
-    const { show } = this.state;
+    const { show, currentUrl } = this.state;
     return (
       show ?
       <View>
-        {mobilePhone ? <WebView src={`${DbqbUrl}?jwt=${Taro.getStorageSync('jwt')}#/News`} /> : <Button onClick={this.onAuthorize} className={s.login} type='primary'>去登录</Button>}
+        {mobilePhone ? <WebView src={currentUrl} /> : <Button onClick={this.onAuthorize} className={s.login} type='primary'>去登录</Button>}
       </View> 
       : null
     )

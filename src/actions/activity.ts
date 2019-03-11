@@ -1,7 +1,7 @@
 import {
-  GOACTIVITY, ACTIVITY
+  GOACTIVITY, ACTIVITY, CONFIG
 } from '../constants/activity';
-import { getActivity } from '../services/activity';
+import { getActivity, getConfig } from '../services/activity';
 export const goToAction = (url: string) => dispatch => {
   return new Promise((res,rej) => {
       dispatch({
@@ -26,6 +26,15 @@ export const getActivityAction = (dispatch, getState) => {
       payload: {
         list: res,
       }
+    });
+  })
+}
+
+export const updateConfigAction = dispatch => {
+  return getConfig().then(res => {
+    return dispatch({
+      type: CONFIG,
+      payload: res,
     });
   })
 }

@@ -2,10 +2,10 @@ import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
 import { View, Button, WebView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
-import { accountType, DbqbUrl } from '../../config';
+import { accountType } from '../../config';
 
 import { loginByWechatOauthAction, findEmployeeByJwtAction } from '../../actions/user';
-import { goToAction } from '../../actions/activity'
+import { goToAction, updateConfigAction } from '../../actions/activity'
 import s from './index.module.scss'
 
 // #region 书写注意
@@ -27,7 +27,8 @@ type PageStateProps = {
 type PageDispatchProps = {
   loginByWechatOauth: (code: string, accountType: string) => Promise<any>,
   findEmployeeByJwt: () => Promise<any>,
-  goTo:(url: string) => Promise<any>,
+  goTo: (url: string) => Promise<any>,
+  updateConfig: () => Promise<any>,
 }
 
 type PageOwnProps = {}
@@ -56,61 +57,75 @@ interface Index {
   },
   findEmployeeByJwt() {
     return Promise.resolve().then(() => dispatch(findEmployeeByJwtAction))
+  },
+  updateConfig() {
+    return Promise.resolve().then(() => dispatch(updateConfigAction))
   }
 }))
 class Index extends Component<PageOwnProps, PageState> {
 
-    /**
-   * 指定config的类型声明为: Taro.Config
-   *
-   * 由于 typescript 对于 object 类型推导只能推出 Key 的基本类型
-   * 对于像 navigationBarTextStyle: 'black' 这样的推导出的类型是 string
-   * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
-   */
-    config: Config = {
+  /**
+ * 指定config的类型声明为: Taro.Config
+ *
+ * 由于 typescript 对于 object 类型推导只能推出 Key 的基本类型
+ * 对于像 navigationBarTextStyle: 'black' 这样的推导出的类型是 string
+ * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
+ */
+  config: Config = {
     navigationBarTitleText: '首页',
-    navigationBarBackgroundColor:'#592f21',
-    navigationBarTextStyle:'white',
-    disableScroll:true,
+    navigationBarBackgroundColor: '#592f21',
+    navigationBarTextStyle: 'white',
+    disableScroll: true,
   }
 
-  componentWillReceiveProps (nextProps) {
-    
+  componentWillReceiveProps(nextProps) {
+
   }
   componentDidMount() {
   }
-  componentWillMount () {
-    Taro.checkSession().then(() => {
+  componentWillMount() {
+    Promise.all([this.props.updateConfig(),
+      this.loginMini()
+      ])
+    .then((res) => {
+      const config = res[0].payload;
+      const userinfo = res[1];
+      console.log(config)
+      if (userinfo.mobilePhone) {
+        this.props.goTo(config.dbqbIndexUrl.replace('{{jwt}}',Taro.getStorageSync('jwt')));
+      } else {
+        this.props.goTo(config.dbqbIndexUrl.replace('{{jwt}}',''))
+      }
+    })
+    .catch((err) => {
+      console.log(err)
+      Taro.showToast({
+        title:  '出错了',
+        icon: 'none',
+      })
+    })
+  }
+  public loginMini = () => {
+    return Taro.checkSession().then(() => {
       return this.props.findEmployeeByJwt().then((res) => {
         return res.payload.userinfo;
       })
     }).catch(() => {
-      
+
       return Taro.login().then((res) => {
         return res;
       }).then((res) => {
         return this.props.loginByWechatOauth(res.code, accountType);
       }).then((res) => {
-        Taro.setStorageSync('jwt',res.payload.authToken);
+        Taro.setStorageSync('jwt', res.payload.authToken);
         return res.payload.userinfo;
       });
-    }).then(res => {
-      if(res.mobilePhone) {
-        this.props.goTo(`${DbqbUrl}?jwt=${Taro.getStorageSync('jwt')}`)
-      } else {
-        this.props.goTo(`${DbqbUrl}?jwt=`)
-      }
-    }).catch((err) => {
-      Taro.showToast({
-        title:err.errMsg || '出错了',
-        icon:'none',
-      })
     })
   }
   public onPostMessage = (e) => {
   }
-  componentWillUnmount () { 
-    
+  componentWillUnmount() {
+
   }
   onShareAppMessage(res) {
     return {
@@ -118,17 +133,17 @@ class Index extends Component<PageOwnProps, PageState> {
       path: '/pages/index/index?id=123'
     }
   }
-  componentDidShow () {
-   }
+  componentDidShow() {
+  }
 
-  componentDidHide () { }
+  componentDidHide() { }
 
-  render () {
+  render() {
     const { current = '' } = this.props.activity;
     return (
       <View className='index'>
         {current ? <WebView src={current} onMessage={this.onPostMessage} /> : null}
-       
+
       </View>
     )
   }

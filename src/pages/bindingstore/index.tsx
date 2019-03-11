@@ -122,10 +122,10 @@ class Index extends Component<IProps, PageState> {
         icon: 'none'
       })
     }
-    Promise.resolve().then(() => (role === ROLE.CLERK ? this.props.saveUserInfo({
+    Promise.resolve().then(() => (role === ROLE.CLERK.toString() ? this.props.saveUserInfo({
       memberName: name,
       orgNo: storeNo,
-      roles: [role],
+      roles: [ROLE.CLERK],
       orgName: storeName
     }) : this.props.bindEmployeeRole({
       memberName: name,
