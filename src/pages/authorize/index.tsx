@@ -163,11 +163,17 @@ class Index extends Component<PageOwnProps, PageState> {
       goTo } = this.props;
     const { page } = this.$router.params;
     return goTo(`${DbqbUrl}?jwt=${Taro.getStorageSync('jwt')}&t=${new Date().getTime()}`).then(() => {
-      if (page && page !== 'news' && page !== 'my') {
+      if (page && page !== 'news') {
         if (user.isSign) {
-          Taro.redirectTo({
+          if (page === 'my') {
+            Taro.navigateBack({
+              delta: 1,
+            })
+          } else {
+            Taro.redirectTo({
               url: `/pages/${page}/index`
             })
+          }
         } else {
           Taro.redirectTo({
             url: `/pages/roleselection/index?page=${page}`
@@ -209,7 +215,7 @@ class Index extends Component<PageOwnProps, PageState> {
       mobilePhone: '',
     } } = user || {};
     const { mobilePhone = '' } = userinfo || {};
-    return ( mobilePhone ? null :
+    return (mobilePhone ? null :
       <View>
         <View className={s.tip}>第一步</View>
         <Button className={classnames(s.login,

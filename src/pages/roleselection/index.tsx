@@ -61,7 +61,7 @@ class Index extends Component {
       Taro.showModal({
         title: '消息',
         content: '你的账号是连锁管理者无权限体验',
-        confirmText: '知道了',
+        confirmText: '我知道了',
         showCancel: false,
       }).then(() => {
         Taro.navigateBack({

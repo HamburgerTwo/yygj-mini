@@ -82,6 +82,9 @@ class Index extends Component<IProps, PageState> {
   public getInputChange = (item, event) => {
     const value = event.target.value;
     const stateObj = {};
+    if (item === 'storeNo') {
+      stateObj['storeName'] = '';
+    }
     stateObj[item] = value;
     this.setState(stateObj);
   }
@@ -136,7 +139,7 @@ class Index extends Component<IProps, PageState> {
       return Taro.showModal({
         title: '消息',
         content: '你的账号已提交审核，请耐心等待审核',
-        confirmText: '知道了',
+        confirmText: '我知道了',
         showCancel: false,
       })
     })))

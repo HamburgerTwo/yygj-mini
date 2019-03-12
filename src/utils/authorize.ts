@@ -23,7 +23,7 @@ export const isAuthorized = (page): boolean => {
       Taro.showModal({
         title: '消息',
         content: message,
-        confirmText: '知道了',
+        confirmText: '我知道了',
         showCancel: false,
       }).then(() => {
         Taro.navigateBack({
