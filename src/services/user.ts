@@ -32,5 +32,5 @@ export function bindEmployeeRole(user: any): Promise<User> {
 }
 
 export function findEmployeeByPhone(mobilePhone: string) {
-  return request.get<User>('/employee/findEmployeeByPhone', { params: {mobilePhone} });
+  return request.get<any>('/employee/findEmployeeByPhone', { params: {mobilePhone} });
 }

@@ -84,7 +84,7 @@ export const findEmployeeByJwtAction = dispatch => {
   return findEmployeeByJwt().then(res => {
     if(res.orgNo) {
       return findOrganizationByIdOrNo(res.orgNo).then(store => ({
-        ...res, orgName: store.orgName
+        ...res, orgName: store.orgName, orgStatus: store.status
       }))
     } else {
       return {
@@ -117,6 +117,7 @@ export const findEmployeeByJwtAction = dispatch => {
           memberName: res.memberName,
           orgName: res.orgName,
           status: res.status,
+          orgStatus: res.orgStatus
         }
       }
     })
@@ -152,7 +153,7 @@ export const findEmployeeByPhoneAction = (mobilePhone: string) => dispatch => {
   return findEmployeeByPhone(mobilePhone).then(res => {
     if(res.orgNo) {
       return findOrganizationByIdOrNo(res.orgNo).then(store => ({
-        ...res, orgName: store.orgName
+        ...res, orgName: store.orgName, orgStatus: store.status,
       }))
     } else {
       return {
@@ -176,6 +177,7 @@ export const findEmployeeByPhoneAction = (mobilePhone: string) => dispatch => {
           memberName: res.memberName,
           orgName: res.orgName,
           status: res.status,
+          orgStatus: res.orgStatus
         }
       }
     })

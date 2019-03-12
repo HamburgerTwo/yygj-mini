@@ -27,9 +27,7 @@ class App extends Component {
    */
   config: Config = {
     pages: [
-      
       "pages/index/index",
-      "pages/init/init",
       "pages/study/index",
       "pages/my/index",
       "pages/memberactivities/index",
@@ -51,7 +49,7 @@ class App extends Component {
         },
         {
           pagePath: "pages/study/index",
-          text: "学习圈",
+          text: "学院",
           iconPath: "assets/icon-default-study.png",
           selectedIconPath: "assets/icon-study.png",
         },

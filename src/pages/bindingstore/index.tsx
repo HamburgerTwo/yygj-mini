@@ -7,6 +7,7 @@ import { findOrganizationByIdOrNo } from '../../services/store';
 import { saveUserInfoAction, bindEmployeeRoleAction } from '../../actions/user';
 import { User } from '../../types/user'
 import { ROLE } from '../../constants/user';
+import { STORESTATUS, STORETYPE } from '../../constants/activity';
 import './index.scss'
 
 type PageStateProps = {
@@ -99,9 +100,15 @@ class Index extends Component<IProps, PageState> {
       return
     }
     findOrganizationByIdOrNo(this.state.storeNo).then((res) => {
-      this.setState({
-        storeName: res.orgName
-      })
+      if (res.status !== STORESTATUS.NORMAL) {
+        throw { data: { message: '您所查询的门店无效' } }
+      } else if (res.orgType === STORETYPE.PARTNER) {
+        throw { data: { message: '只能绑定门店' } }
+      } else {
+        this.setState({
+          storeName: res.orgName
+        })
+      }
     }).catch((error) => {
       Taro.showToast({
         title: error.data.message || '出错了',
@@ -143,7 +150,7 @@ class Index extends Component<IProps, PageState> {
         showCancel: false,
       })
     })))
-    .then((res) => {
+      .then((res) => {
         if (page === 'my') {
           Taro.navigateBack({
             delta: 1
@@ -153,12 +160,12 @@ class Index extends Component<IProps, PageState> {
             url: `/pages/${page}/index`
           })
         }
-    }).catch((err) => {
-      Taro.showToast({
-        title: err.data.message || '出错了',
-        icon: 'none'
+      }).catch((err) => {
+        Taro.showToast({
+          title: err.data.message || '出错了',
+          icon: 'none'
+        })
       })
-    })
   }
 
   render() {
