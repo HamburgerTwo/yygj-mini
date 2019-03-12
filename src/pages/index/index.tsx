@@ -90,7 +90,6 @@ class Index extends Component<PageOwnProps, PageState> {
     .then((res) => {
       const config = res[0].payload;
       const userinfo = res[1];
-      console.log(config)
       if (userinfo.mobilePhone) {
         this.props.goTo(config.dbqbIndexUrl.replace('{{jwt}}',Taro.getStorageSync('jwt')));
       } else {

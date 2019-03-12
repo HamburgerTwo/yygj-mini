@@ -12,4 +12,5 @@ export type User = {
   roles? : Array<number>,
   memberName? : string,
   orgName?:string,
+  status?: number,
 }

@@ -32,7 +32,6 @@ type PageOwnProps = {}
 
 type PageState = {
   show: boolean,
-  currentUrl: string,
 }
 
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
@@ -67,7 +66,6 @@ class Index extends Component<PageOwnProps, PageState> {
     super(props);
     this.state = {
       show: true,
-      currentUrl: '',
     }
   }
   componentWillReceiveProps(nextProps) {
@@ -99,11 +97,8 @@ class Index extends Component<PageOwnProps, PageState> {
   }
 
   componentDidShow() {
-    const { activity } = this.props;
-    const currentUrl = activity.config.dbqbStudyUrl.replace('{{jwt}}',Taro.getStorageSync('jwt'));
-    this.setState({
+   this.setState({
       show: true,
-      currentUrl,
     })
   }
 
@@ -114,12 +109,17 @@ class Index extends Component<PageOwnProps, PageState> {
   }
 
   render() {
-    const { user } = this.props;
+    const { user, activity } = this.props;
+    const { config = {
+    }} = activity || {};
+    const {dbqbStudyUrl = ''} = config; 
+    const currentUrl = dbqbStudyUrl.replace('{{jwt}}',Taro.getStorageSync('jwt'));
+    
     const { userinfo = {
       mobilePhone : ''
     } } = user || {};
     const { mobilePhone } = userinfo;
-    const { show, currentUrl } = this.state;
+    const { show } = this.state;
     return (
       show ?
       <View>

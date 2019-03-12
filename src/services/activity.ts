@@ -6,5 +6,7 @@ export function getActivity(clerkId: string) : Promise<Array<activity>> {
 
 export function getConfig() : any {
  
-   return request.get<Array<activity>>('/wechatMiniApplet/getAppletConfig');
+   return request.get<Array<activity>>('/wechatMiniApplet/getAppletConfig', {
+     auth: false
+   });
 }

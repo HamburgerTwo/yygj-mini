@@ -8,7 +8,7 @@ import { decodeData } from '../../services/index';
 import s from './index.module.scss'
 import { User } from '../../types/user';
 import classnames from 'classnames';
-import { saveUserInfoAction, bindingPhoneAction } from '../../actions/user';
+import { saveUserInfoAction, bindingPhoneAction, findEmployeeByPhoneAction } from '../../actions/user';
 import { DbqbUrl } from '../../config';
 
 // #region 书写注意
@@ -37,6 +37,7 @@ type PageDispatchProps = {
   goTo: (url: string) => Promise<any>,
   saveUserInfo: (userinfo: User) => void,
   bindingPhone: (phone: string) => Promise<any>,
+  findEmployeeByPhone: (phone: string) => Promise<any>,
 }
 
 type PageOwnProps = {
@@ -67,6 +68,9 @@ interface Index {
   },
   bindingPhone(phone) {
     return Promise.resolve().then(() => dispatch(bindingPhoneAction(phone)))
+  },
+  findEmployeeByPhone(phone) {
+    return Promise.resolve().then(() => dispatch(findEmployeeByPhoneAction(phone)))
   }
 }))
 class Index extends Component<PageOwnProps, PageState> {
@@ -141,6 +145,7 @@ class Index extends Component<PageOwnProps, PageState> {
           gender,
           headimg: avatarUrl,
         })
+        return this.props.findEmployeeByPhone(res.payload.mobilePhone);
       }
       ).then(() => {
         this.redirectToPage();
@@ -158,7 +163,7 @@ class Index extends Component<PageOwnProps, PageState> {
       goTo } = this.props;
     const { page } = this.$router.params;
     return goTo(`${DbqbUrl}?jwt=${Taro.getStorageSync('jwt')}&t=${new Date().getTime()}`).then(() => {
-      if (page && page !== 'news') {
+      if (page && page !== 'news' && page !== 'my') {
         if (user.isSign) {
           Taro.redirectTo({
               url: `/pages/${page}/index`

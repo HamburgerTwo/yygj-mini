@@ -30,3 +30,7 @@ export function findEmployeeByJwt(): Promise<
 export function bindEmployeeRole(user: any): Promise<User> {
   return request.post<User>('/employee/bindEmployeeRole', user);
 }
+
+export function findEmployeeByPhone(mobilePhone: string) {
+  return request.get<User>('/employee/findEmployeeByPhone', { params: {mobilePhone} });
+}

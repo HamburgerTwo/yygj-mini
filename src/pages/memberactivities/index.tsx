@@ -7,6 +7,7 @@ import { activity } from '../../types/activity';
 import { getActivityAction } from '../../actions/activity';
 import { User } from '../../types/user';
 import s from './index.module.scss'
+import { isAuthorized } from '../../utils/authorize';
 
 // #region 书写注意
 // 
@@ -24,7 +25,7 @@ type PageStateProps = {
   }
   user: {
     isSign: boolean,
-    userinfo:User,
+    userinfo: User,
   }
 }
 
@@ -34,7 +35,9 @@ type PageDispatchProps = {
 
 type PageOwnProps = {}
 
-type PageState = {}
+type PageState = {
+  showContent: boolean
+}
 
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
 
@@ -46,71 +49,78 @@ interface Index {
   activity,
   user,
 }), (dispatch) => ({
- getActivity() {
-  return Promise.resolve().then(() => dispatch(getActivityAction));
- }
+  getActivity() {
+    return Promise.resolve().then(() => dispatch(getActivityAction));
+  }
 }))
-class Index extends Component {
+class Index extends Component<PageOwnProps,PageState> {
 
-    /**
-   * 指定config的类型声明为: Taro.Config
-   *
-   * 由于 typescript 对于 object 类型推导只能推出 Key 的基本类型
-   * 对于像 navigationBarTextStyle: 'black' 这样的推导出的类型是 string
-   * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
-   */
-    config: Config = {
+  /**
+ * 指定config的类型声明为: Taro.Config
+ *
+ * 由于 typescript 对于 object 类型推导只能推出 Key 的基本类型
+ * 对于像 navigationBarTextStyle: 'black' 这样的推导出的类型是 string
+ * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
+ */
+  config: Config = {
     navigationBarTitleText: '会员活动',
     navigationStyle: "default"
   }
+  constructor(props) {
+    super(props)
+    this.state = {
+      showContent: false,
+    }
+  }
+  componentWillReceiveProps(nextProps) {
 
-  componentWillReceiveProps (nextProps) {
-    
   }
   componentWillMount() {
     const { user } = this.props;
     const { isSign } = user;
-    if(!isSign) {
+    if (!isSign) {
       Taro.redirectTo({
-        url:'/pages/authorize/index?page=memberactivities'
+        url: '/pages/authorize/index?page=memberactivities'
       })
     }
   }
 
-  
+
   componentDidMount() {
   }
-  componentWillUnmount () { 
-    
+  componentWillUnmount() {
+
   }
 
-  componentDidShow () {
+  componentDidShow() {
     const { user, getActivity } = this.props;
-    const { isSign } = user;
-    if(isSign) {
+    const { isSign = false} = user;
+    if(isAuthorized(this) && isSign){
       getActivity();
     }
-   }
+   
+  }
 
-  componentDidHide () { }
+  componentDidHide() { }
 
-  render () {
+  render() {
     const { user, activity } = this.props;
     const { isSign = false, userinfo = {
       orgNo: '',
-      mobilePhone:''
+      mobilePhone: '',
+      status: 0,
     } } = user || {};
     const { orgNo, mobilePhone } = userinfo;
+    const { showContent } = this.state;
     const { list } = activity;
     return (
       <View className={s.index}>
-        {isSign ? <Block>
-          {list.length > 0 ? list.map(item => (<Item item-class={s.item} name={item.actMenuName} url={`${item.actMenuPath}&storeNo=${orgNo}&userName=${mobilePhone}`} />)): <View className={s.empty}>暂时没有活动</View>}
-    
+        {isSign && showContent ? <Block>
+          {list.length > 0 ? list.map(item => (<Item item-class={s.item} name={item.actMenuName} url={`${item.actMenuPath}&storeNo=${orgNo}&userName=${mobilePhone}`} />)) : <View className={s.empty}>暂时没有活动</View>}
         </Block> : null}
       </View>
     )
-    
+
   }
 }
 

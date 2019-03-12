@@ -18,6 +18,7 @@ import './index.scss'
 // #endregion
 
 type PageStateProps = {
+  user: any
 }
 
 type PageDispatchProps = {
@@ -33,7 +34,8 @@ interface Index {
   props: IProps;
 }
 
-@connect(({ }) => ({
+@connect(({ user }) => ({
+  user
 }), (dispatch) => ({
 }))
 
@@ -51,7 +53,23 @@ class Index extends Component {
 
   }
 
-  componentDidShow () { }
+  componentDidShow () { 
+    const { user} = this.props;
+    const {  userinfo = {} } = user || {};
+    const { roles = [] } = userinfo;
+    if (roles.some(x => x === ROLE.CHAINOWNER)) {
+      Taro.showModal({
+        title: '消息',
+        content: '你的账号是连锁管理者无权限体验',
+        confirmText: '知道了',
+        showCancel: false,
+      }).then(() => {
+        Taro.navigateBack({
+          delta:1,
+        })
+      })
+    }
+  }
 
   componentDidHide () { }
 

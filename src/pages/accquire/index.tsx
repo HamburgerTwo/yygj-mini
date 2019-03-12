@@ -4,7 +4,7 @@ import { View,  Button, WebView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { User } from '../../types/user';
 import s from './index.module.scss'
-
+import { isAuthorized } from '../../utils/authorize';
 // #region 书写注意
 // 
 // 目前 typescript 版本还无法在装饰器模式下将 Props 注入到 Taro.Component 中的 props 属性
@@ -28,7 +28,9 @@ type PageDispatchProps = {
 
 type PageOwnProps = {}
 
-type PageState = {}
+type PageState = {
+  showContent: boolean,
+}
 
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
 
@@ -42,7 +44,7 @@ interface Index {
 }), (dispatch) => ({
  
 }))
-class Index extends Component {
+class Index extends Component<PageOwnProps,PageState> {
 
     /**
    * 指定config的类型声明为: Taro.Config
@@ -55,7 +57,12 @@ class Index extends Component {
     navigationBarTitleText: '产品积分',
     navigationStyle: "default"
   }
-
+  constructor(props) {
+    super(props) 
+    this.state = {
+      showContent: false,
+    }
+  }
   componentWillReceiveProps (nextProps) {
     
   }
@@ -77,20 +84,21 @@ class Index extends Component {
   }
 
   componentDidShow () {
-  
-   }
+    isAuthorized(this);
+  }
 
   componentDidHide () { }
 
   render () {
     const { user, activity} = this.props;
-    const { isSign = false } = user || {};
+    const { isSign = false,  } = user || {};
     const { config = {}} = activity || {};
     const currentUrl = config.antifakeUrl;
-
+    const { showContent } = this.state;
     return (
       <View className={s.index}>
-        {isSign ? <WebView src={currentUrl} />: null}
+        {isSign && showContent ? 
+            <WebView src={currentUrl} /> : null}
       </View>
     )
     

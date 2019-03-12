@@ -2,7 +2,7 @@ import {
   SIGN, BINGDING, GETSESSION, BINDINGPHONE, ROLE
 } from '../constants/user';
 import { sign, bingdingStore } from '../services';
-import { saveUserInfo, loginByWechatOauth, findEmployeeByJwt, bindingPhone, bindEmployeeRole } from '../services/user'
+import { saveUserInfo, loginByWechatOauth, findEmployeeByJwt, bindingPhone, bindEmployeeRole, findEmployeeByPhone } from '../services/user'
 import { findOrganizationByIdOrNo } from '../services/store';
 import { User } from '../types/user';
 
@@ -46,6 +46,7 @@ export const loginByWechatOauthAction = (code: string, accountType: string) => d
           orgNo: res.orgNo,
           memberName: res.memberName,
           orgName: res.orgName,
+          status: res.status,
         }
       }
     })
@@ -115,6 +116,7 @@ export const findEmployeeByJwtAction = dispatch => {
           orgNo: res.orgNo,
           memberName: res.memberName,
           orgName: res.orgName,
+          status: res.status,
         }
       }
     })
@@ -144,4 +146,37 @@ export const bindEmployeeRoleAction = (userinfo: any) => (dispatch, getState) =>
       }
     })
   })
+}
+
+export const findEmployeeByPhoneAction = (mobilePhone: string) => dispatch => {
+  return findEmployeeByPhone(mobilePhone).then(res => {
+    if(res.orgNo) {
+      return findOrganizationByIdOrNo(res.orgNo).then(store => ({
+        ...res, orgName: store.orgName
+      }))
+    } else {
+      return {
+        ...res, orgName: ''
+      }
+    }
+  }).then(res => (
+    dispatch({
+      type: GETSESSION,
+      payload: {
+        ...res,
+        isSign: res.roles && res.roles.length > 0 && res.orgNo,
+        userinfo: {
+          nickName: res.nickName,
+          headimg: res.headimg,
+          gender: res.gender,
+          memberId: res.memberId,
+          mobilePhone: res.mobilePhone,
+          roles: res.roles,
+          orgNo: res.orgNo,
+          memberName: res.memberName,
+          orgName: res.orgName,
+          status: res.status,
+        }
+      }
+    })
 }
