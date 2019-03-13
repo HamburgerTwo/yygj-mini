@@ -1,5 +1,6 @@
 import request from '../core/request';
 import { User } from '../types/user';
+import { sourceFrom } from '../config';
 export function bindingPhone(phone: string, openId: string): Promise<{
   memberId: number,
   authToken: string,
@@ -7,7 +8,7 @@ export function bindingPhone(phone: string, openId: string): Promise<{
   return request.post<{
     memberId: number,
     authToken: string,
-  }>('/yygj/service/applet/bingdingPhone', { phone, openId }, { auth: false, type: 'form' });
+  }>('/yygj/service/applet/bingdingPhone', { phone, openId, sourceFrom }, { auth: false, type: 'form' });
 }
 
 
