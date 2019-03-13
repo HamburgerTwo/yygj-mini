@@ -9,7 +9,6 @@ import s from './index.module.scss'
 import { User } from '../../types/user';
 import classnames from 'classnames';
 import { saveUserInfoAction, bindingPhoneAction, findEmployeeByPhoneAction } from '../../actions/user';
-import { DbqbUrl } from '../../config';
 
 // #region 书写注意
 // 
@@ -23,7 +22,8 @@ import { DbqbUrl } from '../../config';
 
 type PageStateProps = {
   activity: {
-    current: string
+    current: string,
+    config: any
   }
   user: {
     identity: string,
@@ -109,7 +109,7 @@ class Index extends Component<PageOwnProps, PageState> {
       })
     } else {
       if (mobilePhone) {
-        this.redirectToPage();
+        this.redirectToPage(false);
       } else {
         this.userinfo = userinfo;
         this.setState({
@@ -147,24 +147,28 @@ class Index extends Component<PageOwnProps, PageState> {
         })
         return this.props.findEmployeeByPhone(res.payload.mobilePhone);
       }
-      ).then(() => {
-        this.redirectToPage();
+      ).then((res) => {
+        this.redirectToPage(res.payload.isSign);
+      }).catch((error) => {
+        const { data = {}} = error;
+        Taro.showToast({
+          title: data.message || '出错了',
+          icon: 'none'
+        })
       })
-        .catch(err => {
-          Taro.showToast({
-            title: '出错了',
-            icon: 'none'
-          });
-        });
     }
   }
-  public redirectToPage = () => {
-    const { user,
+  public redirectToPage = (isSign) => {
+    const { activity,
       goTo } = this.props;
     const { page } = this.$router.params;
-    return goTo(`${DbqbUrl}?jwt=${Taro.getStorageSync('jwt')}&t=${new Date().getTime()}`).then(() => {
+    const { config = {
+    }} = activity || {};
+    const {dbqbStudyUrl = ''} = config; 
+    const currentUrl = `${dbqbStudyUrl.replace('{{jwt}}',Taro.getStorageSync('jwt'))}&t=${new Date().getTime()}`;
+    return goTo(currentUrl).then(() => {
       if (page && page !== 'news') {
-        if (user.isSign) {
+        if (isSign) {
           if (page === 'my') {
             Taro.navigateBack({
               delta: 1,

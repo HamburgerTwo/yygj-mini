@@ -67,13 +67,7 @@ class Index extends Component<PageOwnProps,PageState> {
     
   }
   componentWillMount() {
-    const { user } = this.props;
-    const { isSign } = user;
-    if(!isSign) {
-      Taro.redirectTo({
-        url:'/pages/authorize/index?page=accquire'
-      })
-    }
+    
   }
 
  
@@ -84,7 +78,13 @@ class Index extends Component<PageOwnProps,PageState> {
   }
 
   componentDidShow () {
-    isAuthorized(this);
+    const { user } = this.props;
+    const { isSign } = user;
+    if(isAuthorized(this) && !isSign) {
+      Taro.redirectTo({
+        url:'/pages/authorize/index?page=accquire'
+      })
+    }
   }
 
   componentDidHide () { }

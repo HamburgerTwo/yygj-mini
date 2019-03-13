@@ -63,6 +63,7 @@ export function timeout(ctx, next) {
 }
 
 export function authcode(ctx, next) {
+  ctx.headers['Cache-Control'] = `no-cache`;
   const jwt = Taro.getStorageSync('jwt');
   if(ctx.auth && jwt){
     ctx.headers['Authorization'] = `Bearer ${jwt}`;

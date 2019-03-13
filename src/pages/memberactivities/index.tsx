@@ -76,13 +76,7 @@ class Index extends Component<PageOwnProps,PageState> {
 
   }
   componentWillMount() {
-    const { user } = this.props;
-    const { isSign } = user;
-    if (!isSign) {
-      Taro.redirectTo({
-        url: '/pages/authorize/index?page=memberactivities'
-      })
-    }
+    
   }
 
 
@@ -95,8 +89,19 @@ class Index extends Component<PageOwnProps,PageState> {
   componentDidShow() {
     const { user, getActivity } = this.props;
     const { isSign = false} = user;
-    if(isAuthorized(this) && isSign){
-      getActivity();
+    if (isAuthorized(this) && !isSign) {
+      Taro.redirectTo({
+        url: '/pages/authorize/index?page=memberactivities'
+      })
+    }
+    if(isSign){
+      getActivity().catch((error) => {
+        const { data = {}} = error;
+        Taro.showToast({
+          title: data.message || '出错了',
+          icon: 'none'
+        })
+      })
     }
    
   }
@@ -113,6 +118,7 @@ class Index extends Component<PageOwnProps,PageState> {
     const { orgNo, mobilePhone } = userinfo;
     const { showContent } = this.state;
     const { list } = activity;
+    console.log(list)
     return (
       <View className={s.index}>
         {isSign && showContent ? <Block>

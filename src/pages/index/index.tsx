@@ -96,11 +96,11 @@ class Index extends Component<PageOwnProps, PageState> {
         this.props.goTo(config.dbqbIndexUrl.replace('{{jwt}}',''))
       }
     })
-    .catch((err) => {
-      console.log(err)
+    .catch((error) => {
+      const { data = {}} = error;
       Taro.showToast({
-        title:  '出错了',
-        icon: 'none',
+        title: data.message || '出错了',
+        icon: 'none'
       })
     })
   }

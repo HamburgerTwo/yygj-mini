@@ -5,6 +5,7 @@ import { connect } from '@tarojs/redux'
 import shopowner from '../../assets/shopowner.png';
 import clerk from '../../assets/clerk.png';
 import { ROLE } from '../../constants/user';
+import { isAuthorized } from '../../utils/authorize';
 import './index.scss'
 
 // #region 书写注意
@@ -26,7 +27,9 @@ type PageDispatchProps = {
 
 type PageOwnProps = {}
 
-type PageState = {}
+type PageState = {
+  showContent: boolean,
+}
 
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
 
@@ -39,12 +42,17 @@ interface Index {
 }), (dispatch) => ({
 }))
 
-class Index extends Component {
+class Index extends Component<PageOwnProps,PageState> {
 
   config: Config = {
     navigationBarTitleText: '选择角色',
   }
-
+  constructor(props) {
+    super(props);
+    this.state = {
+      showContent: false,
+    }
+  }
   componentWillReceiveProps (nextProps) {
   }
   componentDidMount() {
@@ -54,21 +62,7 @@ class Index extends Component {
   }
 
   componentDidShow () { 
-    const { user} = this.props;
-    const {  userinfo = {} } = user || {};
-    const { roles = [] } = userinfo;
-    if (roles.some(x => x === ROLE.CHAINOWNER)) {
-      Taro.showModal({
-        title: '消息',
-        content: '你的账号是连锁管理者无权限体验',
-        confirmText: '我知道了',
-        showCancel: false,
-      }).then(() => {
-        Taro.navigateBack({
-          delta:1,
-        })
-      })
-    }
+    isAuthorized(this);
   }
 
   componentDidHide () { }
@@ -80,12 +74,14 @@ class Index extends Component {
     })
   }
   render () {
+    const { showContent } = this.state;
     return (
       <View className="container">
-        <View className="content">
+      {showContent ? <View className="content">
           <Image src={shopowner} className="role" onClick={this.onNextStep.bind(this, ROLE.SHOPOWNER)} />
           <Image src={clerk} className="role" onClick={this.onNextStep.bind(this, ROLE.CLERK)} />
-        </View>
+        </View>: null}
+        
       </View>
     )
   }

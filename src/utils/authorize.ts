@@ -4,23 +4,28 @@ import Taro from '@tarojs/taro'
 export const isAuthorized = (page): boolean => {
   const { user} = page.props;
     const { userinfo = {} } = user || {};
-    const { status = 0, roles = [], orgStatus = 0 } = userinfo;
+    const { status = 1, roles = [], orgStatus = 0 } = userinfo;
     let showContent = true;
     let statusTxt = '未激活';
+    let storeTxt = '停用';
+
     let message = '';
     if(status === STATUSTYPE.STOP) {
       statusTxt ='已停用'
     } else if(status === STATUSTYPE.LOGOUT) {
       statusTxt ='已注销'
     }
+    if(orgStatus === STORESTATUS.FORZEN) {
+      storeTxt = '冻结'
+    }
     if (status !== STATUSTYPE.NORMOL) {
       message = `该账号${statusTxt}`;
       showContent = false;
     }  else if (orgStatus !== STORESTATUS.NORMAL) {
-      message = '门店已停用';
+      message = `门店已${storeTxt}`;
       showContent = false;
-    } else if (roles.some(x => x === ROLE.CHAINOWNER)) {
-      message = '您的账号是连锁管理者无权限体验';
+    } else if (roles.filter(x => !(x === ROLE.CLERK || x === ROLE.NOSTORE || x === ROLE.SHOPOWNER)).length > 0) {
+      message = '您的账号无权限体验';
       showContent = false;
     }
     if(!showContent) {

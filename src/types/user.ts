@@ -14,4 +14,5 @@ export type User = {
   orgName?:string,
   status?: number,
   orgStatus?: number,
+  orgId?: string,
 }

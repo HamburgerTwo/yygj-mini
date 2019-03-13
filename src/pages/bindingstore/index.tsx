@@ -29,7 +29,8 @@ type PageState = {
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
 
 interface Index {
-  props: IProps;
+  props: IProps,
+  orgId: string
 }
 
 @connect(({
@@ -85,6 +86,7 @@ class Index extends Component<IProps, PageState> {
     const stateObj = {};
     if (item === 'storeNo') {
       stateObj['storeName'] = '';
+      this.orgId = '';
     }
     stateObj[item] = value;
     this.setState(stateObj);
@@ -105,13 +107,15 @@ class Index extends Component<IProps, PageState> {
       } else if (res.orgType === STORETYPE.PARTNER) {
         throw { data: { message: '只能绑定门店' } }
       } else {
+        this.orgId = res.orgId;
         this.setState({
           storeName: res.orgName
         })
       }
     }).catch((error) => {
+      const { data = {}} = error;
       Taro.showToast({
-        title: error.data.message || '出错了',
+        title: data.message || '出错了',
         icon: 'none'
       })
     })
@@ -136,12 +140,14 @@ class Index extends Component<IProps, PageState> {
       memberName: name,
       orgNo: storeNo,
       roles: [ROLE.CLERK],
-      orgName: storeName
+      orgName: storeName,
+      orgId: this.orgId,
     }) : this.props.bindEmployeeRole({
       memberName: name,
       orgNo: storeNo,
       roleType: ROLE.SHOPOWNER,
-      orgName: storeName
+      orgName: storeName,
+      orgId: this.orgId,
     }).then(() => {
       return Taro.showModal({
         title: '消息',
@@ -160,9 +166,10 @@ class Index extends Component<IProps, PageState> {
             url: `/pages/${page}/index`
           })
         }
-      }).catch((err) => {
+      }).catch((error) => {
+        const { data = {}} = error;
         Taro.showToast({
-          title: err.data.message || '出错了',
+          title: data.message || '出错了',
           icon: 'none'
         })
       })

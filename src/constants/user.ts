@@ -16,6 +16,7 @@ export const ROLE = {
   CLERK: 1,
   SHOPOWNER: 4,
   CHAINOWNER:10,
+  NOSTORE: 2
 }
 
 export const STATUSTYPE = {

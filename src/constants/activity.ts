@@ -7,6 +7,8 @@ export const CONFIG = 'CONFIG'
 
 export const STORESTATUS = {
   NORMAL: 0,
+  STOP: -1,
+  FORZEN: 1,
 }
 
 export const STORETYPE = {
