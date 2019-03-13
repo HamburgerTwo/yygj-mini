@@ -118,7 +118,6 @@ class Index extends Component<PageOwnProps,PageState> {
     const { orgNo, mobilePhone } = userinfo;
     const { showContent } = this.state;
     const { list } = activity;
-    console.log(list)
     return (
       <View className={s.index}>
         {isSign && showContent ? <Block>
