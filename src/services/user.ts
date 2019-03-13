@@ -4,10 +4,10 @@ export function bindingPhone(phone: string, openId: string): Promise<{
   memberId: number,
   authToken: string,
 }> {
-  return request.get<{
+  return request.post<{
     memberId: number,
     authToken: string,
-  }>('/yygj/service/applet/bingdingPhone', { params: { phone, openId }, auth: false });
+  }>('/yygj/service/applet/bingdingPhone', { phone, openId }, { auth: false, type: 'form' });
 }
 
 
@@ -24,7 +24,7 @@ export function loginByWechatOauth(code: string, accountType: string): Promise<
 export function findEmployeeByJwt(): Promise<
   any
 > {
-  return request.post<any>('/employee/findEmployeeByJwt',{});
+  return request.post<any>('/employee/findEmployeeByJwt', {});
 }
 
 export function bindEmployeeRole(user: any): Promise<User> {
@@ -32,5 +32,5 @@ export function bindEmployeeRole(user: any): Promise<User> {
 }
 
 export function findEmployeeByPhone(mobilePhone: string) {
-  return request.get<any>('/employee/findEmployeeByPhone', { params: {mobilePhone, t: new Date().getTime()} });
+  return request.get<any>('/employee/findEmployeeByPhone', { params: { mobilePhone, t: new Date().getTime() } });
 }

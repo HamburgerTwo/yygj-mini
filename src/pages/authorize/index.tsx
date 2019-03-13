@@ -164,8 +164,8 @@ class Index extends Component<PageOwnProps, PageState> {
     const { page } = this.$router.params;
     const { config = {
     }} = activity || {};
-    const {dbqbStudyUrl = ''} = config; 
-    const currentUrl = `${dbqbStudyUrl.replace('{{jwt}}',Taro.getStorageSync('jwt'))}&t=${new Date().getTime()}`;
+    const {dbqbIndexUrl = ''} = config; 
+    const currentUrl = `${dbqbIndexUrl.replace('{{jwt}}',Taro.getStorageSync('jwt'))}&t=${new Date().getTime()}`;
     return goTo(currentUrl).then(() => {
       if (page && page !== 'news') {
         if (isSign) {
