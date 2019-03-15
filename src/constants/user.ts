@@ -25,3 +25,8 @@ export const STATUSTYPE = {
   STOP:2,
   LOGOUT: -1
 }
+
+export const LOGINMETHOD = {
+  WECHAT: 'wechat',
+  PHONE: 'phone',
+}

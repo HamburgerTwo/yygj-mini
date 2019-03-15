@@ -29,8 +29,15 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": -1,
-			"list": []
+			"current": 0,
+			"list": [
+				{
+					"id": -1,
+					"name": "授权页",
+					"pathName": "pages/authorize/index",
+					"scene": null
+				}
+			]
 		}
 	}
 }

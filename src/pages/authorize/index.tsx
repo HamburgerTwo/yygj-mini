@@ -2,13 +2,15 @@ import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
 import { View, Button } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
-import { GETUSERINFO, GETPHONENUMBER } from '../../constants/user';
+import { GETUSERINFO, GETPHONENUMBER, LOGINMETHOD } from '../../constants/user';
 import { goToAction } from '../../actions/activity'
 import { decodeData } from '../../services/index';
 import s from './index.module.scss'
 import { User } from '../../types/user';
 import classnames from 'classnames';
+import LoginModule from '../../components/login-module/index'
 import { saveUserInfoAction, bindingPhoneAction, findEmployeeByPhoneAction } from '../../actions/user';
+import { loginByPhoneValidateCode, loginByPhonePwd } from '../../services/user';
 
 // #region 书写注意
 // 
@@ -44,7 +46,9 @@ type PageOwnProps = {
 }
 
 type PageState = {
-  nickName: string
+  nickName: string,
+  login: boolean,
+  method: string,
 }
 
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
@@ -52,6 +56,7 @@ type IProps = PageStateProps & PageDispatchProps & PageOwnProps
 interface Index {
   props: IProps;
   userinfo: any,
+
 }
 
 @connect(({ activity, user }) => ({
@@ -90,38 +95,34 @@ class Index extends Component<PageOwnProps, PageState> {
     super(props);
     this.state = {
       nickName: '',
+      login: true,
+      method: '',
     }
   }
   componentWillMount() {
-    const { user } = this.props;
-    const { userinfo = {
-      nickName: '',
-      mobilePhone: '',
-    } } = user || {};
-    const { nickName = '', mobilePhone = '' } = userinfo || {};
-    this.userinfo = {};
-    if (!nickName) {
-      Taro.getUserInfo().then((res) => {
-        this.userinfo = res.userInfo;
-        this.setState({
-          nickName: res.userInfo.nickName,
-        })
-      })
-    } else {
+
+    const { changeuser } = this.$router.params;
+    if (!changeuser) {
+      const { user } = this.props;
+      const { userinfo = {
+        nickName: '',
+        mobilePhone: '',
+      } } = user || {};
+      const { mobilePhone = '' } = userinfo || {};
+      this.userinfo = {};
+
       if (mobilePhone) {
         this.redirectToPage(false);
-      } else {
-        this.userinfo = userinfo;
-        this.setState({
-          nickName,
-        })
       }
     }
+
+
   }
   componentWillReceiveProps(nextProps) {
 
   }
   public onGetPhoneNumber = (e) => {
+    console.log(e)
     const {
       errMsg,
       encryptedData,
@@ -150,7 +151,7 @@ class Index extends Component<PageOwnProps, PageState> {
       ).then((res) => {
         this.redirectToPage(res.payload.isSign);
       }).catch((error) => {
-        const { data = {}} = error;
+        const { data = {} } = error;
         Taro.showToast({
           title: data.message || '出错了',
           icon: 'none'
@@ -158,14 +159,46 @@ class Index extends Component<PageOwnProps, PageState> {
       })
     }
   }
+  public onLogin = (isByCode, username, code) => {
+    const {
+      bindingPhone,
+    } = this.props;
+    Promise.resolve()
+      .then(() =>
+        isByCode ? loginByPhoneValidateCode(username, code) : loginByPhonePwd(username, code))
+      .then(() => (bindingPhone(username)
+      )).then((res) => {
+        Taro.setStorageSync('jwt', res.payload.authToken);
+        const {
+          avatarUrl,
+          nickName,
+          gender
+        } = this.userinfo;
+        this.props.saveUserInfo({
+          nickName,
+          gender,
+          headimg: avatarUrl,
+        })
+        return this.props.findEmployeeByPhone(res.payload.mobilePhone);
+      }
+      ).then((res) => {
+        this.redirectToPage(res.payload.isSign);
+      }).catch((error) => {
+        const { data = {} } = error;
+        Taro.showToast({
+          title: data.message || '出错了',
+          icon: 'none'
+        })
+      })
+  }
   public redirectToPage = (isSign) => {
     const { activity,
       goTo } = this.props;
     const { page } = this.$router.params;
     const { config = {
-    }} = activity || {};
-    const {dbqbIndexUrl = ''} = config; 
-    const currentUrl = `${dbqbIndexUrl.replace('{{jwt}}',Taro.getStorageSync('jwt'))}&t=${new Date().getTime()}`;
+    } } = activity || {};
+    const { dbqbIndexUrl = '' } = config;
+    const currentUrl = `${dbqbIndexUrl.replace('{{jwt}}', Taro.getStorageSync('jwt'))}&t=${new Date().getTime()}`;
     return goTo(currentUrl).then(() => {
       if (page && page !== 'news') {
         if (isSign) {
@@ -191,12 +224,14 @@ class Index extends Component<PageOwnProps, PageState> {
     })
 
   }
-  public onGetUserInfo = (e) => {
+  public onGetUserInfo = (method, e) => {
     if (e.detail.errMsg === GETUSERINFO) {
       const { nickName, } = e.detail.userInfo;
       this.userinfo = e.detail.userInfo
       this.setState({
         nickName,
+        method,
+        login: false
       })
     }
   }
@@ -213,25 +248,13 @@ class Index extends Component<PageOwnProps, PageState> {
   componentDidHide() { }
 
   render() {
-    const { nickName } = this.state;
-    const { user } = this.props;
-    const { userinfo = {
-      mobilePhone: '',
-    } } = user || {};
-    const { mobilePhone = '' } = userinfo || {};
-    return (mobilePhone ? null :
+    const { login, method } = this.state;
+    return (
       <View>
-        <View className={s.tip}>第一步</View>
-        <Button className={classnames(s.login,
-          {
-            [s.disabled]: nickName,
-          })} open-type="getUserInfo" disabled={!!nickName} onGetUserInfo={this.onGetUserInfo} type="primary">绑定个人信息</Button>
-
-        <View className={s.tip}>第二步</View>
-        <Button className={classnames(s.login,
-          {
-            [s.disabled]: !nickName,
-          })} open-type="getPhoneNumber" disabled={!nickName} onGetPhoneNumber={this.onGetPhoneNumber} type="primary">绑定手机</Button>
+        {login ? <Button className={s.login} open-type="getUserInfo" onGetUserInfo={this.onGetUserInfo.bind(this, LOGINMETHOD.WECHAT)} type="primary">微信登录</Button> : null}
+        {login ? <Button className={s.login} open-type="getUserInfo" onGetUserInfo={this.onGetUserInfo.bind(this, LOGINMETHOD.PHONE)} type="default">手机登录</Button> : null}
+        {method === LOGINMETHOD.PHONE ? <LoginModule onLogin={this.onLogin} /> : null}
+        {method === LOGINMETHOD.WECHAT ? <Button className={s.login} open-type="getPhoneNumber" onGetPhoneNumber={this.onGetPhoneNumber} type="primary">授权手机号</Button> : null}
       </View>
     )
   }

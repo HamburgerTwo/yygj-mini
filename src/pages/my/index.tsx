@@ -1,6 +1,6 @@
 import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
-import { View, Image } from '@tarojs/components'
+import { View, Image, Button } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import avator from '../../assets/avator.png';
 
@@ -58,7 +58,7 @@ class Index extends Component {
  */
   config: Config = {
     navigationBarTitleText: '我的',
-    disableScroll:true,
+    disableScroll: true,
   }
 
   componentWillReceiveProps(nextProps) {
@@ -78,6 +78,12 @@ class Index extends Component {
       })
     }
   }
+  public onSwtichUser = () => {
+    Taro.navigateTo({
+      url: '/pages/authorize/index?page=my&&changeuser=true'
+    })
+
+  }
   componentDidShow() { }
 
   componentDidHide() { }
@@ -87,18 +93,18 @@ class Index extends Component {
     const { isSign = false, userinfo = {
       headimg: '', memberName: '', orgNo: '', orgName: '', roles: []
     } } = user || {};
-    const { headimg = '', memberName,orgName, orgNo, roles } = userinfo;
+    const { headimg = '', memberName, orgName, orgNo, roles } = userinfo;
     let job = '店员';
-    if(roles && roles.length > 0) {
+    if (roles && roles.length > 0) {
       job = roles[0] === ROLE.CLERK ? '店员' : '店长'
     }
     return (
-      <View className='container'  onClick={this.goAuthorize}>
+      <View className='container' onClick={this.goAuthorize}>
         <View className="avator">
-            <Image src={avator} />
-        { isSign ? <Image src={headimg} /> : null}
+          <Image src={avator} />
+          {isSign ? <Image src={headimg} /> : null}
         </View>
-        
+
         {isSign ? <View className='info' >
           <View className='login'>{memberName}</View>
           <View className='job'>职位:{job}</View>
@@ -108,6 +114,9 @@ class Index extends Component {
             <View className='login'>未登录/注册</View>
             <View className='tip'>点击头像可登录注册</View>
           </View>}
+        {isSign ? <Button className='swtichBtn' type="default" onClick={this.onSwtichUser}>
+          切换账号
+        </Button> : null}
       </View>
     )
   }

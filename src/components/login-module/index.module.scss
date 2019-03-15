@@ -1,0 +1,83 @@
+.container {
+}
+
+
+.username {
+  width:570rpx;
+  border-bottom: 1px solid #ebebeb;
+  margin: 0 auto;
+}
+
+.field {
+  width:570rpx;
+  border-bottom: 1px solid #ebebeb;
+  margin: 0 90rpx;
+  display: inline-block;
+}
+
+.input {
+  width:580rpx;
+  border-bottom: 1px solid #ebebeb;
+  margin: 0 auto;
+  height: 72rpx;
+  padding: 36rpx 0 18rpx;
+  font-size: 36rpx;
+  line-height: 72rpx;
+}
+
+.input::-webkit-input-placeholder {
+  color:#cbcbcb;
+}
+
+.valiCode {
+  width: 380rpx;
+  vertical-align: middle;
+  height: 72rpx;
+  font-size: 36rpx;
+  display: inline-block;
+  margin: 36rpx 0 18rpx;
+  line-height: 72rpx;
+}
+
+.valiCode::-webkit-input-placeholder {
+  color:#cbcbcb;
+}
+
+.valiBtn {
+  line-height: 72rpx;
+  width: 172rpx;
+  height: 72rpx;
+  border-radius: 10rpx;
+  margin: 36rpx 0 18rpx 18rpx;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 26rpx;
+  padding: 0;
+  text-align: center;
+  color:#999999;
+  background: #fff;
+  border-color:#cbcbcb;
+}
+
+.login {
+  margin: 100rpx 82rpx 40rpx;
+  background: #ff783d;
+  width: 586rpx;
+  border-radius: 48rpx;
+  height: 96rpx;
+  color:#fff;
+  line-height: 96rpx;
+  text-align: center;
+  letter-spacing: 10rpx;
+}
+
+.disabled {
+  opacity: 0.7
+}
+.method {
+  color:#333333;
+  font-size: 26rpx;
+  margin: 0 82rpx;
+  width: 250rpx;
+  padding: 20rpx 0;
+}

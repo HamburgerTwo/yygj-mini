@@ -19,9 +19,8 @@ import s from './index.module.scss'
 // #endregion
 
 type PageStateProps = {
-  activity: {
-    current: string,
-  }
+  activity: any
+  user: any
 }
 
 type PageDispatchProps = {
@@ -44,8 +43,8 @@ interface Index {
   props: IProps;
 }
 
-@connect(({ activity }) => ({
-  activity
+@connect(({ activity, user }) => ({
+  activity, user
 }), (dispatch) => ({
   goTo(url) {
     return Promise.resolve().then(() =>
@@ -138,10 +137,16 @@ class Index extends Component<PageOwnProps, PageState> {
   componentDidHide() { }
 
   render() {
-    const { current = '' } = this.props.activity;
+    const { activity= {}, user = {} } = this.props;
+    const { config = {
+    }} = activity || {};
+    const { userinfo = {} } = user
+    const {dbqbIndexUrl = ''} = config; 
+    const currentUrl = `${dbqbIndexUrl.replace('{{jwt}}',userinfo.mobilePhone ? Taro.getStorageSync('jwt'): '')}&t=${new Date().getTime()}`;
+    
     return (
       <View className='index'>
-        {current ? <WebView src={current} onMessage={this.onPostMessage} /> : null}
+        {dbqbIndexUrl ? <WebView src={currentUrl} onMessage={this.onPostMessage} /> :null}
 
       </View>
     )
