@@ -96,7 +96,57 @@ class Index extends Component {
     const { headimg = '', memberName, orgName, orgNo, roles } = userinfo;
     let job = '店员';
     if (roles && roles.length > 0) {
-      job = roles[0] === ROLE.CLERK ? '店员' : '店长'
+      switch (roles[0]) {
+        case ROLE.CLERK:
+          job = '店员';
+          break;
+        case ROLE.SHOPOWNER:
+          job = '店长';
+          break;
+        case ROLE.CHAINOWNER:
+          job = '连锁管理员';
+          break;
+        case ROLE.TRIANMANAGER:
+          job = '培训经理';
+          break;
+        case ROLE.TRIANCHARGE:
+          job = '培训主管';
+          break;
+        case ROLE.PROJECTCHARGE:
+          job = '项目主管';
+          break;
+        case ROLE.CHIANSALEMAN:
+          job = '连锁业务员';
+          break;
+        case ROLE.CHAIRMANSALEMAN:
+          job = '销售总监';
+          break;
+        case ROLE.AREAMANAGER:
+          job = '大区经理';
+          break;
+        case ROLE.AREASPREADMANAGER:
+          job = '大区推广经理';
+          break;
+        case ROLE.REGIONMANAGER:
+          job = '区域经理';
+          break;
+        case ROLE.REGIONASSIST:
+          job = '区域助理';
+          break;
+        case ROLE.CITYMANAGER:
+          job = '城市经理';
+          break;
+        case ROLE.MARKETREPRESENT:
+          job = '市场代表';
+          break;
+          case ROLE.DEALERSALEMAN:
+          job = '经销商业务员';
+          break;
+        case ROLE.DEALERMANAGER:
+          job = '经销商管理员';
+          break;
+
+      }
     }
     return (
       <View className='container' onClick={this.goAuthorize}>
