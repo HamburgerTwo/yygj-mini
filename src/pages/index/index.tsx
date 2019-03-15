@@ -33,8 +33,7 @@ type PageDispatchProps = {
 type PageOwnProps = {}
 
 type PageState = {
-  code: string,
-  errorMsg: string,
+  currentUrl: string,
 }
 
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
@@ -76,7 +75,12 @@ class Index extends Component<PageOwnProps, PageState> {
     navigationBarTextStyle: 'white',
     disableScroll: true,
   }
-
+  constructor(props) {
+    super(props)
+    this.state = {
+      currentUrl: '',
+    }
+  }
   componentWillReceiveProps(nextProps) {
 
   }
@@ -86,16 +90,20 @@ class Index extends Component<PageOwnProps, PageState> {
     Promise.all([this.props.updateConfig(),
       this.loginMini()
       ])
-    .then((res) => {
-      const config = res[0].payload;
-      const userinfo = res[1];
-      if (userinfo.mobilePhone) {
-        this.props.goTo(config.dbqbIndexUrl.replace('{{jwt}}',Taro.getStorageSync('jwt')));
-      } else {
-        this.props.goTo(config.dbqbIndexUrl.replace('{{jwt}}',''))
-      }
-    })
-    .catch((error) => {
+      .then((res) => {
+        const config = res[0].payload;
+        const userinfo = res[1];
+        let currentUrl = '';
+        if (userinfo.mobilePhone) {
+          currentUrl = config.dbqbIndexUrl.replace('{{jwt}}',Taro.getStorageSync('jwt'));
+        } else {
+          currentUrl = config.dbqbIndexUrl.replace('{{jwt}}','')
+        }
+        this.setState({
+          currentUrl
+        })
+      })
+      .catch((error) => {
       const { data = {}} = error;
       Taro.showToast({
         title: data.message || '出错了',
@@ -132,21 +140,24 @@ class Index extends Component<PageOwnProps, PageState> {
     }
   }
   componentDidShow() {
-  }
-
-  componentDidHide() { }
-
-  render() {
     const { activity= {}, user = {} } = this.props;
     const { config = {
     }} = activity || {};
     const { userinfo = {} } = user
     const {dbqbIndexUrl = ''} = config; 
-    const currentUrl = `${dbqbIndexUrl.replace('{{jwt}}',userinfo.mobilePhone ? Taro.getStorageSync('jwt'): '')}&t=${new Date().getTime()}`;
-    
+    const currentUrl =dbqbIndexUrl ? `${dbqbIndexUrl.replace('{{jwt}}',userinfo.mobilePhone ? Taro.getStorageSync('jwt'): '')}&t=${new Date().getTime()}`: '';
+    this.setState({
+      currentUrl,
+    })
+  }
+
+  componentDidHide() { }
+
+  render() {
+    const { currentUrl } = this.state;
     return (
       <View className='index'>
-        {dbqbIndexUrl ? <WebView src={currentUrl} onMessage={this.onPostMessage} /> :null}
+        {currentUrl ? <WebView src={currentUrl} onMessage={this.onPostMessage} /> :null}
 
       </View>
     )

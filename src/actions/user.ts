@@ -130,7 +130,7 @@ export const bindingPhoneAction = (phone) => (dispatch, getState) => {
   return bindingPhone(phone, user.identity).then((res) => {
     return dispatch({
       type: BINDINGPHONE,
-      payload: { isSign: !!phone, mobilePhone: phone, memberId: res.memberId, authToken: res.authToken }
+      payload: { mobilePhone: phone, memberId: res.memberId, authToken: res.authToken }
     })
   })
 }

@@ -1,6 +1,6 @@
 import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
-import { View, Button } from '@tarojs/components'
+import { View, Button, Block } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { GETUSERINFO, GETPHONENUMBER, LOGINMETHOD } from '../../constants/user';
 import { goToAction } from '../../actions/activity'
@@ -49,6 +49,7 @@ type PageState = {
   nickName: string,
   login: boolean,
   method: string,
+  show: boolean,
 }
 
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
@@ -97,6 +98,7 @@ class Index extends Component<PageOwnProps, PageState> {
       nickName: '',
       login: true,
       method: '',
+      show: false,
     }
   }
   componentWillMount() {
@@ -113,7 +115,15 @@ class Index extends Component<PageOwnProps, PageState> {
 
       if (mobilePhone) {
         this.redirectToPage(false);
+      } else {
+        this.setState({
+          show: true,
+        })
       }
+    } else {
+      this.setState({
+        show: true,
+      })
     }
 
 
@@ -122,7 +132,6 @@ class Index extends Component<PageOwnProps, PageState> {
 
   }
   public onGetPhoneNumber = (e) => {
-    console.log(e)
     const {
       errMsg,
       encryptedData,
@@ -199,7 +208,7 @@ class Index extends Component<PageOwnProps, PageState> {
     } } = activity || {};
     const { dbqbIndexUrl = '' } = config;
     const currentUrl = `${dbqbIndexUrl.replace('{{jwt}}', Taro.getStorageSync('jwt'))}&t=${new Date().getTime()}`;
-    return goTo(currentUrl).then(() => {
+    return Promise.resolve().then(() => {
       if (page && page !== 'news') {
         if (isSign) {
           if (page === 'my') {
@@ -248,13 +257,16 @@ class Index extends Component<PageOwnProps, PageState> {
   componentDidHide() { }
 
   render() {
-    const { login, method } = this.state;
+    const { login, method, show } = this.state;
     return (
       <View>
-        {login ? <Button className={s.login} open-type="getUserInfo" onGetUserInfo={this.onGetUserInfo.bind(this, LOGINMETHOD.WECHAT)} type="primary">微信登录</Button> : null}
-        {login ? <Button className={s.login} open-type="getUserInfo" onGetUserInfo={this.onGetUserInfo.bind(this, LOGINMETHOD.PHONE)} type="default">手机登录</Button> : null}
-        {method === LOGINMETHOD.PHONE ? <LoginModule onLogin={this.onLogin} /> : null}
-        {method === LOGINMETHOD.WECHAT ? <Button className={s.login} open-type="getPhoneNumber" onGetPhoneNumber={this.onGetPhoneNumber} type="primary">授权手机号</Button> : null}
+        {show ? 
+        <Block>
+          {login ? <Button className={s.login} open-type="getUserInfo" onGetUserInfo={this.onGetUserInfo.bind(this, LOGINMETHOD.WECHAT)} type="primary">微信登录</Button> : null}
+          {login ? <Button className={s.login} open-type="getUserInfo" onGetUserInfo={this.onGetUserInfo.bind(this, LOGINMETHOD.PHONE)} type="default">手机登录</Button> : null}
+          {method === LOGINMETHOD.PHONE ? <LoginModule onLogin={this.onLogin} /> : null}
+          {method === LOGINMETHOD.WECHAT ? <Button className={s.login} open-type="getPhoneNumber" onGetPhoneNumber={this.onGetPhoneNumber} type="primary">授权手机号</Button> : null}
+        </Block> : null}
       </View>
     )
   }
