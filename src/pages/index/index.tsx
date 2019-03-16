@@ -26,7 +26,7 @@ type PageStateProps = {
 type PageDispatchProps = {
   loginByWechatOauth: (code: string, accountType: string) => Promise<any>,
   findEmployeeByJwt: () => Promise<any>,
-  goTo: (url: string) => Promise<any>,
+  goTo: () => Promise<any>,
   updateConfig: () => Promise<any>,
 }
 
@@ -45,9 +45,9 @@ interface Index {
 @connect(({ activity, user }) => ({
   activity, user
 }), (dispatch) => ({
-  goTo(url) {
+  goTo() {
     return Promise.resolve().then(() =>
-      dispatch(goToAction(url))
+      dispatch(goToAction(false))
     )
   },
   loginByWechatOauth(code, accountType) {
@@ -88,28 +88,28 @@ class Index extends Component<PageOwnProps, PageState> {
   }
   componentWillMount() {
     Promise.all([this.props.updateConfig(),
-      this.loginMini()
-      ])
+    this.loginMini()
+    ])
       .then((res) => {
         const config = res[0].payload;
         const userinfo = res[1];
         let currentUrl = '';
         if (userinfo.mobilePhone) {
-          currentUrl = config.dbqbIndexUrl.replace('{{jwt}}',Taro.getStorageSync('jwt'));
+          currentUrl = config.dbqbIndexUrl.replace('{{jwt}}', Taro.getStorageSync('jwt'));
         } else {
-          currentUrl = config.dbqbIndexUrl.replace('{{jwt}}','')
+          currentUrl = config.dbqbIndexUrl.replace('{{jwt}}', '')
         }
         this.setState({
           currentUrl
         })
       })
       .catch((error) => {
-      const { data = {}} = error;
-      Taro.showToast({
-        title: data.message || '出错了',
-        icon: 'none'
+        const { data = {} } = error;
+        Taro.showToast({
+          title: data.message || '出错了',
+          icon: 'none'
+        })
       })
-    })
   }
   public loginMini = () => {
     return Taro.checkSession().then(() => {
@@ -140,15 +140,20 @@ class Index extends Component<PageOwnProps, PageState> {
     }
   }
   componentDidShow() {
-    const { activity= {}, user = {} } = this.props;
-    const { config = {
-    }} = activity || {};
-    const { userinfo = {} } = user
-    const {dbqbIndexUrl = ''} = config; 
-    const currentUrl =dbqbIndexUrl ? `${dbqbIndexUrl.replace('{{jwt}}',userinfo.mobilePhone ? Taro.getStorageSync('jwt'): '')}&t=${new Date().getTime()}`: '';
-    this.setState({
-      currentUrl,
-    })
+    const { activity = {}, user = {} } = this.props;
+    const { jwtchange = false, config = {
+    } } = activity || {};
+    if (jwtchange) {
+      this.props.goTo().then(() => {
+        const { userinfo = {} } = user
+        const { dbqbIndexUrl = '' } = config;
+        const currentUrl = dbqbIndexUrl ? `${dbqbIndexUrl.replace('{{jwt}}', userinfo.mobilePhone ? Taro.getStorageSync('jwt') : '')}&t=${new Date().getTime()}` : '';
+        this.setState({
+          currentUrl,
+        })
+      })
+
+    }
   }
 
   componentDidHide() { }
@@ -157,7 +162,7 @@ class Index extends Component<PageOwnProps, PageState> {
     const { currentUrl } = this.state;
     return (
       <View className='index'>
-        {currentUrl ? <WebView src={currentUrl} onMessage={this.onPostMessage} /> :null}
+        {currentUrl ? <WebView src={currentUrl} onMessage={this.onPostMessage} /> : null}
 
       </View>
     )

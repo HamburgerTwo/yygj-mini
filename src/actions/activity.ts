@@ -2,12 +2,12 @@ import {
   GOACTIVITY, ACTIVITY, CONFIG
 } from '../constants/activity';
 import { getActivity, getConfig } from '../services/activity';
-export const goToAction = (url: string) => dispatch => {
+export const goToAction = (change: boolean) => dispatch => {
   return new Promise((res,rej) => {
       dispatch({
         type: GOACTIVITY,
         payload: {
-          current: url,
+          jwtchange: change,
         }
       });
       res();

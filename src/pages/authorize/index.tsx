@@ -36,7 +36,7 @@ type PageStateProps = {
 }
 
 type PageDispatchProps = {
-  goTo: (url: string) => Promise<any>,
+  goTo: () => Promise<any>,
   saveUserInfo: (userinfo: User) => void,
   bindingPhone: (phone: string) => Promise<any>,
   findEmployeeByPhone: (phone: string) => Promise<any>,
@@ -64,9 +64,9 @@ interface Index {
   activity,
   user,
 }), (dispatch) => ({
-  goTo: (url) => {
+  goTo: () => {
     return Promise.resolve().then(() =>
-      dispatch(goToAction(url))
+      dispatch(goToAction(true))
     )
   },
   saveUserInfo(user) {
@@ -201,14 +201,10 @@ class Index extends Component<PageOwnProps, PageState> {
       })
   }
   public redirectToPage = (isSign) => {
-    const { activity,
+    const {
       goTo } = this.props;
     const { page } = this.$router.params;
-    const { config = {
-    } } = activity || {};
-    const { dbqbIndexUrl = '' } = config;
-    const currentUrl = `${dbqbIndexUrl.replace('{{jwt}}', Taro.getStorageSync('jwt'))}&t=${new Date().getTime()}`;
-    return Promise.resolve().then(() => {
+   return goTo().then(() => {
       if (page && page !== 'news') {
         if (isSign) {
           if (page === 'my') {

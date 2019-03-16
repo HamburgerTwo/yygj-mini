@@ -1,7 +1,7 @@
 import { GOACTIVITY, ACTIVITY,CONFIG } from '../constants/activity'
 
 const INITIAL_STATE = {
-  current: '',
+  jwtchange: false,
   list:[],
   config: {},
 }
