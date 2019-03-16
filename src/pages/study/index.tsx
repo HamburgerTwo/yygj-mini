@@ -31,7 +31,8 @@ type PageDispatchProps = {
 type PageOwnProps = {}
 
 type PageState = {
-  show: boolean,
+  currentUrl: string,
+  jwt: string,
 }
 
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
@@ -65,7 +66,8 @@ class Index extends Component<PageOwnProps, PageState> {
   constructor(props) {
     super(props);
     this.state = {
-      show: true,
+      currentUrl: '',
+      jwt: ''
     }
   }
   componentWillReceiveProps(nextProps) {
@@ -97,35 +99,41 @@ class Index extends Component<PageOwnProps, PageState> {
   }
 
   componentDidShow() {
-   this.setState({
-      show: true,
-    })
+    const { activity = {}, user = {} } = this.props;
+    const { config = {
+    } } = activity || {};
+    const { jwt } = this.state;
+    if (jwt !== Taro.getStorageSync('jwt')) {
+      const { userinfo = {} } = user
+      const { dbqbStudyUrl = '' } = config;
+      const currentUrl = dbqbStudyUrl ? `${dbqbStudyUrl.replace('{{jwt}}', userinfo.mobilePhone ? Taro.getStorageSync('jwt') : '')}` : '';
+      this.setState({
+        currentUrl,
+        jwt: Taro.getStorageSync('jwt'),
+      })
+    } 
+   
   }
 
   componentDidHide() { 
-    this.setState({
-      show: false,
-    })
+    // this.setState({
+    //   show: false,
+    // })
   }
 
   render() {
-    const { user, activity } = this.props;
-    const { config = {
-    }} = activity || {};
-    const {dbqbStudyUrl = ''} = config; 
-    const currentUrl = dbqbStudyUrl.replace('{{jwt}}',Taro.getStorageSync('jwt'));
+    const { user } = this.props;
     
     const { userinfo = {
       mobilePhone : ''
     } } = user || {};
     const { mobilePhone } = userinfo;
-    const { show } = this.state;
+    const {  currentUrl} = this.state;
     return (
-      show ?
+      
       <View>
         {mobilePhone ? <WebView src={currentUrl} /> : <Button onClick={this.onAuthorize} className={s.login} type='primary'>去登录</Button>}
-      </View> 
-      : null
+      </View>
     )
   }
 }

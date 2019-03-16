@@ -204,7 +204,7 @@ class Index extends Component<PageOwnProps, PageState> {
     const {
       goTo } = this.props;
     const { page } = this.$router.params;
-   return goTo().then(() => {
+    return Promise.resolve().then(() => {
       if (page && page !== 'news') {
         if (isSign) {
           if (page === 'my') {
@@ -256,13 +256,13 @@ class Index extends Component<PageOwnProps, PageState> {
     const { login, method, show } = this.state;
     return (
       <View>
-        {show ? 
-        <Block>
-          {login ? <Button className={s.login} open-type="getUserInfo" onGetUserInfo={this.onGetUserInfo.bind(this, LOGINMETHOD.WECHAT)} type="primary">微信登录</Button> : null}
-          {login ? <Button className={s.login} open-type="getUserInfo" onGetUserInfo={this.onGetUserInfo.bind(this, LOGINMETHOD.PHONE)} type="default">手机登录</Button> : null}
-          {method === LOGINMETHOD.PHONE ? <LoginModule onLogin={this.onLogin} /> : null}
-          {method === LOGINMETHOD.WECHAT ? <Button className={s.login} open-type="getPhoneNumber" onGetPhoneNumber={this.onGetPhoneNumber} type="primary">授权手机号</Button> : null}
-        </Block> : null}
+        {show ?
+          <Block>
+            {login ? <Button className={s.login} open-type="getUserInfo" onGetUserInfo={this.onGetUserInfo.bind(this, LOGINMETHOD.WECHAT)} type="primary">微信登录</Button> : null}
+            {login ? <Button className={s.login} open-type="getUserInfo" onGetUserInfo={this.onGetUserInfo.bind(this, LOGINMETHOD.PHONE)} type="default">手机登录</Button> : null}
+            {method === LOGINMETHOD.PHONE ? <LoginModule onLogin={this.onLogin} /> : null}
+            {method === LOGINMETHOD.WECHAT ? <Button className={s.login} open-type="getPhoneNumber" onGetPhoneNumber={this.onGetPhoneNumber} type="primary">授权手机号</Button> : null}
+          </Block> : null}
       </View>
     )
   }

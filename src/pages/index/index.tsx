@@ -34,6 +34,7 @@ type PageOwnProps = {}
 
 type PageState = {
   currentUrl: string,
+  jwt: string,
 }
 
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
@@ -79,6 +80,7 @@ class Index extends Component<PageOwnProps, PageState> {
     super(props)
     this.state = {
       currentUrl: '',
+      jwt: '',
     }
   }
   componentWillReceiveProps(nextProps) {
@@ -94,13 +96,16 @@ class Index extends Component<PageOwnProps, PageState> {
         const config = res[0].payload;
         const userinfo = res[1];
         let currentUrl = '';
+        let jwt = '';
         if (userinfo.mobilePhone) {
           currentUrl = config.dbqbIndexUrl.replace('{{jwt}}', Taro.getStorageSync('jwt'));
+          jwt = Taro.getStorageSync('jwt');
         } else {
           currentUrl = config.dbqbIndexUrl.replace('{{jwt}}', '')
         }
         this.setState({
-          currentUrl
+          currentUrl,
+          jwt
         })
       })
       .catch((error) => {
@@ -141,18 +146,17 @@ class Index extends Component<PageOwnProps, PageState> {
   }
   componentDidShow() {
     const { activity = {}, user = {} } = this.props;
-    const { jwtchange = false, config = {
+    const { config = {
     } } = activity || {};
-    if (jwtchange) {
-      this.props.goTo().then(() => {
-        const { userinfo = {} } = user
-        const { dbqbIndexUrl = '' } = config;
-        const currentUrl = dbqbIndexUrl ? `${dbqbIndexUrl.replace('{{jwt}}', userinfo.mobilePhone ? Taro.getStorageSync('jwt') : '')}&t=${new Date().getTime()}` : '';
-        this.setState({
-          currentUrl,
-        })
+    const { jwt } = this.state;
+    if (jwt !== Taro.getStorageSync('jwt')) {
+      const { userinfo = {} } = user
+      const { dbqbIndexUrl = '' } = config;
+      const currentUrl = dbqbIndexUrl ? `${dbqbIndexUrl.replace('{{jwt}}', userinfo.mobilePhone ? Taro.getStorageSync('jwt') : '')}&t=${new Date().getTime()}` : '';
+      this.setState({
+        currentUrl,
+        jwt: Taro.getStorageSync('jwt')
       })
-
     }
   }
 
