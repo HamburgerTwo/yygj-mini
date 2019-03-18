@@ -21,7 +21,7 @@ export const signAction = (phone: string) => dispatch => {
 
 export const loginByWechatOauthAction = (code: string, accountType: string) => dispatch => {
   return loginByWechatOauth(code, accountType).then(res => {
-    if(res.orgNo) {
+    if (res.orgNo) {
       return findOrganizationByIdOrNo(res.orgNo).then(store => ({
         ...res, orgName: store.orgName
       }))
@@ -82,7 +82,16 @@ export const bingdingAction = (data: Object) => dispatch => {
 
 export const findEmployeeByJwtAction = dispatch => {
   return findEmployeeByJwt().then(res => {
-    if(res.orgNo) {
+    const { memberAuth } = res;
+    if (Array.isArray(memberAuth)) {
+      const auth = memberAuth.filter(x => x.identityType === accountType);
+      if (auth.length === 0) {
+        throw {};
+      }
+    } else {
+      throw {};
+    }
+    if (res.orgNo) {
       return findOrganizationByIdOrNo(res.orgNo).then(store => ({
         ...res, orgName: store.orgName, orgStatus: store.status
       }))
@@ -93,13 +102,8 @@ export const findEmployeeByJwtAction = dispatch => {
     }
   }).then(res => {
     const { memberAuth } = res;
-    let identity = '';
-    if (Array.isArray(memberAuth)) {
-      const auth = memberAuth.filter(x => x.identityType === accountType);
-      if (auth.length > 0) {
-        identity = auth[0].identity;
-      }
-    }
+    const auth = memberAuth.filter(x => x.identityType === accountType);
+    const identity = auth[0].identity;
     return dispatch({
       type: GETSESSION,
       payload: {
@@ -143,7 +147,7 @@ export const bindEmployeeRoleAction = (userinfo: any) => (dispatch, getState) =>
       type: GETSESSION,
       payload: {
         isSign: userinfo.orgNo && userinfo.roleType,
-        userinfo: { ...userinfo, roles: [ROLE.CLERK]}
+        userinfo: { ...userinfo, roles: [ROLE.CLERK] }
       }
     })
   })
@@ -151,7 +155,7 @@ export const bindEmployeeRoleAction = (userinfo: any) => (dispatch, getState) =>
 
 export const findEmployeeByPhoneAction = (mobilePhone: string) => dispatch => {
   return findEmployeeByPhone(mobilePhone).then(res => {
-    if(res.orgNo) {
+    if (res.orgNo) {
       return findOrganizationByIdOrNo(res.orgNo).then(store => ({
         ...res, orgName: store.orgName, orgStatus: store.status,
       }))
