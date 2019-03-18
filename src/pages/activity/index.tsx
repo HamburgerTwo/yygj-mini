@@ -16,7 +16,7 @@ import './index.scss'
 // #endregion
 
 type PageStateProps = {
-  
+
 
 }
 
@@ -32,7 +32,8 @@ type PageState = {
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
 
 interface Index {
-  props: IProps;
+  props: IProps,
+  interval: any
 }
 
 
@@ -58,10 +59,12 @@ class Index extends Component<IProps, PageState> {
   componentDidMount() {
   }
   componentWillUnmount() {
-
+    if(this.interval){
+      clearInterval(this.interval)
+    }
   }
   componentWillMount() {
-    const { url, bgcolor, color } = this.$router.params;
+    const { url, bgcolor, color, title } = this.$router.params;
     if (url) {
       this.setState({
         url: decodeURIComponent(url),
@@ -70,13 +73,25 @@ class Index extends Component<IProps, PageState> {
     if (bgcolor) {
       Taro.setNavigationBarColor({
         backgroundColor: decodeURIComponent(bgcolor) || '#ffffff',
-        frontColor: decodeURIComponent(color) || '#000000'
+        frontColor: decodeURIComponent(color) || '#000000',
+
       })
+    }
+
+
+    if (title) {
+      this.interval = setInterval(() => {
+        wx.setNavigationBarTitle({
+          title: decodeURIComponent(title)
+        })
+      }, 1000)
+
     }
   }
   componentDidShow() { }
 
-  componentDidHide() { }
+  componentDidHide() {
+  }
 
   render() {
     const { url } = this.state;

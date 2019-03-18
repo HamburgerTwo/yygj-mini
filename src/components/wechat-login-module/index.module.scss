@@ -1,0 +1,65 @@
+.container {
+  position: absolute;
+  background: rgba(0, 0, 0, .53);
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.dialog {
+  width: 600rpx;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  background: #fff;
+  height: 608rpx;
+  border-radius: 10rpx;
+}
+
+.close {
+  float: right;
+  width: 25rpx;
+  height: 25rpx;
+  padding: 31rpx 27rpx 0 0;
+  line-height: 25rpx;
+
+  Image {
+    width: 25rpx;
+    height: 25rpx;
+    vertical-align: top;
+  }
+}
+
+.title {
+  clear: both;
+  font-size: 42rpx;
+  text-align: center;
+  line-height: 42rpx;
+  color: #000;
+  padding: 15rpx 0 75rpx;
+}
+
+.tips {
+  View {
+    color: #000;
+    text-align: center;
+    font-size: 28rpx;
+    text-align: center;
+    line-height: 36rpx;
+  }
+}
+
+.login {
+  margin: 133rpx auto 0;
+  width: 415rpx;
+  height: 98rpx;
+  color: #fff;
+    text-align: center;
+    font-size: 36rpx;
+    text-align: center;
+    line-height: 98rpx;
+  border-radius: 49rpx;
+  
+}

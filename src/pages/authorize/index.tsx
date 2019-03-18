@@ -9,6 +9,7 @@ import s from './index.module.scss'
 import { User } from '../../types/user';
 import classnames from 'classnames';
 import LoginModule from '../../components/login-module/index'
+import WechatLoginModule from '../../components/wechat-login-module/index'
 import { saveUserInfoAction, bindingPhoneAction, findEmployeeByPhoneAction } from '../../actions/user';
 import { loginByPhoneValidateCode, loginByPhonePwd } from '../../services/user';
 
@@ -47,9 +48,9 @@ type PageOwnProps = {
 
 type PageState = {
   nickName: string,
-  login: boolean,
   method: string,
   show: boolean,
+  dialogVisable: boolean,
 }
 
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
@@ -96,9 +97,9 @@ class Index extends Component<PageOwnProps, PageState> {
     super(props);
     this.state = {
       nickName: '',
-      login: true,
       method: '',
       show: false,
+      dialogVisable: false,
     }
   }
   componentWillMount() {
@@ -236,11 +237,15 @@ class Index extends Component<PageOwnProps, PageState> {
       this.setState({
         nickName,
         method,
-        login: false
+        dialogVisable: true,
       })
     }
   }
-
+  public onClose = () => {
+    this.setState({
+      dialogVisable: false,
+    })
+  }
 
   componentDidMount() {
   }
@@ -253,15 +258,16 @@ class Index extends Component<PageOwnProps, PageState> {
   componentDidHide() { }
 
   render() {
-    const { login, method, show } = this.state;
+    const { method, show, dialogVisable } = this.state;
     return (
       <View>
+        
         {show ?
           <Block>
-            {login ? <Button className={s.login} open-type="getUserInfo" onGetUserInfo={this.onGetUserInfo.bind(this, LOGINMETHOD.WECHAT)} type="primary">微信登录</Button> : null}
-            {login ? <Button className={s.login} open-type="getUserInfo" onGetUserInfo={this.onGetUserInfo.bind(this, LOGINMETHOD.PHONE)} type="default">手机登录</Button> : null}
+            {method !== LOGINMETHOD.PHONE ? <Button className={s.login} open-type="getUserInfo" onGetUserInfo={this.onGetUserInfo.bind(this, LOGINMETHOD.WECHAT)} type="primary">微信登录</Button> : null}
+            {method !== LOGINMETHOD.PHONE ? <Button className={s.login} open-type="getUserInfo" onGetUserInfo={this.onGetUserInfo.bind(this, LOGINMETHOD.PHONE)} type="default">手机登录</Button> : null}
             {method === LOGINMETHOD.PHONE ? <LoginModule onLogin={this.onLogin} /> : null}
-            {method === LOGINMETHOD.WECHAT ? <Button className={s.login} open-type="getPhoneNumber" onGetPhoneNumber={this.onGetPhoneNumber} type="primary">授权手机号</Button> : null}
+            {method === LOGINMETHOD.WECHAT && dialogVisable ? <WechatLoginModule onGetPhoneNumber={this.onGetPhoneNumber} onClose={this.onClose} /> : null}
           </Block> : null}
       </View>
     )
