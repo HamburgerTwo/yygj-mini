@@ -5,7 +5,7 @@ import { sign, bingdingStore } from '../services';
 import { saveUserInfo, loginByWechatOauth, findEmployeeByJwt, bindingPhone, bindEmployeeRole, findEmployeeByPhone } from '../services/user'
 import { findOrganizationByIdOrNo } from '../services/store';
 import { User } from '../types/user';
-
+import Taro from '@tarojs/taro'
 import { accountType } from '../config';
 
 export const signAction = (phone: string) => dispatch => {

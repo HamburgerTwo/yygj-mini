@@ -70,13 +70,26 @@ class Index extends Component {
 
   }
   public goAuthorize = (e) => {
+
     const { user } = this.props;
-    const { isSign = false } = user || {};
+    const { userinfo = {
+      nickName: '',
+      mobilePhone: '',
+    }, isSign = false } = user || {};
+    const { mobilePhone = '' } = userinfo || {};
     if (!isSign) {
-      Taro.navigateTo({
-        url: '/pages/authorize/index?page=my'
-      })
+      if (mobilePhone) {
+        Taro.navigateTo({
+          url: '/pages/roleselection/index?page=my'
+        })
+      } else {
+        Taro.navigateTo({
+          url: '/pages/authorize/index?page=my'
+        })
+
+      }
     }
+
   }
   public onSwtichUser = () => {
     Taro.navigateTo({
@@ -139,7 +152,7 @@ class Index extends Component {
         case ROLE.MARKETREPRESENT:
           job = '市场代表';
           break;
-          case ROLE.DEALERSALEMAN:
+        case ROLE.DEALERSALEMAN:
           job = '经销商业务员';
           break;
         case ROLE.DEALERMANAGER:

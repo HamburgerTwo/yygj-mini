@@ -4,6 +4,7 @@ import { View, Image, Swiper, SwiperItem, Block, Button, WebView } from '@tarojs
 import { connect } from '@tarojs/redux'
 import './index.scss'
 import s from './index.module.scss'
+import AuthorizeItem from '../../components/authorize-item/index';
 // import NewsItem from '../../components/news-item'
 // import newsbanner from '../../assets/news-item.png';
 // import classnames from 'classnames';
@@ -66,31 +67,18 @@ class Index extends Component<PageOwnProps, PageState> {
     super(props);
     this.state = {
       currentUrl: '',
-      jwt: ''
+      jwt: '',
     }
   }
   componentWillReceiveProps(nextProps) {
-
+    this.onLogined(nextProps);
   }
   componentWillMount() {
-    const { user } = this.props;
-    const { userinfo = {
-      mobilePhone : ''
-    } } = user || {};
-    const { mobilePhone } = userinfo;
-    if(!mobilePhone) {
-      Taro.navigateTo({
-        url:'/pages/authorize/index?page=news'
-      });
-    }
+    
   }
 
 
-  public onAuthorize = () => {
-    Taro.navigateTo({
-      url:'/pages/authorize/index?page=news'
-    });
-  }
+  
   componentDidMount() {
   }
   componentWillUnmount() {
@@ -98,26 +86,44 @@ class Index extends Component<PageOwnProps, PageState> {
   }
 
   componentDidShow() {
-    const { activity = {}, user = {} } = this.props;
+    this.onLogined(this.props);
+   
+  }
+  public onLogined = (props) => {
+    
+    const { activity = {}, user = {},  } = props;
     const { config = {
     } } = activity || {};
+    const { userinfo = {
+      mobilePhone : '',
+      
+    } } = user || {};
+    const { mobilePhone } = userinfo;
+    if (!mobilePhone) {
+      Taro.setNavigationBarTitle({
+        title: '登录'
+      });
+    } else {
+      Taro.setNavigationBarTitle({
+        title: '学院'
+      });
+    }
     const { jwt } = this.state;
     if (jwt !== Taro.getStorageSync('jwt')) {
       const { userinfo = {} } = user
       const { dbqbStudyUrl = '' } = config;
       const currentUrl = dbqbStudyUrl ? `${dbqbStudyUrl.replace('{{jwt}}', userinfo.mobilePhone ? Taro.getStorageSync('jwt') : '')}` : '';
+      
       this.setState({
         currentUrl,
         jwt: Taro.getStorageSync('jwt'),
+       
       })
     } 
-   
   }
-
+  
   componentDidHide() { 
-    // this.setState({
-    //   show: false,
-    // })
+    
   }
 
   render() {
@@ -129,9 +135,8 @@ class Index extends Component<PageOwnProps, PageState> {
     const { mobilePhone } = userinfo;
     const {  currentUrl} = this.state;
     return (
-      
       <View>
-        {mobilePhone ? <WebView src={currentUrl} /> : <Button onClick={this.onAuthorize} className={s.login} type='primary'>去登录</Button>}
+        {mobilePhone ? <WebView src={currentUrl} /> : <AuthorizeItem />}
       </View>
     )
   }
