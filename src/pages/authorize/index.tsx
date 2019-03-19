@@ -265,7 +265,7 @@ class Index extends Component<PageOwnProps, PageState> {
         {show ?
           <Block>
             {method !== LOGINMETHOD.PHONE ? <Button className={s.login} open-type="getUserInfo" onGetUserInfo={this.onGetUserInfo.bind(this, LOGINMETHOD.WECHAT)} type="primary">微信登录</Button> : null}
-            {method !== LOGINMETHOD.PHONE ? <Button className={s.login} open-type="getUserInfo" onGetUserInfo={this.onGetUserInfo.bind(this, LOGINMETHOD.PHONE)} type="default">手机登录</Button> : null}
+            {method !== LOGINMETHOD.PHONE ? <Button className={s.phonelogin} open-type="getUserInfo" onGetUserInfo={this.onGetUserInfo.bind(this, LOGINMETHOD.PHONE)} type="default">手机登录</Button> : null}
             {method === LOGINMETHOD.PHONE ? <LoginModule onLogin={this.onLogin} /> : null}
             {method === LOGINMETHOD.WECHAT && dialogVisable ? <WechatLoginModule onGetPhoneNumber={this.onGetPhoneNumber} onClose={this.onClose} /> : null}
           </Block> : null}

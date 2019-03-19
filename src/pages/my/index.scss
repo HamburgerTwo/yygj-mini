@@ -4,7 +4,7 @@
   .avator {
     width: 128rpx;
     height: 128rpx;
-    margin: 58rpx 0 158rpx 50rpx;
+    margin: 58rpx 0 0 50rpx;
     vertical-align: top;
     border-radius: 64rpx;
     display: inline-block;
@@ -77,13 +77,14 @@
 }
 
 .swtichBtn {
-  margin: 110rpx 50rpx;
+  margin: 122rpx 50rpx;
   width: 650rpx;
   border:1px solid #bdbec3;
   border-radius: 10rpx;
-  background: #fbfafc;
+  background: #fdfcfd;
   color:#9d9fa8;
   font-size: 36rpx;
   height: 88rpx;
   line-height: 88rpx;
+  opacity: 0.6;
 }

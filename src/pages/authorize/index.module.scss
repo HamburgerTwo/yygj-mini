@@ -7,9 +7,12 @@
 
 }
 .login {
-  margin: 200rpx 85rpx 0;
+  margin: 320rpx 85rpx 68rpx;
 }
 
+.phonelogin {
+  margin: 0 85rpx;
+}
 button[type=primary].disabled {
   background: #e0e0e0;
 }
