@@ -84,7 +84,8 @@ class Index extends Component<PageOwnProps, PageState> {
 
   }
 
-  componentDidShow() { }
+  componentDidShow() {
+   }
 
   componentDidHide() { }
   render() {

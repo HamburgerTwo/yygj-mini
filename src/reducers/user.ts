@@ -5,6 +5,7 @@ const INITIAL_STATE = {
   sessionKey: '',
   userinfo: {},
   tempoaryUser: {},
+
 }
 
 export default function user(state = INITIAL_STATE, action) {
@@ -43,7 +44,7 @@ export default function user(state = INITIAL_STATE, action) {
     case TEMPORARY: 
       return {
         ...state,
-        tempoaryUser: action.payload.userinfo
+        tempoaryUser: action.payload.userinfo,
       }
     default:
       return state

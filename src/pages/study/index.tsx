@@ -26,7 +26,7 @@ type PageStateProps = {
 
 type PageDispatchProps = {
   goTo: (url: string) => Promise<any>,
-  
+
 }
 
 type PageOwnProps = {}
@@ -47,7 +47,7 @@ interface Index {
   activity,
 }), (dispatch) => ({
   goTo: (url) => {
-    
+
   }
 }))
 
@@ -72,14 +72,22 @@ class Index extends Component<PageOwnProps, PageState> {
     }
   }
   componentWillReceiveProps(nextProps) {
-    this.onLogined(nextProps);
+    const { user = {}, } = nextProps;
+
+    const { tempoaryUser = {
+      page: '',
+
+    } } = user || {};
+    if (tempoaryUser.page === 'study') {
+      this.onLogined(nextProps);
+    }
   }
   componentWillMount() {
-    
+
   }
 
 
-  
+
   componentDidMount() {
   }
   componentWillUnmount() {
@@ -88,16 +96,16 @@ class Index extends Component<PageOwnProps, PageState> {
 
   componentDidShow() {
     this.onLogined(this.props);
-   
+
   }
   public onLogined = (props) => {
-    
-    const { activity = {}, user = {},  } = props;
+
+    const { activity = {}, user = {}, } = props;
     const { config = {
     } } = activity || {};
     const { userinfo = {
-      mobilePhone : '',
-      
+      mobilePhone: '',
+
     } } = user || {};
     const { mobilePhone } = userinfo;
     if (!mobilePhone) {
@@ -114,27 +122,26 @@ class Index extends Component<PageOwnProps, PageState> {
       const { userinfo = {} } = user
       const { dbqbStudyUrl = '' } = config;
       const currentUrl = dbqbStudyUrl ? `${dbqbStudyUrl.replace('{{jwt}}', userinfo.mobilePhone ? Taro.getStorageSync('jwt') : '')}` : '';
-      
+
       this.setState({
         currentUrl,
         jwt: Taro.getStorageSync('jwt'),
-       
       })
-    } 
+    }
   }
-  
-  componentDidHide() { 
-    
+
+  componentDidHide() {
+
   }
 
   render() {
     const { user } = this.props;
-    
+
     const { userinfo = {
-      mobilePhone : ''
+      mobilePhone: ''
     } } = user || {};
     const { mobilePhone } = userinfo;
-    const {  currentUrl} = this.state;
+    const { currentUrl } = this.state;
     return (
       <View>
         {mobilePhone ? <WebView src={currentUrl} /> : <AuthorizeItem page="study" />}

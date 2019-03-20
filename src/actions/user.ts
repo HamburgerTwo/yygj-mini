@@ -188,7 +188,7 @@ export const findEmployeeByPhoneAction = (mobilePhone: string) => dispatch => {
     })))
 }
 
-export const saveTemporaryUserInfoAction = (userinfo: User) => (dispatch) => {
+export const saveTemporaryUserInfoAction = (userinfo: any) => (dispatch) => {
   return Promise.resolve().then(() => {
     return dispatch({
       type: TEMPORARY,

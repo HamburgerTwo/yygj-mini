@@ -42,7 +42,7 @@ type ComponentsDispatchProps = {
   saveUserInfo: (userinfo: User) => void,
   bindingPhone: (phone: string) => Promise<any>,
   findEmployeeByPhone: (phone: string) => Promise<any>,
-  saveTemporaryUserInfo: (userinfo: User) => Promise<any>,
+  saveTemporaryUserInfo: (any) => Promise<any>,
 }
 
 type ComponentsOwnProps = {
@@ -135,24 +135,33 @@ class Index extends Component<IProps, ComponentsState> {
     }
   }
   public onGetUserInfo = (method, e) => {
+    const { page } = this.props;
     if (e.detail.errMsg === GETUSERINFO) {
       const { nickName, avatarUrl, gender } = e.detail.userInfo;
       this.props.saveTemporaryUserInfo({
         nickName,
         headimg: avatarUrl,
-        gender
-      })
-      this.setState({
-        method,
-        dialogVisable: true,
-      })
-      if (method === LOGINMETHOD.PHONE) {
-        if (this.props.page === 'study') {
-          Taro.navigateTo({
-            url: `/pages/loginByPhone/index`
-          });
+        gender,
+        page
+      }).then(() => {
+        this.setState({
+          method,
+          dialogVisable: true,
+        })
+        if (method === LOGINMETHOD.PHONE) {
+          if (page === 'study') {
+            Taro.navigateTo({
+              url: `/pages/loginByPhone/index`
+            });
+          } else {
+            Taro.setNavigationBarTitle({
+              title: '手机号登录'
+            })
+          }
         }
-      }
+      })
+      
+      
     }
   }
   public onClose = () => {
