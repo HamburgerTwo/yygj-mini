@@ -20,7 +20,7 @@ const withShare: any = () => {
 
   // 设置默认
   const defalutPath = 'pages/index/index';
-  const defalutTitle = '夺宝奇兵';
+  const defalutTitle = '汤臣倍健夺宝奇兵';
 
   return function shareComponent(Component) {      
     // redux里面的用户数据
