@@ -78,6 +78,7 @@ class Index extends Component<PageOwnProps, PageState> {
       page: '',
 
     } } = user || {};
+    
     if (tempoaryUser.page === 'study') {
       this.onLogined(nextProps);
     }
