@@ -36,7 +36,8 @@ class App extends Component {
       "pages/bindingstore/index",
       "pages/register/index",
       "pages/authorize/index",
-      "pages/accquire/index"
+      "pages/accquire/index",
+      "pages/loginByPhone/index"
     ],
     tabBar: {
       list: [

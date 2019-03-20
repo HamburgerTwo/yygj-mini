@@ -12,6 +12,7 @@ export const GETSESSION = 'GETSESSION'
 
 export const BINDINGPHONE = 'BINDINGPHONE'
 
+export const TEMPORARY = 'TEMPORARY'
 export const ROLE = {
   CLERK: 1,
   SHOPOWNER: 4,

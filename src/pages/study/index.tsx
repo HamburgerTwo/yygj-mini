@@ -137,7 +137,7 @@ class Index extends Component<PageOwnProps, PageState> {
     const {  currentUrl} = this.state;
     return (
       <View>
-        {mobilePhone ? <WebView src={currentUrl} /> : <AuthorizeItem />}
+        {mobilePhone ? <WebView src={currentUrl} /> : <AuthorizeItem page="study" />}
       </View>
     )
   }

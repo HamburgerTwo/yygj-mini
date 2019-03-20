@@ -3,7 +3,11 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Input, Button } from '@tarojs/components'
 import s from './index.module.scss';
 import classnames from 'classnames';
-import { sendValidateCode } from '../../services/user';
+
+import { User } from '../../types/user';
+import { connect } from '@tarojs/redux'
+import { saveUserInfoAction, bindingPhoneAction, findEmployeeByPhoneAction } from '../../actions/user';
+import { loginByPhoneValidateCode, loginByPhonePwd, sendValidateCode } from '../../services/user';
 
 type ComponentsStateProps = {
   
@@ -12,6 +16,7 @@ type ComponentsStateProps = {
 type ComponentsOwnProps = {
   onLogin: any
 }
+
 
 type ComponentsState = {
   isByCode: boolean,
@@ -22,6 +27,9 @@ type ComponentsState = {
 }
 
 type ComponentsDispatchProps = {
+  saveUserInfo: (userinfo: User) => void,
+  bindingPhone: (phone: string) => Promise<any>,
+  findEmployeeByPhone: (phone: string) => Promise<any>,
 }
 
 type IProps = ComponentsStateProps & ComponentsDispatchProps & ComponentsOwnProps
@@ -33,9 +41,21 @@ interface Index {
   timeInterval: any
 }
 
+@connect(({  }) => ({
+}), (dispatch) => ({
+  saveUserInfo(user) {
+    dispatch(saveUserInfoAction(user));
+  },
+  bindingPhone(phone) {
+    return Promise.resolve().then(() => dispatch(bindingPhoneAction(phone)))
+  },
+  findEmployeeByPhone(phone) {
+    return Promise.resolve().then(() => dispatch(findEmployeeByPhoneAction(phone)))
+  }
+}))
 
 
-class Index extends Component<ComponentsOwnProps, ComponentsState> {
+class Index extends Component<IProps, ComponentsState> {
   constructor(props) {
     super(props);
     this.state = {
@@ -70,10 +90,31 @@ class Index extends Component<ComponentsOwnProps, ComponentsState> {
     this.setState(stateObj)
   }
   public onLogin = () => {
-    const { isByCode, valicode, username, password, valiBtnTxt } = this.state;
+    const { isByCode, valicode, username, password } = this.state;
     const isLoginDisabled = !username || (isByCode && !valicode) || (!isByCode && !password);
     if(!isLoginDisabled) {
-      this.props.onLogin(isByCode, username, isByCode? valicode: password);
+      const {
+        bindingPhone,
+      } = this.props;
+      Promise.resolve()
+        .then(() =>
+          isByCode ? loginByPhoneValidateCode(username, valicode) : loginByPhonePwd(username, password))
+        .then(() => (bindingPhone(username)
+        )).then((res) => {
+          Taro.setStorageSync('jwt', res.payload.authToken);
+          this.props.saveUserInfo({
+          })
+          return this.props.findEmployeeByPhone(res.payload.mobilePhone)
+        }
+        ).then((res) => {
+          this.props.onLogin(res.payload.isSign);
+        }).catch((error) => {
+          const { data = {} } = error;
+          Taro.showToast({
+            title: data.message || '出错了',
+            icon: 'none'
+          })
+        })
     }
   }
 

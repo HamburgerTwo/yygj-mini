@@ -1,9 +1,10 @@
-import { SIGN, USERINFO, BINGDING, GETSESSION, BINDINGPHONE } from '../constants/user'
+import { SIGN, USERINFO, BINGDING, GETSESSION, BINDINGPHONE, TEMPORARY } from '../constants/user'
 
 const INITIAL_STATE = {
   isSign: false,
   sessionKey: '',
-  userinfo: {}
+  userinfo: {},
+  tempoaryUser: {},
 }
 
 export default function user(state = INITIAL_STATE, action) {
@@ -38,6 +39,11 @@ export default function user(state = INITIAL_STATE, action) {
           ...state.userinfo,
           mobilePhone: action.payload.mobilePhone,
         }
+      }
+    case TEMPORARY: 
+      return {
+        ...state,
+        tempoaryUser: action.payload.userinfo
       }
     default:
       return state

@@ -60,7 +60,7 @@ class Index extends Component<PageOwnProps, PageState> {
     super(props);
   }
   componentWillMount() {
-    const { changeuser, isRegisterError } = this.$router.params;
+    const { changeuser } = this.$router.params;
     if (!changeuser) {
       const { user } = this.props;
       const { userinfo = {
@@ -90,7 +90,6 @@ class Index extends Component<PageOwnProps, PageState> {
   }
   
   public redirectToPage = (isSign) => {
-    
     const { page } = this.$router.params;
     return Promise.resolve().then(() => {
       if (page) {
@@ -130,9 +129,10 @@ class Index extends Component<PageOwnProps, PageState> {
   componentDidHide() { }
 
   render() {
+    const { page } = this.$router.params;
     return (
       <View>
-        <AuthorizeItem onCallBack={this.redirectToPage} />
+        <AuthorizeItem page={page} onCallBack={this.redirectToPage} />
       </View>
     )
   }

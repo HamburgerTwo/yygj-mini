@@ -1,5 +1,5 @@
 import {
-  SIGN, BINGDING, GETSESSION, BINDINGPHONE, ROLE
+  SIGN, BINGDING, GETSESSION, BINDINGPHONE, ROLE, TEMPORARY
 } from '../constants/user';
 import { sign, bingdingStore } from '../services';
 import { saveUserInfo, loginByWechatOauth, findEmployeeByJwt, bindingPhone, bindEmployeeRole, findEmployeeByPhone } from '../services/user'
@@ -56,7 +56,8 @@ export const loginByWechatOauthAction = (code: string, accountType: string) => d
 export const saveUserInfoAction = (userinfo: User) => (dispatch, getState) => {
   const state = getState();
   const { user } = state;
-  return saveUserInfo({ memberId: user.memberId, ...userinfo }).then(() => {
+  const { tempoaryUser = {} } = user;
+  return saveUserInfo({ memberId: user.memberId, ...userinfo, ...tempoaryUser }).then(() => {
     return dispatch({
       type: GETSESSION,
       payload: {
@@ -184,5 +185,16 @@ export const findEmployeeByPhoneAction = (mobilePhone: string) => dispatch => {
           orgStatus: res.orgStatus
         }
       }
+    })))
+}
+
+export const saveTemporaryUserInfoAction = (userinfo: User) => (dispatch) => {
+  return Promise.resolve().then(() => {
+    return dispatch({
+      type: TEMPORARY,
+      payload: {
+        userinfo,
+      }
     })
+  })
 }
