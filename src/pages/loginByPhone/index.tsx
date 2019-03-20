@@ -2,10 +2,7 @@ import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
-import s from './index.module.scss'
-import classnames from 'classnames';
 import LoginModule from '../../components/login-module/index'
-import withShare from '../../utils/wechatShare'
 import { User } from '../../types/user';
 // #region 书写注意
 // 
@@ -40,7 +37,6 @@ interface Index {
   props: IProps;
 
 }
-@withShare()
 @connect(({ user }) => ({
   user
 }), (dispatch) => ({

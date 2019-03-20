@@ -1,6 +1,6 @@
 import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
-import { View, Block, Button } from '@tarojs/components'
+import { View, Block } from '@tarojs/components'
 import Item from '../../components/member-activity-item/item';
 import { connect } from '@tarojs/redux'
 import { activity } from '../../types/activity';
@@ -8,7 +8,6 @@ import { getActivityAction } from '../../actions/activity';
 import { User } from '../../types/user';
 import s from './index.module.scss'
 import { isAuthorized } from '../../utils/authorize';
-import withShare from '../../utils/wechatShare'
 // #region 书写注意
 // 
 // 目前 typescript 版本还无法在装饰器模式下将 Props 注入到 Taro.Component 中的 props 属性
@@ -44,7 +43,6 @@ type IProps = PageStateProps & PageDispatchProps & PageOwnProps
 interface Index {
   props: IProps;
 }
-@withShare()
 @connect(({ activity, user }) => ({
   activity,
   user,
