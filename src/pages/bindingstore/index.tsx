@@ -9,7 +9,7 @@ import { User } from '../../types/user'
 import { ROLE } from '../../constants/user';
 import { STORESTATUS, STORETYPE } from '../../constants/activity';
 import './index.scss'
-
+import withShare from '../../utils/wechatShare'
 type PageStateProps = {
 }
 
@@ -32,7 +32,7 @@ interface Index {
   props: IProps,
   orgId: string
 }
-
+@withShare()
 @connect(({
 
 }) => ({

@@ -5,6 +5,7 @@ import { connect } from '@tarojs/redux'
 import './index.scss'
 import s from './index.module.scss'
 import AuthorizeItem from '../../components/authorize-item/index';
+import withShare from '../../utils/wechatShare'
 // import NewsItem from '../../components/news-item'
 // import newsbanner from '../../assets/news-item.png';
 // import classnames from 'classnames';
@@ -40,7 +41,7 @@ type IProps = PageStateProps & PageDispatchProps & PageOwnProps
 interface Index {
   props: IProps;
 }
-
+@withShare()
 @connect(({ user, activity }) => ({
   user,
   activity,

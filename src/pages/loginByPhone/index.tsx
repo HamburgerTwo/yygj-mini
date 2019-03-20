@@ -6,8 +6,11 @@ import { goToAction } from '../../actions/activity'
 import { decodeData } from '../../services/index';
 import s from './index.module.scss'
 import classnames from 'classnames';
-import AuthorizeItem from '../../components/authorize-item/index';
+import LoginModule from '../../components/authorize-item/index';
 import withShare from '../../utils/wechatShare'
+import { User } from '../../types/user';
+import { saveUserInfoAction, bindingPhoneAction, findEmployeeByPhoneAction } from '../../actions/user';
+import { loginByPhoneValidateCode, loginByPhonePwd } from '../../services/user';
 // #region 书写注意
 // 
 // 目前 typescript 版本还无法在装饰器模式下将 Props 注入到 Taro.Component 中的 props 属性
@@ -23,6 +26,10 @@ type PageStateProps = {
 }
 
 type PageDispatchProps = {
+  
+  saveUserInfo: (userinfo: User) => void,
+  bindingPhone: (phone: string) => Promise<any>,
+  findEmployeeByPhone: (phone: string) => Promise<any>,
 }
 
 type PageOwnProps = {
@@ -41,7 +48,15 @@ interface Index {
 @connect(({ user }) => ({
   user
 }), (dispatch) => ({
-  
+  saveUserInfo(user) {
+    dispatch(saveUserInfoAction(user));
+  },
+  bindingPhone(phone) {
+    return Promise.resolve().then(() => dispatch(bindingPhoneAction(phone)))
+  },
+  findEmployeeByPhone(phone) {
+    return Promise.resolve().then(() => dispatch(findEmployeeByPhoneAction(phone)))
+  }
 }))
 class Index extends Component<PageOwnProps, PageState> {
   /**
@@ -52,7 +67,7 @@ class Index extends Component<PageOwnProps, PageState> {
  * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
  */
   config: Config = {
-    navigationBarTitleText: '登录',
+    navigationBarTitleText: '手机号码登录',
     navigationStyle: 'default',
   }
 
@@ -60,27 +75,7 @@ class Index extends Component<PageOwnProps, PageState> {
     super(props);
   }
   componentWillMount() {
-    const { changeuser, isRegisterError } = this.$router.params;
-    if (!changeuser) {
-      const { user } = this.props;
-      const { userinfo = {
-        nickName: '',
-        mobilePhone: '',
-      } } = user || {};
-      const { mobilePhone = '' } = userinfo || {};
-
-      if (mobilePhone) {
-        this.redirectToPage(false);
-      } else {
-        this.setState({
-          show: true,
-        })
-      }
-    } else {
-      this.setState({
-        show: true,
-      })
-    }
+    
     
 
 
@@ -88,7 +83,38 @@ class Index extends Component<PageOwnProps, PageState> {
   componentWillReceiveProps(nextProps) {
 
   }
-  
+  public onLogin = (isByCode, username, code) => {
+    const {
+      bindingPhone,
+    } = this.props;
+    Promise.resolve()
+      .then(() =>
+        isByCode ? loginByPhoneValidateCode(username, code) : loginByPhonePwd(username, code))
+      .then(() => (bindingPhone(username)
+      )).then((res) => {
+        Taro.setStorageSync('jwt', res.payload.authToken);
+        const {
+          avatarUrl,
+          nickName,
+          gender
+        } = this.userinfo;
+        this.props.saveUserInfo({
+          nickName,
+          gender,
+          headimg: avatarUrl,
+        })
+        return this.props.findEmployeeByPhone(res.payload.mobilePhone)
+      }
+      ).then((res) => {
+        this.redirectToPage(res.payload.isSign);
+      }).catch((error) => {
+        const { data = {} } = error;
+        Taro.showToast({
+          title: data.message || '出错了',
+          icon: 'none'
+        })
+      })
+  }
   public redirectToPage = (isSign) => {
     
     const { page } = this.$router.params;
@@ -128,11 +154,10 @@ class Index extends Component<PageOwnProps, PageState> {
   componentDidShow() { }
 
   componentDidHide() { }
-
   render() {
     return (
       <View>
-        <AuthorizeItem onCallBack={this.redirectToPage} />
+        <LoginModule onLogin={this.onLogin} />
       </View>
     )
   }

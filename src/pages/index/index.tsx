@@ -1,11 +1,12 @@
 import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
-import { View, Button, WebView } from '@tarojs/components'
+import { View,  WebView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { accountType } from '../../config';
 
 import { loginByWechatOauthAction, findEmployeeByJwtAction } from '../../actions/user';
 import { goToAction, updateConfigAction } from '../../actions/activity'
+import withShare from '../../utils/wechatShare'
 import s from './index.module.scss'
 
 // #region 书写注意
@@ -43,6 +44,7 @@ interface Index {
   props: IProps;
 }
 
+@withShare()
 @connect(({ activity, user }) => ({
   activity, user
 }), (dispatch) => ({
@@ -61,6 +63,8 @@ interface Index {
     return Promise.resolve().then(() => dispatch(updateConfigAction))
   }
 }))
+
+
 class Index extends Component<PageOwnProps, PageState> {
 
   /**
@@ -133,16 +137,8 @@ class Index extends Component<PageOwnProps, PageState> {
       });
     })
   }
-  public onPostMessage = (e) => {
-  }
   componentWillUnmount() {
 
-  }
-  onShareAppMessage(res) {
-    return {
-      title: '自定义转发标题',
-      path: '/pages/index/index?id=123'
-    }
   }
   componentDidShow() {
     const { activity = {}, user = {} } = this.props;
@@ -166,7 +162,7 @@ class Index extends Component<PageOwnProps, PageState> {
     const { currentUrl } = this.state;
     return (
       <View className='index'>
-        {currentUrl ? <WebView src={currentUrl} onMessage={this.onPostMessage} /> : null}
+        {currentUrl ? <WebView src={currentUrl}  /> : null}
 
       </View>
     )
