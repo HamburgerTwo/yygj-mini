@@ -1,5 +1,6 @@
 const env = process.env.NODE_ENV;
 const isUat = process.argv[2] === 'uat';
+const isTyb = process.argv[2] === 'tyb';
 const config = {
   projectName: 'yygj-dbqb-wechatapp',
   date: '2019-1-25',
@@ -27,7 +28,8 @@ const config = {
   defineConstants: {
     __PRO__: env === 'production',
     __DEV__: env === 'development',
-    __UAT__: isUat 
+    __UAT__: isUat,
+    __TYB__: isTyb
   },
   copy: {
     patterns: [

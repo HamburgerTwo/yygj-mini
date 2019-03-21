@@ -12,3 +12,4 @@ declare const wx: any;
 declare const __DEV__:boolean;
 declare const __PRO__:boolean;
 declare const __UAT__:boolean;
+declare const __TYB__:boolean;

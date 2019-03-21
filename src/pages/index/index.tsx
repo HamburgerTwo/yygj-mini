@@ -2,7 +2,7 @@ import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
 import { View,  WebView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
-import { accountType } from '../../config';
+import { accountType, VERSION } from '../../config';
 
 import { loginByWechatOauthAction, findEmployeeByJwtAction } from '../../actions/user';
 import { goToAction, updateConfigAction } from '../../actions/activity'
@@ -148,7 +148,7 @@ class Index extends Component<PageOwnProps, PageState> {
     if (jwt !== Taro.getStorageSync('jwt')) {
       const { userinfo = {} } = user
       const { dbqbIndexUrl = '' } = config;
-      const currentUrl = dbqbIndexUrl ? `${dbqbIndexUrl.replace('{{jwt}}', userinfo.mobilePhone ? Taro.getStorageSync('jwt') : '')}&t=${new Date().getTime()}` : '';
+      const currentUrl = dbqbIndexUrl ? `${dbqbIndexUrl.replace('{{jwt}}', userinfo.mobilePhone ? Taro.getStorageSync('jwt') : '').replace('{{version}}',VERSION)}&t=${new Date().getTime()}` : '';
       this.setState({
         currentUrl,
         jwt: Taro.getStorageSync('jwt')

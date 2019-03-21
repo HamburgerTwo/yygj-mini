@@ -4,6 +4,7 @@ import { View, WebView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import './index.scss'
 import AuthorizeItem from '../../components/authorize-item/index';
+import { VERSION } from '../../config';
 // import NewsItem from '../../components/news-item'
 // import newsbanner from '../../assets/news-item.png';
 // import classnames from 'classnames';
@@ -119,7 +120,7 @@ class Index extends Component<PageOwnProps, PageState> {
     if (jwt !== Taro.getStorageSync('jwt')) {
       const { userinfo = {} } = user
       const { dbqbStudyUrl = '' } = config;
-      const currentUrl = dbqbStudyUrl ? `${dbqbStudyUrl.replace('{{jwt}}', userinfo.mobilePhone ? Taro.getStorageSync('jwt') : '')}` : '';
+      const currentUrl = dbqbStudyUrl ? `${dbqbStudyUrl.replace('{{jwt}}', userinfo.mobilePhone ? Taro.getStorageSync('jwt') : '').replace('{{version}}', VERSION)}` : '';
 
       this.setState({
         currentUrl,

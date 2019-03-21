@@ -24,7 +24,7 @@ export const isAuthorized = (page): boolean => {
     }  else if (orgStatus !== STORESTATUS.NORMAL) {
       message = `门店已${storeTxt}`;
       showContent = false;
-    } else if (roles.filter(x => !(x === ROLE.CLERK || x === ROLE.NOSTORE || x === ROLE.SHOPOWNER)).length > 0) {
+    } else if (roles.filter(x => !(x === ROLE.CLERK || x === ROLE.NOSTORE || x === ROLE.SHOPOWNER || x=== ROLE.SUPERADMIN)).length > 0) {
       message = '您的账号无权限体验';
       showContent = false;
     }
