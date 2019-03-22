@@ -23,8 +23,9 @@
   .info {
     display: inline-block;
     padding: 70rpx 0 0 0;
-    width: 500rpx;
+    width: 522rpx;
     vertical-align: top;
+    height: 290rpx;
 
     .login {
       padding: 0 0 0 42rpx;
@@ -64,6 +65,37 @@
       padding: 0 21rpx 0 0;
     }
 
+    .improve {
+      margin: 20rpx 0 0 42rpx;
+      width: 142rpx;
+      height: 42rpx;
+      border-radius: 21rpx;
+      background: #ff783d;
+      color:#fff;
+      font-size: 24rpx;
+      padding: 0 0 0 29rpx;
+      line-height: 41rpx;
+    }
+    .arrow3 {
+      margin: 13rpx 0 0;
+      height: 15rpx;
+      width: 9rpx;
+      vertical-align: top;
+    }
+    .arrow2 {
+      height: 24rpx;
+      width: 13rpx;
+    }
+    .name {
+      width: 509rpx;
+      display: inline-block;
+    }
+    .right {
+      width: 13rpx;
+      padding: 24rpx 0 0;
+      vertical-align: top;
+      display: inline-block;
+    }
   }
 
   .register {
@@ -77,7 +109,7 @@
 }
 
 .swtichBtn {
-  margin: 122rpx 50rpx;
+  margin: 0 50rpx;
   width: 650rpx;
   border:1px solid #bdbec3;
   border-radius: 10rpx;

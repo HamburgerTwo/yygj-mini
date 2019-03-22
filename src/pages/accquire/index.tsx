@@ -91,9 +91,10 @@ class Index extends Component<PageOwnProps,PageState> {
 
   render () {
     const { user, activity} = this.props;
-    const { isSign = false,  } = user || {};
+    const { isSign = false,userinfo = {}  } = user || {};
+    const { memberId = 0  } = userinfo ;
     const { config = {}} = activity || {};
-    const currentUrl = config.antifakeUrl;
+    const currentUrl = config.antifakeUrl.replace('{{clerkId}}',memberId);
     const { showContent } = this.state;
     return (
       <View className={s.index}>

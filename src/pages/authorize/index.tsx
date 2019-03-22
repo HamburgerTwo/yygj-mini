@@ -35,7 +35,7 @@ interface Index {
 @connect(({ user }) => ({
   user
 }), (dispatch) => ({
-  
+
 }))
 class Index extends Component<PageOwnProps, PageState> {
   /**
@@ -75,28 +75,22 @@ class Index extends Component<PageOwnProps, PageState> {
         show: true,
       })
     }
-    
+
 
 
   }
   componentWillReceiveProps(nextProps) {
 
   }
-  
+
   public redirectToPage = (isSign) => {
     const { page } = this.$router.params;
     return Promise.resolve().then(() => {
-      if (page) {
+      if (page && page !== 'my') {
         if (isSign) {
-          if (page === 'my') {
-            Taro.navigateBack({
-              delta: 1,
-            })
-          } else {
-            Taro.redirectTo({
-              url: `/pages/${page}/index`
-            })
-          }
+          Taro.redirectTo({
+            url: `/pages/${page}/index`
+          })
         } else {
           Taro.redirectTo({
             url: `/pages/roleselection/index?page=${page}`
@@ -110,7 +104,7 @@ class Index extends Component<PageOwnProps, PageState> {
     })
 
   }
-  
+
 
   componentDidMount() {
   }

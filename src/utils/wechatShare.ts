@@ -1,20 +1,13 @@
-import { ComponentClass } from 'react';
+import { Component } from 'react';
 
 
-// type ComposedComponent<IProps,IState> = (component: ComponentClass<IProps,IState>) => ComponentClass<IProps,IState>
-// type ShareCompose<IProps,IState> = () => ComposedComponent<IProps,IState>
-// interface IwithShare {
-//   <IProps= {},IDispatch = {}, IState = {},>(): ComponentClass<IProps,IState>
-// }
+interface IwithShare {
+  <IStateProps = {}, IDispatchProps = {}, IOwnProps = {}, IStore = any>(
+): Component<IStateProps & IDispatchProps, IOwnProps>
+}
 
 
-// type InferableComponentEnhancerWithProps =
-//     <IComponent>(component: IComponent) => IComponent
 
-// interface IwithShare {
-//   (
-//   ): InferableComponentEnhancerWithProps
-// }
 
 const withShare: any = () => {
 

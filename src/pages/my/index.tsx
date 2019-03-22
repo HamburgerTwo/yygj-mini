@@ -3,13 +3,14 @@ import Taro, { Component, Config } from '@tarojs/taro'
 import { View, Image, Button } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import avator from '../../assets/avator.png';
-
+import arrow2 from '../../assets/icon-arrow2.png';
+import arrow3 from '../../assets/icon-arrow3.png';
 import list from '../../assets/icon-list.png';
 
 import address from '../../assets/icon-address.png';
 import { User } from '../../types/user';
-import { ROLE } from '../../constants/user'
-import './index.scss'
+import { ROLETEXT } from '../../constants/user'
+import s from './index.module.scss'
 // #region 书写注意
 //
 // 目前 typescript 版本还无法在装饰器模式下将 Props 注入到 Taro.Component 中的 props 属性
@@ -104,78 +105,34 @@ class Index extends Component {
     const { isSign = false, userinfo = {
       headimg: '', memberName: '', orgNo: '', orgName: '', roles: []
     } } = user || {};
-    const { headimg = '', memberName, orgName, orgNo, roles } = userinfo;
+    const { headimg = '', mobilePhone, memberName, orgName, orgNo, roles, nickName } = userinfo;
     let job = '店员';
     if (roles && roles.length > 0) {
-      switch (roles[0]) {
-        case ROLE.CLERK:
-          job = '店员';
-          break;
-        case ROLE.SHOPOWNER:
-          job = '店长';
-          break;
-        case ROLE.CHAINOWNER:
-          job = '连锁管理员';
-          break;
-        case ROLE.TRIANMANAGER:
-          job = '培训经理';
-          break;
-        case ROLE.TRIANCHARGE:
-          job = '培训主管';
-          break;
-        case ROLE.PROJECTCHARGE:
-          job = '项目主管';
-          break;
-        case ROLE.CHIANSALEMAN:
-          job = '连锁业务员';
-          break;
-        case ROLE.CHAIRMANSALEMAN:
-          job = '销售总监';
-          break;
-        case ROLE.AREAMANAGER:
-          job = '大区经理';
-          break;
-        case ROLE.AREASPREADMANAGER:
-          job = '大区推广经理';
-          break;
-        case ROLE.REGIONMANAGER:
-          job = '区域经理';
-          break;
-        case ROLE.REGIONASSIST:
-          job = '区域助理';
-          break;
-        case ROLE.CITYMANAGER:
-          job = '城市经理';
-          break;
-        case ROLE.MARKETREPRESENT:
-          job = '市场代表';
-          break;
-        case ROLE.DEALERSALEMAN:
-          job = '经销商业务员';
-          break;
-        case ROLE.DEALERMANAGER:
-          job = '经销商管理员';
-          break;
-
-      }
+      job = ROLETEXT[roles[0]];
     }
     return (
-      <View className='container' onClick={this.goAuthorize}>
-        <View className="avator">
+      <View className={s.container} onClick={this.goAuthorize}>
+        <View className={s.avator}>
           <Image src={avator} />
-          {isSign ? <Image src={headimg} /> : null}
+          {mobilePhone ? <Image src={headimg} /> : null}
         </View>
-
-        {isSign ? <View className='info' >
-          <View className='login'>{memberName}</View>
-          <View className='job'>职位:{job}</View>
-          <View className="detail"><Image src={list} className="list" />门店编号：{orgNo}</View>
-          <View className="detail"><Image src={address} className="address" />门店名称：{orgName}</View>
-        </View> : <View className='info' >
-            <View className='login'>未登录/注册</View>
-            <View className='tip'>点击头像可登录注册</View>
+        
+        {isSign ? <View className={s.info} >
+          <View className={s.login}>{memberName}</View>
+          <View className={s.job}>职位:{job}</View>
+          <View className={s.detail}><Image src={list} className={s.list} />门店编号：{orgNo}</View>
+          <View className={s.detail}><Image src={address} className={s.address} />门店名称：{orgName}</View>
+        </View> : mobilePhone ? <View className={s.info}>
+        <View className={s.name}>
+        <View className={s.login}>{nickName}</View>
+        <View className={s.improve}>绑定门店<Image src={arrow3} className={s.arrow3} /></View>
+        </View>
+        <View className={s.right}><Image src={arrow2} className={s.arrow2}/></View>
+        </View>:<View className={s.info} >
+            <View className={s.login}>未登录/注册</View>
+            <View className={s.tip}>点击头像可登录注册</View>
           </View>}
-        {isSign ? <Button className='swtichBtn' type="default" onClick={this.onSwtichUser}>
+        {mobilePhone ? <Button className={s.swtichBtn} type="default" onClick={this.onSwtichUser}>
           切换账号
         </Button> : null}
       </View>
