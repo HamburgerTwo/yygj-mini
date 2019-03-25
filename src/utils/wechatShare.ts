@@ -1,24 +1,23 @@
-import { Component } from 'react';
-
-
-interface IwithShare {
-  <IStateProps = {}, IDispatchProps = {}, IOwnProps = {}, IStore = any>(
-): Component<IStateProps & IDispatchProps, IOwnProps>
-}
 
 
 
 
-const withShare: any = () => {
+
+
+
+const withShare:any = () => {
 
   // 设置默认
   const defalutPath = 'pages/index/index';
-  const defalutTitle = '汤臣倍健夺宝奇兵';
+  const defalutTitle = '夺宝奇兵';
 
-  return function shareComponent(Component) {      
+  return (component) => {
     // redux里面的用户数据
 
-    class WithShare extends Component {
+    return class WithShare extends component {
+      constructor(props) {
+        super(props)
+      }
       async componentWillMount() {
 
         if (super.componentWillMount) {
@@ -34,12 +33,15 @@ const withShare: any = () => {
         };
       }
 
+      componentWillUnmount() {
+        if (super.componentWillUnmount) {
+          super.componentWillUnmount()
+        }
+      }
       render() {
         return super.render();
       }
     }
-
-    return WithShare;
   };
 }
 

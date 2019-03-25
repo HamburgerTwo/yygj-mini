@@ -44,7 +44,7 @@ interface Index {
   props: IProps;
 }
 
-@withShare()
+
 @connect(({ activity, user }) => ({
   activity, user
 }), (dispatch) => ({
@@ -63,9 +63,8 @@ interface Index {
     return Promise.resolve().then(() => dispatch(updateConfigAction))
   }
 }))
-
-
-class Index extends Component<PageOwnProps, PageState> {
+@withShare()
+class Index extends Component<IProps, PageState> {
 
   /**
  * 指定config的类型声明为: Taro.Config
@@ -176,4 +175,4 @@ class Index extends Component<PageOwnProps, PageState> {
 //
 // #endregion
 
-export default Index as ComponentClass<PageOwnProps, PageState>
+export default Index as ComponentClass<IProps, PageState>
