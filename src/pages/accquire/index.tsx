@@ -90,11 +90,12 @@ class Index extends Component<PageOwnProps,PageState> {
   componentDidHide () { }
 
   render () {
-    const { user, activity} = this.props;
+    const { user, activity } = this.props;
     const { isSign = false,userinfo = {}  } = user || {};
     const { memberId = 0  } = userinfo ;
-    const { config = {}} = activity || {};
-    const currentUrl = config.antifakeUrl.replace('{{clerkId}}',memberId);
+    const { config= {}} = activity || {};
+    const { antifakeUrl = ''} = config || {};
+    const currentUrl = antifakeUrl.replace('{{clerkId}}',memberId);
     const { showContent } = this.state;
     return (
       <View className={s.index}>

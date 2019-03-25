@@ -63,7 +63,7 @@ interface Index {
     return Promise.resolve().then(() => dispatch(updateConfigAction))
   }
 }))
-@withShare()
+// @withShare()
 class Index extends Component<IProps, PageState> {
 
   /**
