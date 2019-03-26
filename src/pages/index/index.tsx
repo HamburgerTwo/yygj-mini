@@ -101,10 +101,10 @@ class Index extends Component<IProps, PageState> {
         let currentUrl = '';
         let jwt = '';
         if (userinfo.mobilePhone) {
-          currentUrl = config.dbqbIndexUrl.replace('{{jwt}}', Taro.getStorageSync('jwt'));
+          currentUrl = config.dbqbIndexUrl.replace('{{jwt}}', Taro.getStorageSync('jwt')).replace('{{version}}',VERSION);
           jwt = Taro.getStorageSync('jwt');
         } else {
-          currentUrl = config.dbqbIndexUrl.replace('{{jwt}}', '')
+          currentUrl = config.dbqbIndexUrl.replace('{{jwt}}', '').replace('{{version}}',VERSION)
         }
         this.setState({
           currentUrl,
