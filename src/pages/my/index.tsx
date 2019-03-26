@@ -1,6 +1,6 @@
 import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
-import { View, Image, Button } from '@tarojs/components'
+import { View, Image, Button, Block } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import avator from '../../assets/avator.png';
 import arrow2 from '../../assets/icon-arrow2.png';
@@ -111,17 +111,16 @@ class Index extends Component {
       job = ROLETEXT[roles[0]];
     }
     return (
-      <View className={s.container} onClick={this.goAuthorize}>
-        <View className={s.avator}>
+      <View className={s.container} >
+        <View onClick={this.goAuthorize}>
+        <View className={s.avator} >
           <Image src={avator} />
           {mobilePhone ? <Image src={headimg} /> : null}
         </View>
         
         {isSign ? <View className={s.info} >
           <View className={s.login}>{memberName}</View>
-          <View className={s.job}>职位:{job}</View>
-          <View className={s.detail}><Image src={list} className={s.list} />门店编号：{orgNo}</View>
-          <View className={s.detail}><Image src={address} className={s.address} />门店名称：{orgName}</View>
+          
         </View> : mobilePhone ? <View className={s.info}>
         <View className={s.name}>
         <View className={s.login}>{nickName}</View>
@@ -132,6 +131,7 @@ class Index extends Component {
             <View className={s.login}>未登录/注册</View>
             <View className={s.tip}>点击头像可登录注册</View>
           </View>}
+          </View>
         {mobilePhone ? <Button className={s.swtichBtn} type="default" onClick={this.onSwtichUser}>
           切换账号
         </Button> : null}
