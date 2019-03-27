@@ -1,6 +1,6 @@
 import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
-import { View,  WebView } from '@tarojs/components'
+import { View,  WebView, Button } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { accountType, VERSION } from '../../config';
 
@@ -36,6 +36,7 @@ type PageOwnProps = {}
 type PageState = {
   currentUrl: string,
   jwt: string,
+  reload: boolean,
 }
 
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
@@ -84,6 +85,7 @@ class Index extends Component<IProps, PageState> {
     this.state = {
       currentUrl: '',
       jwt: '',
+      reload: false,
     }
   }
   componentWillReceiveProps(nextProps) {
@@ -92,32 +94,7 @@ class Index extends Component<IProps, PageState> {
   componentDidMount() {
   }
   componentWillMount() {
-    Promise.all([this.props.updateConfig(),
-    this.loginMini()
-    ])
-      .then((res) => {
-        const config = res[0].payload;
-        const userinfo = res[1];
-        let currentUrl = '';
-        let jwt = '';
-        if (userinfo.mobilePhone) {
-          currentUrl = config.dbqbIndexUrl.replace('{{jwt}}', Taro.getStorageSync('jwt')).replace('{{version}}',VERSION);
-          jwt = Taro.getStorageSync('jwt');
-        } else {
-          currentUrl = config.dbqbIndexUrl.replace('{{jwt}}', '').replace('{{version}}',VERSION)
-        }
-        this.setState({
-          currentUrl,
-          jwt
-        })
-      })
-      .catch((error) => {
-        const { data = {} } = error;
-        Taro.showToast({
-          title: data.message || '出错了',
-          icon: 'none'
-        })
-      })
+    this.initial();
   }
   public loginMini = () => {
     return Taro.checkSession().then(() => {
@@ -136,6 +113,40 @@ class Index extends Component<IProps, PageState> {
       });
     })
   }
+  public initial = () => {
+    Promise.all([this.props.updateConfig(),
+      this.loginMini()
+      ])
+        .then((res) => {
+          const config = res[0].payload;
+          const userinfo = res[1];
+          let currentUrl = '';
+          let jwt = '';
+          if (userinfo.mobilePhone) {
+            currentUrl = config.dbqbIndexUrl.replace('{{jwt}}', Taro.getStorageSync('jwt')).replace('{{version}}',VERSION);
+            jwt = Taro.getStorageSync('jwt');
+          } else {
+            currentUrl = config.dbqbIndexUrl.replace('{{jwt}}', '').replace('{{version}}',VERSION)
+          }
+          this.setState({
+            currentUrl,
+            jwt
+          })
+        })
+        .catch((error) => {
+          const { data = {} } = error;
+          Taro.showToast({
+            title: data.message || '出错了',
+            icon: 'none'
+          })
+        })
+  }
+  public reload = () => {
+    this.setState({
+      reload: true,
+    })
+  }
+  
   componentWillUnmount() {
 
   }
@@ -158,11 +169,11 @@ class Index extends Component<IProps, PageState> {
   componentDidHide() { }
 
   render() {
-    const { currentUrl } = this.state;
+    const { currentUrl, reload } = this.state;
     return (
       <View className='index'>
-        {currentUrl ? <WebView src={currentUrl}  /> : null}
-
+        {currentUrl ? <WebView src={currentUrl} onError={this.reload}  /> : null}
+        {reload ? <Button type="primary" className={s.reload} onClick={this.initial}>重新加载</Button> : null}
       </View>
     )
   }
