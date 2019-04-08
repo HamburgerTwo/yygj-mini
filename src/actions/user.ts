@@ -132,7 +132,9 @@ export const findEmployeeByJwtAction = dispatch => {
 export const bindingPhoneAction = (phone) => (dispatch, getState) => {
   const state = getState();
   const { user } = state;
-  return bindingPhone(phone, user.identity).then((res) => {
+  return Promise.resolve().then(() => user.identity ? bindingPhone(phone, user.identity) : Taro.login().then((res) => {
+    return dispatch(loginByWechatOauthAction(res.code, accountType)).then((userPayload) => bindingPhone(phone, userPayload.payload.identity))
+  })).then((res) => {
     return dispatch({
       type: BINDINGPHONE,
       payload: { mobilePhone: phone, memberId: res.memberId, authToken: res.authToken }
